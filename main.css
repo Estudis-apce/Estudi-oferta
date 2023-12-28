@@ -1,0 +1,180 @@
+[data-testid="stSidebar"][aria-expanded="true"]{
+  min-width: 17vw;
+  max-width: 17vw;
+}
+
+.button, .button:link, .button:visited {
+  font-size: 20px;
+  background-color: #66b9a7;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border: none;
+  border-radius: 4px;
+  -webkit-animation: bounce 2s infinite alternate;
+  -moz-animation: bounce 2s infinite alternate;
+  animation: bounce 2s infinite alternate;
+}
+
+
+
+table {
+  border-collapse: collapse;
+  margin: 5px auto;
+  font-size: 0.65em;
+  font-family: sans-serif;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+table thead th {
+  background-color: #66b9a7;
+  color: #FFFFFF;
+}
+
+table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+table tbody tr:last-of-type {
+  border-bottom: 2px solid #66b9a7;
+}
+
+table tbody td {
+  padding: 8px 10px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+
+
+@-webkit-keyframes bounce {
+  to { -webkit-transform: scale(1.1); }
+}
+@-moz-keyframes bounce {
+  to { -moz-transform: scale(1.1); }
+}
+@keyframes bounce {
+  to { transform: scale(1.1); }
+}
+
+.button:hover, .button:active {
+  background-color: #66b9a7;
+}
+
+/* Style inputs with type="text", type="email"and textareas */
+input[type=text], input[type=email], textarea {
+  width: 100%; /* Full width */
+  padding: 12px; /* Some padding */ 
+  border-radius: 4px; /* Rounded borders */
+  box-sizing: border-box; /* Make sure that padding and width stays in place */
+  margin-bottom: 16px; /* Bottom margin */
+  resize: vertical; /* Allow the user to vertically resize the textarea (not horizontally) */
+  color:white;
+  border-color: white;
+  background-color: #66b9a7; /* Set background color to white */
+}
+
+input[type=text]::placeholder,
+input[type=email]::placeholder,
+textarea::placeholder {
+  color: white; /* Set font color to white */
+}
+
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
+.reportview-container .main .block-container{
+        max-width: {percentage_width_main}%;
+        padding-top: {1}rem;
+        padding-right: {1}rem;
+        padding-left: {1}rem;
+        padding-bottom: {1}rem;
+    }
+
+.uploadedFile {display: none}
+.footer {visibility: hidden;}
+
+* {
+  font-family: "Arial", sans-serif;
+}
+
+body {
+  text-align: justify;
+  width: 100%;
+}
+
+h1, h2 {
+  color: #333;
+  text-align: center;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+h2 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+p, ul, li{
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+.download-button {
+  background-color: #66b9a7; /* Red background */
+  color: #fff; /* White text */
+  border: none; /* No border */
+  padding: 12px 24px; /* Padding around text */
+  font-size: 16px; /* Text size */
+  font-weight: bold; /* Bold text */
+  border-radius: 4px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Shadow effect */
+  transition: all 0.3s ease; /* Smooth transition on hover */
+}
+
+.download-button:hover {
+  background-color: #66b9a7; /* Darker red background on hover */
+  cursor: pointer; /* Change cursor to hand on hover */
+}
+
+[data-testid="metric-container"] {
+  width: fit-content;
+  margin: auto;
+  overflow: visible;
+}
+
+[data-testid="metric-container"] > div {
+  width: fit-content;
+  margin: auto;
+  overflow: visible;
+}
+
+[data-testid="metric-container"] label {
+  width: fit-content;
+  margin: 5px auto;
+  overflow: visible;
+}
+
+div[data-testid="metric-container"] {
+  color: black;
+  overflow-wrap: break-word;
+  overflow: visible;
+}
+
+div[data-testid="metric-container"] > label[data-testid="stMetricLabel"] > div {
+  overflow-wrap: break-word;
+  white-space: break-spaces;
+  color: black;
+  overflow: visible;
+}
