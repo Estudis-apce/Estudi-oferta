@@ -76,8 +76,6 @@ def carregant_dades():
         list_of_df = [pd.DataFrame.from_dict(item) for item in json.loads(outfile.read())]
     shapefile_prov = gpd.read_file(path + "Provincias.geojson")
     shapefile_prov = shapefile_prov[shapefile_prov["NAME_1"]=="Cataluña"]
-    shapefile_mun = gpd.read_file(path + "shapefile_mun.geojson")
-    shapefile_mun["municipi"] = shapefile_mun["municipi"].astype(float)
     bbdd_estudi_prom = list_of_df[0].copy()
     bbdd_estudi_hab = list_of_df[1].copy()
     bbdd_estudi_prom_2023 = list_of_df[2].copy()
@@ -99,13 +97,13 @@ def carregant_dades():
     table125_23 = list_of_df[18].copy()
     return([bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, mun_2018_2019, mun_2020_2021,
             mun_2022, mun_2023, maestro_estudi, dis_2018_2019, dis_2020_2021, dis_2022, dis_2023, table117_22,
-            table121_22, table125_22, table117_23, table121_23, table125_23, shapefile_prov, shapefile_mun])
+            table121_22, table125_22, table117_23, table121_23, table125_23, shapefile_prov])
 
 
 bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, \
 mun_2018_2019, mun_2020_2021, mun_2022, mun_2023, maestro_estudi, dis_2018_2019, \
 dis_2020_2021, dis_2022, dis_2023, table117_22, table121_22, table125_22, table117_23, \
-table121_23, table125_23, shapefile_prov, shapefile_mun = carregant_dades()
+table121_23, table125_23, shapefile_prov = carregant_dades()
 
 ############################################################  IMPORTAMOS BBDD 2022 ################################################
 @st.cache_resource
@@ -768,37 +766,6 @@ def map_prov_prom(df_prom, shapefile_prov):
     fig.patch.set_alpha(0)
     return(fig)
 # @st.cache_resource
-def map_mun_hab_oferta(df_prom, shapefile_mun):
-    prommun_map = df_prom[["CODIMUN", "Municipi","HABIP"]].groupby(["CODIMUN", "Municipi"]).sum().reset_index()
-    prommun_map.columns = ["municipi", "Municipi_n", "Habitatges en oferta"]
-    prommun_map["municipi"] = prommun_map["municipi"].astype(float)
-    tmp = pd.merge(shapefile_mun, prommun_map, how="left", on="municipi")
-    fig, ax = plt.subplots(1,1, figsize=(20,20))
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
-    cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#AAC4BA","#008B6C"]) 
-
-    tmp.plot(column='Habitatges en oferta', ax=ax,cax=cax, cmap=cmap, legend=True)
-    tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
-    ax.axis('off')
-    fig.patch.set_alpha(0)
-    return(fig)
-def map_mun_hab_oferta_23(shapefile_mun):
-    prommun_map = bbdd_estudi_prom_2023[["CODIMUN", "Municipi","HABIP"]].groupby(["CODIMUN", "Municipi"]).sum().reset_index()
-    prommun_map.columns = ["municipi", "Municipi_n", "Habitatges en oferta"]
-    prommun_map["municipi"] = prommun_map["municipi"].astype(int)
-    shapefile_mun["municipi"] = shapefile_mun["codiine"].astype(int)
-    tmp = pd.merge(shapefile_mun, prommun_map, how="left", on="municipi")
-    fig, ax = plt.subplots(1,1, figsize=(20,20))
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
-    cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#AAC4BA","#008B6C"]) 
-
-    tmp.plot(column='Habitatges en oferta', ax=ax,cax=cax, cmap=cmap, legend=True)
-    tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
-    ax.axis('off')
-    fig.patch.set_alpha(0)
-    return(fig)
 @st.cache_resource
 def plot_caracteristiques(df_hab):
     table61_tipo = bbdd_estudi_hab.groupby(['Total dormitoris', 'Banys i lavabos']).size().div(len(bbdd_estudi_hab_mod)).reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
@@ -1345,8 +1312,26 @@ if selected == "Catalunya":
                 st.pyplot(map_prov_prom(bbdd_estudi_prom, shapefile_prov))
             with right_col:
                 st.markdown("**Nombre d'habitatges en oferta per municipis a Catalunya**")
-                st.pyplot(map_mun_hab_oferta(bbdd_estudi_prom, shapefile_mun))
+                @st.cache_resource
+                def map_mun_hab_oferta():
+                    prommun_map = bbdd_estudi_prom[["CODIMUN", "Municipi","HABIP"]].groupby(["CODIMUN", "Municipi"]).sum().reset_index()
+                    prommun_map.columns = ["municipi", "Municipi_n", "Habitatges en oferta"]
+                    prommun_map["municipi"] = prommun_map["municipi"].astype(float)
 
+                    shapefile_mun = gpd.read_file(path + "shapefile_mun.geojson")
+                    shapefile_mun["municipi"] = shapefile_mun["municipi"].astype(float)
+                    tmp = pd.merge(shapefile_mun, prommun_map, how="left", on="municipi")
+                    fig, ax = plt.subplots(1,1, figsize=(20,20))
+                    divider = make_axes_locatable(ax)
+                    cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
+                    cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#AAC4BA","#008B6C"]) 
+
+                    tmp.plot(column='Habitatges en oferta', ax=ax,cax=cax, cmap=cmap, legend=True)
+                    tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
+                    ax.axis('off')
+                    fig.patch.set_alpha(0)
+                    return(fig)
+                st.pyplot(map_mun_hab_oferta())
         if selected_index=="Característiques":
             left_col, right_col = st.columns((1, 1))
             with left_col:
@@ -1529,7 +1514,27 @@ if selected == "Catalunya":
                 st.pyplot(map_prov_prom(bbdd_estudi_prom_2023, shapefile_prov))
             with right_col:
                 st.markdown("**Nombre d'habitatges en oferta per municipis a Catalunya**")
-                st.pyplot(map_mun_hab_oferta_23(shapefile_mun))
+                @st.cache_resource
+                def map_mun_hab_oferta():
+                    prommun_map = bbdd_estudi_prom_2023[["CODIMUN", "Municipi","HABIP"]].groupby(["CODIMUN", "Municipi"]).sum().reset_index()
+                    prommun_map.columns = ["municipi", "Municipi_n", "Habitatges en oferta"]
+                    prommun_map["municipi"] = prommun_map["municipi"].astype(int)
+
+                    shapefile_mun = gpd.read_file(path + "shapefile_mun.geojson")
+                    shapefile_mun["municipi"] = shapefile_mun["codiine"].astype(int)
+
+                    tmp = pd.merge(shapefile_mun, prommun_map, how="left", on="municipi")
+                    fig, ax = plt.subplots(1,1, figsize=(20,20))
+                    divider = make_axes_locatable(ax)
+                    cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
+                    cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#AAC4BA","#008B6C"]) 
+
+                    tmp.plot(column='Habitatges en oferta', ax=ax,cax=cax, cmap=cmap, legend=True)
+                    tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
+                    ax.axis('off')
+                    fig.patch.set_alpha(0)
+                    return(fig)
+                st.pyplot(map_mun_hab_oferta())
         if selected_index=="Característiques":
             left_col, right_col = st.columns((1, 1))
             with left_col:
