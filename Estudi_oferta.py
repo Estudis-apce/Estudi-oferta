@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -12,22 +11,11 @@ import geopandas as gpd
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import plotly.graph_objects as go
 import matplotlib.colors as colors
-import streamlit_authenticator as stauth
-import yaml
-from yaml.loader import SafeLoader
 import locale
 import json
 
-
-
-# user="/home/ruben/" 
-# user = "C:/Users/joana.APCE/"
-# path = user + "Dropbox/Estudi d'oferta/2022/repos/APP-Estudi_oferta/"
-
-path = ""
-
-
 ############################################################  TITULO DE PESTAÑA DE PÁGINA WEB ################################################
+path = ""
 st.set_page_config(
     page_title="Estudi d'oferta de nova construcció",
     page_icon="""data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAA1VBMVEVHcEylpKR6eHaBgH9GREGenJxRT06op6evra2Qj49kYWCbmpqdnJyWlJS+vb1CPzyurKyHhYWMiYl7eXgOCgiPjY10cnJZV1WEgoKCgYB9fXt
@@ -42,17 +30,6 @@ def load_css_file(css_file_path):
     with open(css_file_path) as f:
         return st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 load_css_file(path + "main.css")
-
-def filedownload(df, filename):
-    towrite = io.BytesIO()
-    df.to_excel(towrite, encoding='latin-1', index=True, header=True)
-    towrite.seek(0)
-    b64 = base64.b64encode(towrite.read()).decode("latin-1")
-    href = f"""<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download="{filename}">
-    <button class="download-button">Descarregar</button></a>"""
-    return href
-
-
 # left_col, right_col, margin_right = st.columns((0.7, 1, 0.25))
 # with right_col:
 #     with open(path + "APCE_mod.png", "rb") as f:
@@ -67,7 +44,7 @@ def filedownload(df, filename):
 
 ############################################################  CONFIGURAR MENU DE OPCIONES ################################################
 # Creating a dropdown menu with options and icons, and customizing the appearance of the menu using CSS styles.
-left_col, right_col, margin_right = st.columns((0.175, 1, 0.175))
+left_col, right_col, margin_right = st.columns((0.13, 1, 0.13))
 with right_col:
     selected = option_menu(
         menu_title=None,  # required
@@ -131,7 +108,6 @@ dis_2020_2021, dis_2022, dis_2023, table117_22, table121_22, table125_22, table1
 table121_23, table125_23, shapefile_prov, shapefile_mun = carregant_dades()
 
 ############################################################  IMPORTAMOS BBDD 2022 ################################################
-#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
 @st.cache_resource
 def tidy_bbdd(df_prom, df_hab, any):
     # Importar BBDD promocions d'habitatge
@@ -371,10 +347,7 @@ def tidy_bbdd(df_prom, df_hab, any):
 
 
 bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_hab_mod = tidy_bbdd(bbdd_estudi_prom, bbdd_estudi_hab, 2022)
-
-
 ############################################################  IMPORTAMOS BBDD FINAL 2023 ################################################
-#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
 @st.cache_resource
 def tidy_bbdd_semestral(df_prom, df_hab, any):
     # bbdd_estudi_prom = pd.read_excel(path + 'P3007 BBDD desembre APCE.xlsx', sheet_name='Promocions 2023')
@@ -611,11 +584,7 @@ def tidy_bbdd_semestral(df_prom, df_hab, any):
     return([bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_hab_mod])
 
 bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, bbdd_estudi_hab_mod_2023 = tidy_bbdd_semestral(bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, 2023)
-
-
 ############################################################  IMPORTAR HISTÓRICO DE MUNICIPIOS 2016 - 2022 ################################################
-
-#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
 @st.cache_resource
 def import_hist_mun(df_1819, df_2021, df_22, df_23, maestro_df):
     # mun_2018_2019 = pd.read_excel(path + "Resum 2018 - 2019.xlsx", sheet_name="Municipis 2018-2019")
@@ -646,8 +615,6 @@ def import_hist_mun(df_1819, df_2021, df_22, df_23, maestro_df):
 mun_2019, mun_2020, mun_2021, mun_2022, mun_2023, maestro_estudi = import_hist_mun(mun_2018_2019, mun_2020_2021, mun_2022, mun_2023, maestro_estudi)
 
 ############################################################  IMPORTAR HISTÓRICO DE DISTRITOS DE BCN 2016 - 2023 ################################################
-
-#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
 @st.cache_resource
 def import_hist_dis(df_1819, df_2021, df_22, df_23):
     # dis_2018_2019 = pd.read_excel(path + "Resum 2018 - 2019.xlsx", sheet_name="BCN+districtes+barris")
@@ -673,10 +640,7 @@ def import_hist_dis(df_1819, df_2021, df_22, df_23):
 
     return([dis_2019, dis_2020, dis_2021, dis_2022, dis_2023])
 dis_2019, dis_2020, dis_2021, dis_2022, dis_2023 = import_hist_dis(dis_2018_2019, dis_2020_2021, dis_2022, dis_2023)
-
 ############################################################  IMPORTAR HISTÓRICO DE DISTRITOS DE BCN 2016 - 2023 ################################################
-
-#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
 @st.cache_resource
 def tidy_data(mun_year, year):
     df =mun_year.T
@@ -696,8 +660,6 @@ def weighted_mean(data):
     sum_peso = data['Unitats'].sum()
     # data["Valor"] = weighted_sum / sum_peso
     return weighted_sum / sum_peso
-
-#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
 @st.cache_resource
 def geo_mun():
     df_vf_aux = pd.DataFrame()
@@ -755,7 +717,6 @@ def geo_mun():
 
 df_vf_aux, df_vf, df_final_cat, df_final, ambits_df, comarques_df, provincia_df = geo_mun()
 
-#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
 @st.cache_resource
 def geo_dis_long():
     df_vf_aux = pd.DataFrame()
@@ -775,6 +736,14 @@ def geo_dis_long():
     return(df_vf_aux)
 df_dis_long = geo_dis_long()
 
+def filedownload(df, filename):
+    towrite = io.BytesIO()
+    df.to_excel(towrite, encoding='latin-1', index=True, header=True)
+    towrite.seek(0)
+    b64 = base64.b64encode(towrite.read()).decode("latin-1")
+    href = f"""<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download="{filename}">
+    <button class="download-button">Descarregar</button></a>"""
+    return href
 
 ############################################################ CATALUNYA FUNCIONS #########################################################
 # @st.cache_resource
@@ -1111,6 +1080,7 @@ def metric_rehab(df_hab, prov):
     table38hab_prov.columns = ["Tipus", "Habitatges en oferta"]
     return([table38hab_prov.iloc[0,1], table38hab_prov.iloc[1,1]])
 ############################################################# MUNICIPIS FUNCIONS #############################################
+@st.cache_resource
 def data_text_mun(df_hab, df_hab_mod, selected_mun):
     table80_mun = df_hab_mod[df_hab_mod["Municipi"]==selected_mun][["Municipi", "TIPOG", "Superfície útil", "Preu mitjà", "Preu m2 útil"]].groupby(["Municipi"]).agg({"Municipi":['count'], "Superfície útil": [np.mean], "Preu mitjà": [np.mean], "Preu m2 útil": [np.mean]}).reset_index()
     table25_mun = df_hab[df_hab["Municipi"]==selected_mun][["Municipi", "TIPOG"]].value_counts(normalize=True).reset_index().rename(columns={0:"Proporció"})
@@ -1125,6 +1095,7 @@ def data_text_mun(df_hab, df_hab_mod, selected_mun):
     return([round(table80_mun["Preu mitjà"].values[0][0],2), round(table80_mun["Superfície útil"].values[0][0],2), 
             round(table80_mun["Preu m2 útil"].values[0][0],2), proporcio_tipo, 
             table61_hab["Total dormitoris"].values[0], table61_lav["Banys i lavabos"].values[0]])
+@st.cache_resource
 def plotmun_streamlit(data, selected_mun, kpi):
     df = data[(data['Municipi']==selected_mun)]
     fig = px.histogram(df, x=kpi, title= "", labels={'x':kpi, 'y':'Freqüència'})
@@ -1137,6 +1108,7 @@ def plotmun_streamlit(data, selected_mun, kpi):
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
     return(fig)
+@st.cache_resource
 def count_plot_mun(data, selected_mun):
     df = data[data['Municipi']==selected_mun]
     df = df["TIPOG"].value_counts().sort_values(ascending=True)
@@ -1148,6 +1120,7 @@ def count_plot_mun(data, selected_mun):
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
     return fig
+@st.cache_resource
 def dormscount_plot_mun(data, selected_mun):
     df = data[data['Municipi']==selected_mun]
     custom_order = ["0D", "1D", "2D", "3D", "4D", "5+D"]
@@ -1159,7 +1132,7 @@ def dormscount_plot_mun(data, selected_mun):
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
     return fig
-
+@st.cache_resource
 def lavcount_plot_mun(data, selected_mun):
     df = data[data['Municipi']==selected_mun]
 
