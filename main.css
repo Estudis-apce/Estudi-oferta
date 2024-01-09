@@ -3,6 +3,13 @@
   max-width: 17vw;
 }
 
+[data-testid= "stAppViewContainer"]{
+  background-color: #cce8e2;
+}
+[data-testid=stSidebar] {
+  background-color: #66b9a7;
+}
+
 .button, .button:link, .button:visited {
   font-size: 20px;
   background-color: #66b9a7;

@@ -16,7 +16,7 @@ import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
 import locale
-
+import json
 
 
 
@@ -53,47 +53,90 @@ def filedownload(df, filename):
     return href
 
 
-left_col, right_col, margin_right = st.columns((0.7, 1, 0.25))
-with right_col:
-    with open(path + "APCE_mod.png", "rb") as f:
-        data_uri = base64.b64encode(f.read()).decode("utf-8")
-    markdown = f"""
-    <div class="image">
-    <img src="data:image/png;base64, {data_uri}" alt="image" />
-    </div>
-    """
-    st.markdown(markdown, unsafe_allow_html=True)
+# left_col, right_col, margin_right = st.columns((0.7, 1, 0.25))
+# with right_col:
+#     with open(path + "APCE_mod.png", "rb") as f:
+#         data_uri = base64.b64encode(f.read()).decode("utf-8")
+#     markdown = f"""
+#     <div class="image">
+#     <img src="data:image/png;base64, {data_uri}" alt="image" />
+#     </div>
+#     """
+#     st.markdown(markdown, unsafe_allow_html=True)
 
 
 ############################################################  CONFIGURAR MENU DE OPCIONES ################################################
 # Creating a dropdown menu with options and icons, and customizing the appearance of the menu using CSS styles.
-selected = option_menu(
-    menu_title=None,  # required
-    options=["Catalunya","Províncies i àmbits","Municipis", "Districtes de Barcelona","Contacte"],  # Dropdown menu
-    icons=[None,"map","house-fill","house-fill", "envelope"],  # Icons for dropdown menu
-    menu_icon="cast",  # optional
-    default_index=0,  # optional
-    orientation="horizontal",
-    styles={
-        "container": {"padding": "0!important", "background-color": "#cce8e2"},
-        "icon": {"color": "#005c48", "font-size": "17px"},
-        "nav-link": {
-            "font-size": "17px",
-            "text-align": "center",
-            "font-weight": "bold",
-            "color":"#005442",
-            "margin": "20px",
-            "--hover-color": "#DAE4E0",
-            "background-color": "#cce8e2"
-            },
-        "nav-link-selected": {"background-color": "#66b9a7"},
-        })
+left_col, right_col, margin_right = st.columns((0.175, 1, 0.175))
+with right_col:
+    selected = option_menu(
+        menu_title=None,  # required
+        options=["Catalunya","Províncies i àmbits","Municipis", "Districtes de Barcelona"],  # Dropdown menu
+        icons=[None,"map","house-fill","house-fill", "envelope"],  # Icons for dropdown menu
+        menu_icon="cast",  # optional
+        default_index=0,  # optional
+        orientation="horizontal",
+        styles={
+            "container": {"padding": "10px!important", "background-color": "#cce8e2", "margin-right":"10px"},
+            "icon": {"color": "#005c48", "font-size": "17px"},
+            "nav-link": {
+                "font-size": "17px",
+                "text-align": "center",
+                "font-weight": "bold",
+                "color":"#005442",
+                "margin": "20px",
+                "--hover-color": "#DAE4E0",
+                "background-color": "#cce8e2",
+                "overflow":"hidden"
+                },
+            "nav-link-selected": {"background-color": "#66b9a7"},
+            })
+
+############################################################ IMPORTAMOS JSON ##############################################
+@st.cache_resource
+def carregant_dades():
+    with open(path + 'DT_oferta.json', 'r') as outfile:
+        list_of_df = [pd.DataFrame.from_dict(item) for item in json.loads(outfile.read())]
+    shapefile_prov = gpd.read_file(path + "Provincias.geojson")
+    shapefile_prov = shapefile_prov[shapefile_prov["NAME_1"]=="Cataluña"]
+    shapefile_mun = gpd.read_file(path + "shapefile_mun.geojson")
+    shapefile_mun["municipi"] = shapefile_mun["municipi"].astype(float)
+    bbdd_estudi_prom = list_of_df[0].copy()
+    bbdd_estudi_hab = list_of_df[1].copy()
+    bbdd_estudi_prom_2023 = list_of_df[2].copy()
+    bbdd_estudi_hab_2023 = list_of_df[3].copy()
+    mun_2018_2019 = list_of_df[4].copy()
+    mun_2020_2021 = list_of_df[5].copy()
+    mun_2022 = list_of_df[6].copy()
+    mun_2023 = list_of_df[7].copy()
+    maestro_estudi = list_of_df[8].copy()
+    dis_2018_2019 = list_of_df[9].copy()
+    dis_2020_2021 = list_of_df[10].copy()
+    dis_2022 = list_of_df[11].copy()
+    dis_2023 = list_of_df[12].copy()
+    table117_22 = list_of_df[13].copy()
+    table121_22 = list_of_df[14].copy()
+    table125_22 = list_of_df[15].copy()
+    table117_23 = list_of_df[16].copy()
+    table121_23 = list_of_df[17].copy()
+    table125_23 = list_of_df[18].copy()
+    return([bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, mun_2018_2019, mun_2020_2021,
+            mun_2022, mun_2023, maestro_estudi, dis_2018_2019, dis_2020_2021, dis_2022, dis_2023, table117_22,
+            table121_22, table125_22, table117_23, table121_23, table125_23, shapefile_prov, shapefile_mun])
+
+
+bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, \
+mun_2018_2019, mun_2020_2021, mun_2022, mun_2023, maestro_estudi, dis_2018_2019, \
+dis_2020_2021, dis_2022, dis_2023, table117_22, table121_22, table125_22, table117_23, \
+table121_23, table125_23, shapefile_prov, shapefile_mun = carregant_dades()
 
 ############################################################  IMPORTAMOS BBDD 2022 ################################################
-@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
-def tidy_bbdd(any):
+#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
+@st.cache_resource
+def tidy_bbdd(df_prom, df_hab, any):
     # Importar BBDD promocions d'habitatge
-    bbdd_estudi_prom = pd.read_excel(path + 'BBDD 2022_2021 03.02.23.xlsx', sheet_name='Promocions 2022_2021')
+    # bbdd_estudi_prom = pd.read_excel(path + 'BBDD 2022_2021 03.02.23.xlsx', sheet_name='Promocions 2022_2021')
+    bbdd_estudi_prom= df_prom.copy()
     bbdd_estudi_prom.columns = bbdd_estudi_prom.iloc[0,:]
     bbdd_estudi_prom = bbdd_estudi_prom[bbdd_estudi_prom["ESTUDI"]==any]
     bbdd_estudi_prom['TIPO_aux'] = np.where(bbdd_estudi_prom['TIPO'].isin([1,2]), 'Habitatges unifamiliars', 'Habitatges plurifamiliars')
@@ -155,7 +198,8 @@ def tidy_bbdd(any):
 
 
     # Importar BBDD habitatges
-    bbdd_estudi_hab = pd.read_excel(path + 'BBDD 2022_2021 03.02.23.xlsx', sheet_name='Habitatges 2022_2021')
+    # bbdd_estudi_hab = pd.read_excel(path + 'BBDD 2022_2021 03.02.23.xlsx', sheet_name='Habitatges 2022_2021')
+    bbdd_estudi_hab = df_hab.copy()
     bbdd_estudi_hab.columns = bbdd_estudi_hab.iloc[0,:]
     bbdd_estudi_hab = bbdd_estudi_hab[bbdd_estudi_hab["ESTUDI"]==any]
 
@@ -326,13 +370,15 @@ def tidy_bbdd(any):
     return([bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_hab_mod])
 
 
-bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_hab_mod = tidy_bbdd(2022)
+bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_hab_mod = tidy_bbdd(bbdd_estudi_prom, bbdd_estudi_hab, 2022)
 
 
 ############################################################  IMPORTAMOS BBDD FINAL 2023 ################################################
-@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
-def tidy_bbdd_semestral(any):
-    bbdd_estudi_prom = pd.read_excel(path + 'P3007 BBDD desembre APCE.xlsx', sheet_name='Promocions 2023')
+#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
+@st.cache_resource
+def tidy_bbdd_semestral(df_prom, df_hab, any):
+    # bbdd_estudi_prom = pd.read_excel(path + 'P3007 BBDD desembre APCE.xlsx', sheet_name='Promocions 2023')
+    bbdd_estudi_prom = df_prom.copy()
     bbdd_estudi_prom.columns = bbdd_estudi_prom.iloc[0,:]
     bbdd_estudi_prom = bbdd_estudi_prom[bbdd_estudi_prom["ESTUDI"]==any]
     bbdd_estudi_prom['TIPO_aux'] = np.where(bbdd_estudi_prom['TIPO'].isin([1,2]), 'Habitatges unifamiliars', 'Habitatges plurifamiliars')
@@ -393,7 +439,8 @@ def tidy_bbdd_semestral(any):
 
 
     # Importar BBDD habitatges
-    bbdd_estudi_hab = pd.read_excel(path + 'P3007 BBDD desembre APCE.xlsx', sheet_name='Habitatges 2023')
+    # bbdd_estudi_hab = pd.read_excel(path + 'P3007 BBDD desembre APCE.xlsx', sheet_name='Habitatges 2023')
+    bbdd_estudi_hab = df_hab.copy()
     bbdd_estudi_hab.columns = bbdd_estudi_hab.iloc[0,:]
     bbdd_estudi_hab = bbdd_estudi_hab[bbdd_estudi_hab["ESTUDI"]==any]
 
@@ -563,62 +610,74 @@ def tidy_bbdd_semestral(any):
 
     return([bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_hab_mod])
 
-bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, bbdd_estudi_hab_mod_2023 = tidy_bbdd_semestral(2023)
+bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, bbdd_estudi_hab_mod_2023 = tidy_bbdd_semestral(bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, 2023)
 
 
 ############################################################  IMPORTAR HISTÓRICO DE MUNICIPIOS 2016 - 2022 ################################################
 
-@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
-def import_hist_mun():
-    mun_2018_2019 = pd.read_excel(path + "Resum 2018 - 2019.xlsx", sheet_name="Municipis 2018-2019")
+#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
+@st.cache_resource
+def import_hist_mun(df_1819, df_2021, df_22, df_23, maestro_df):
+    # mun_2018_2019 = pd.read_excel(path + "Resum 2018 - 2019.xlsx", sheet_name="Municipis 2018-2019")
+    mun_2018_2019 = df_1819.copy()
     mun_2019 = mun_2018_2019.iloc[:,14:27]
 
-    mun_2020_2021 = pd.read_excel(path + "Resum 2020 - 2021.xlsx", sheet_name="Municipis")
+    # mun_2020_2021 = pd.read_excel(path + "Resum 2020 - 2021.xlsx", sheet_name="Municipis")
+    mun_2020_2021 = df_2021.copy()
     mun_2020 = mun_2020_2021.iloc[:,:13]
     mun_2020 = mun_2020.dropna(how ='all',axis=0)
     mun_2021 = mun_2020_2021.iloc[:,14:27]
     mun_2021 = mun_2021.dropna(how ='all',axis=0)
 
-    mun_2022 = pd.read_excel(path + "Resum 2022.xlsx", sheet_name="Municipis")
+    # mun_2022 = pd.read_excel(path + "Resum 2022.xlsx", sheet_name="Municipis")
+    mun_2022 = df_22.copy()
     mun_2022 = mun_2022.iloc[:,14:27]
     mun_2022 = mun_2022.dropna(how ='all',axis=0)
 
-    mun_2023 = pd.read_excel(path + "Resum 2023.xlsx", sheet_name="Municipis")
+    # mun_2023 = pd.read_excel(path + "Resum 2023.xlsx", sheet_name="Municipis")
+    mun_2023 = df_23.copy()
     mun_2023 = mun_2023.iloc[:,14:27]
     mun_2023 = mun_2023.dropna(how ='all',axis=0)
 
-    maestro_estudi = pd.read_excel(path + "Maestro estudi_oferta.xlsx", sheet_name="Maestro")
+    # maestro_estudi = pd.read_excel(path + "Maestro estudi_oferta.xlsx", sheet_name="Maestro")
+    maestro_estudi = maestro_df.copy()
 
     return([mun_2019, mun_2020, mun_2021, mun_2022, mun_2023, maestro_estudi])
-mun_2019, mun_2020, mun_2021, mun_2022, mun_2023, maestro_estudi = import_hist_mun()
+mun_2019, mun_2020, mun_2021, mun_2022, mun_2023, maestro_estudi = import_hist_mun(mun_2018_2019, mun_2020_2021, mun_2022, mun_2023, maestro_estudi)
 
 ############################################################  IMPORTAR HISTÓRICO DE DISTRITOS DE BCN 2016 - 2023 ################################################
 
-@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
-def import_hist_dis():
-    dis_2018_2019 = pd.read_excel(path + "Resum 2018 - 2019.xlsx", sheet_name="BCN+districtes+barris")
+#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
+@st.cache_resource
+def import_hist_dis(df_1819, df_2021, df_22, df_23):
+    # dis_2018_2019 = pd.read_excel(path + "Resum 2018 - 2019.xlsx", sheet_name="BCN+districtes+barris")
+    dis_2018_2019 = df_1819.copy()   
     dis_2019 = dis_2018_2019.iloc[:,14:27]
 
-    dis_2020_2021 = pd.read_excel(path + "Resum 2020 - 2021.xlsx", sheet_name="BCN+districtes+barris")
+    # dis_2020_2021 = pd.read_excel(path + "Resum 2020 - 2021.xlsx", sheet_name="BCN+districtes+barris")
+    dis_2020_2021 = df_2021.copy() 
     dis_2020 = dis_2020_2021.iloc[:,:13]
     dis_2020 = dis_2020.dropna(how ='all',axis=0)
     dis_2021 = dis_2020_2021.iloc[:,14:27]
     dis_2021 = dis_2021.dropna(how ='all',axis=0)
 
-    dis_2022 = pd.read_excel(path + "Resum 2022.xlsx", sheet_name="BCN+districtes+barris")
+    # dis_2022 = pd.read_excel(path + "Resum 2022.xlsx", sheet_name="BCN+districtes+barris")
+    dis_2022 = df_22.copy()
     dis_2022 = dis_2022.iloc[:,14:27]
     dis_2022 = dis_2022.dropna(how ='all',axis=0)
 
-    dis_2023 = pd.read_excel(path + "Resum 2023.xlsx", sheet_name="BCN districte+barris")
+    # dis_2023 = pd.read_excel(path + "Resum 2023.xlsx", sheet_name="BCN districte+barris")
+    dis_2023 = df_23.copy()
     dis_2023 = dis_2023.iloc[:,14:27]
     dis_2023 = dis_2023.dropna(how ='all',axis=0)
 
     return([dis_2019, dis_2020, dis_2021, dis_2022, dis_2023])
-dis_2019, dis_2020, dis_2021, dis_2022, dis_2023 = import_hist_dis()
+dis_2019, dis_2020, dis_2021, dis_2022, dis_2023 = import_hist_dis(dis_2018_2019, dis_2020_2021, dis_2022, dis_2023)
 
 ############################################################  IMPORTAR HISTÓRICO DE DISTRITOS DE BCN 2016 - 2023 ################################################
 
-@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
+#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
+@st.cache_resource
 def tidy_data(mun_year, year):
     df =mun_year.T
     df.columns = df.iloc[0,:]
@@ -638,7 +697,8 @@ def weighted_mean(data):
     # data["Valor"] = weighted_sum / sum_peso
     return weighted_sum / sum_peso
 
-@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
+#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
+@st.cache_resource
 def geo_mun():
     df_vf_aux = pd.DataFrame()
 
@@ -695,7 +755,8 @@ def geo_mun():
 
 df_vf_aux, df_vf, df_final_cat, df_final, ambits_df, comarques_df, provincia_df = geo_mun()
 
-@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
+#@st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
+@st.cache_resource
 def geo_dis_long():
     df_vf_aux = pd.DataFrame()
     for df_frame, year in zip(["dis_2019", "dis_2020", "dis_2021", "dis_2022", "dis_2023"], [2019, 2020, 2021, 2022, 2023]):
@@ -715,16 +776,557 @@ def geo_dis_long():
 df_dis_long = geo_dis_long()
 
 
+############################################################ CATALUNYA FUNCIONS #########################################################
+# @st.cache_resource
+def map_prov_prom(df_prom, shapefile_prov):
+    provprom_map = df_prom[["PROVINCIA"]].value_counts().reset_index()
+    provprom_map.columns = ["NAME_2", "PROMOCIONS"]
+    fig, ax = plt.subplots(1,1, figsize=(10,10))
+    divider = make_axes_locatable(ax)
+    tmp = shapefile_prov.copy()
+    tmp = pd.merge(tmp, provprom_map, how="left", on="NAME_2")
+    # cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
+    cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#DAE4E0","#008B6C"]) 
+    tmp.plot(column='PROMOCIONS', ax=ax, cmap=cmap, legend=False)
+    tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
+    for i, row in tmp.iterrows():
+        x, y = row['geometry'].centroid.coords[0]
+        ax.annotate(f"""{row['NAME_2']}\n{row["PROMOCIONS"]}""", xy=(x, y), xytext=(3,3), textcoords="offset points", fontsize=10, color="black")
+                        # bbox=dict(facecolor='white', alpha=0.5)
+                        # arrowprops=dict(facecolor='black', arrowstyle="->")
+                        
+    ax.axis('off')
+    fig.patch.set_alpha(0)
+    return(fig)
+# @st.cache_resource
+def map_mun_hab_oferta(df_prom, shapefile_mun):
+    prommun_map = df_prom[["CODIMUN", "Municipi","HABIP"]].groupby(["CODIMUN", "Municipi"]).sum().reset_index()
+    prommun_map.columns = ["municipi", "Municipi_n", "Habitatges en oferta"]
+    prommun_map["municipi"] = prommun_map["municipi"].astype(float)
+    tmp = pd.merge(shapefile_mun, prommun_map, how="left", on="municipi")
+    fig, ax = plt.subplots(1,1, figsize=(20,20))
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
+    cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#AAC4BA","#008B6C"]) 
 
+    tmp.plot(column='Habitatges en oferta', ax=ax,cax=cax, cmap=cmap, legend=True)
+    tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
+    ax.axis('off')
+    fig.patch.set_alpha(0)
+    return(fig)
+@st.cache_resource
+def plot_caracteristiques(df_hab):
+    table61_tipo = bbdd_estudi_hab.groupby(['Total dormitoris', 'Banys i lavabos']).size().div(len(bbdd_estudi_hab_mod)).reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
+    table61_tipo["Proporcions"] = table61_tipo["Proporcions"]*100
+    table61_tipo["Tipologia"] = np.where(table61_tipo["Banys i lavabos"]==1, table61_tipo["Total dormitoris"].astype(str) + " dormitoris i " + table61_tipo["Banys i lavabos"].astype(str) + " bany", table61_tipo["Total dormitoris"].astype(str) + " dormitoris i " + table61_tipo["Banys i lavabos"].astype(str) + " banys")
+    fig = px.bar(table61_tipo.head(4), x="Proporcions", y="Tipologia", orientation='h', title="", 
+    labels={'x':"Proporcions sobre el total d'habitatges", 'y':"Tipologia"})
+    fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges"
+    fig.layout.yaxis.title.text = "Tipologia"
+    fig.layout.title.text = "Principals tipologies dels habitatges en oferta"
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    fig.update_traces(marker=dict(color="#66b9a7"))
+    return(fig)
+@st.cache_resource
+def plot_qualitats(df_hab):
+    table62_hab = df_hab[["Aire condicionat","Bomba de calor","Aerotèrmia","Calefacció","Preinstal·lació d'A.C./B. Calor/Calefacció",'Parquet','Armaris encastats','Placa de cocció amb gas','Placa de cocció vitroceràmica',"Placa d'inducció",'Plaques solars']].rename(columns={"Aerotèrmia":"Aerotèrmia"}).sum(axis=0)
+    table62_hab = pd.DataFrame({"Qualitats":table62_hab.index, "Total":table62_hab.values})
+    table62_hab = table62_hab.set_index("Qualitats").apply(lambda row: (row / bbdd_estudi_hab.shape[0])*100).reset_index().sort_values("Total", ascending=True)
+    fig = px.bar(table62_hab, x="Total", y="Qualitats", orientation='h', title="", labels={'x':"Proporcions sobre el total d'habitatges", 'y':"Qualitats"})
+    fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges"
+    fig.layout.yaxis.title.text = "Qualitats"
+    fig.update_traces(marker=dict(color="#66b9a7"))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return(fig)
+@st.cache_resource
+def plot_equipaments(df_hab):
+    table67_hab = df_hab[["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0)
+    table67_hab = pd.DataFrame({"Equipaments":table67_hab.index, "Total":table67_hab.values})
+    table67_hab = table67_hab.set_index("Equipaments").apply(lambda row: row.mul(100) / bbdd_estudi_hab.shape[0]).reset_index().sort_values("Total", ascending=True)
+    fig = px.bar(table67_hab, x="Total", y="Equipaments", orientation='h', title="", labels={'x':"Proporcions sobre el total d'habitatges", 'y':"Equipaments"})
+    fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges"
+    fig.layout.yaxis.title.text = "Equipaments"
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    fig.update_traces(marker=dict(color="#66b9a7"))
+    return(fig)
+@st.cache_resource
+def indicadors_preu_mitjanes(df_hab):
+    table76_tipo = df_hab[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).apply(np.mean).reset_index()
+    table76_total = df_hab[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).apply(np.mean).reset_index()
+    table76_total["TIPOG"] = "Total habitatges"
+    table76 = pd.concat([table76_tipo, table76_total], axis=0)
+    table76 = pd.merge(table76, df_hab[["TIPOG","Total dormitoris"]].groupby(["TIPOG","Total dormitoris"]).size().reset_index().rename(columns={0:"Total"}), how="left", on=["TIPOG","Total dormitoris"])
+    table76 = table76.rename(columns={"TIPOG":"Tipologia"})
+    fig = px.bar(table76, x="Preu mitjà", y="Total dormitoris", color="Tipologia", orientation='h', color_discrete_sequence=["#00D0A3","#AAC4BA","#008B6C"], barmode="group", title="", labels={'x':"Preu m\u00b2 útil (mitjana)", 'y':"Tipologia d'habitatge"})
+    fig.layout.xaxis = dict(title="Preu mitjà", tickformat=",d")
+    fig.layout.yaxis = dict(title="Tipologia d'habitatge")
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
+    return(fig)
+@st.cache_resource
+def indicadors_preum2_mitjanes(df_hab):
+    table76_tipo = df_hab[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).apply(np.mean).reset_index()
+    table76_total = df_hab[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).apply(np.mean).reset_index()
+    table76_total["TIPOG"] = "Total habitatges"
+    table76 = pd.concat([table76_tipo, table76_total], axis=0)
+    table76 = pd.merge(table76, df_hab[["TIPOG","Total dormitoris"]].groupby(["TIPOG","Total dormitoris"]).size().reset_index().rename(columns={0:"Total"}), how="left", on=["TIPOG","Total dormitoris"])
+    table76 = table76.rename(columns={"TIPOG":"Tipologia"})
+    fig = px.bar(table76, x="Preu m2 útil", y="Total dormitoris", color="Tipologia", orientation='h', color_discrete_sequence=["#00D0A3","#AAC4BA","#008B6C"], barmode="group", title="", labels={'x':"Preu m\u00b2 útil (mitjana)", 'y':"Tipologia d'habitatge"})
+    fig.layout.xaxis = dict(title="Preu per m\u00b2 útil", tickformat=",d")
+    fig.layout.yaxis.title.text = "Tipologia d'habitatge"
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
+    return(fig)
+@st.cache_resource
+def indicadors_super_mitjanes(df_hab):
+    table76_tipo = df_hab[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).apply(np.mean).reset_index()
+    table76_total = df_hab[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).apply(np.mean).reset_index()
+    table76_total["TIPOG"] = "Total habitatges"
+    table76 = pd.concat([table76_tipo, table76_total], axis=0)
+    table76 = pd.merge(table76, df_hab[["TIPOG","Total dormitoris"]].groupby(["TIPOG","Total dormitoris"]).size().reset_index().rename(columns={0:"Total"}), how="left", on=["TIPOG","Total dormitoris"])
+    table76 = table76.rename(columns={"TIPOG":"Tipologia"})
+    fig = px.bar(table76, x="Superfície útil", y="Total dormitoris", color="Tipologia", orientation='h', color_discrete_sequence=["#00D0A3","#AAC4BA","#008B6C"], barmode="group", title="", labels={'x':"Preu m\u00b2 útil (mitjana)", 'y':"Tipologia d'habitatge"})
+    fig.layout.xaxis.title.text = "Superfície útil"
+    fig.layout.yaxis.title.text = "Tipologia d'habitatge"
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
+    return(fig)
+@st.cache_resource
+def plot_var_CAT(df117, df121, df125):
+    # table117 = pd.read_excel(path + "Estudi_oferta_taules 2022.xlsx", sheet_name="table117", header=1).iloc[1:,]
+    table117 = df117.copy()
+    # table121 = pd.read_excel(path + "Estudi_oferta_taules 2022.xlsx", sheet_name="table121", header=1).iloc[1:,]
+    table121 = df121.copy()
+    # table125 = pd.read_excel(path + "Estudi_oferta_taules 2022.xlsx", sheet_name="table125", header=1).iloc[1:,]
+    table125 = df125.copy()
+    table117 = table117[(table117["Província"].isna()) & (table117["Municipi"].isna())][["Variació % Preu m2 útil","Variació % Preu mitjà", "Variació % Superfície útil"]]
+    table121 = table121[(table121["Província"].isna()) & (table121["Municipi"].isna())][["Variació % Preu m2 útil","Variació % Preu mitjà", "Variació % Superfície útil"]]
+    table125 = table125[(table125["Província"].isna()) & (table125["Municipi"].isna())][["Variació % Preu m2 útil","Variació % Preu mitjà", "Variació % Superfície útil"]]
+    table_var = pd.concat([table117, table121, table125], axis=0)
+    table_var["Tipologia"] = ["Total habitatges", "Habitatges unifamiliars", "Habitatges plurifamiliars"]
+    table_var_melted = pd.melt(table_var, id_vars="Tipologia", var_name = "Variable")
+
+    fig = px.bar(table_var_melted, x="Tipologia", y="value", color="Variable", color_discrete_sequence=["#008B6C","#00D0A3","#AAC4BA"], barmode="group", title="", labels={'x':"Preu m\u00b2 útil (mitjana)", 'y':"Tipologia d'habitatge"})
+    fig.layout.xaxis.title.text = "Tipologia"
+    fig.layout.yaxis.title.text = "Variació anual (%)"
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, x=0))
+    return(fig)
+@st.cache_resource
+def table_geo_cat(any_ini, any_fin):
+        df_cat = df_final_cat[(df_final_cat["Any"]>=any_ini) & (df_final_cat["Any"]<=any_fin)].drop_duplicates(["Any", "Tipologia", "Variable", "Valor"]).pivot(index=["Any"], columns=["Tipologia", "Variable"], values="Valor")
+        df_cat_n = df_cat.sort_index(axis=1, level=[0,1])
+        num_cols = df_cat_n.select_dtypes(include=['float64', 'int64']).columns
+        df_cat_n[num_cols] = df_cat_n[num_cols].round(0)
+        df_cat_n[num_cols] = df_cat_n[num_cols].astype(int)
+        num_cols = df_cat_n.select_dtypes(include=['float64', 'int']).columns
+        df_cat_n[num_cols] = df_cat_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
+        return(df_cat_n)
+####################################### PROVÍNCIES I AMBITS FUNCIONS #################################################
+@st.cache_resource
+def table_geo(geo, any_ini, any_fin, selected):
+    if selected=="Àmbits territorials":
+        df_prov_filtered = ambits_df[(ambits_df["GEO"]==geo) & (ambits_df["Any"]>=any_ini) & (ambits_df["Any"]<=any_fin)].pivot(index=["Any"], columns=["Tipologia", "Variable"], values="Valor")
+        df_prov_n = df_prov_filtered.sort_index(axis=1, level=[0,1])
+        num_cols = df_prov_n.select_dtypes(include=['float64', 'int64']).columns
+        df_prov_n[num_cols] = df_prov_n[num_cols].round(0)
+        df_prov_n[num_cols] = df_prov_n[num_cols].astype("float64")
+        num_cols = df_prov_n.select_dtypes(include=['float64', 'int']).columns
+        df_prov_n[num_cols] = df_prov_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
+        return(df_prov_n)
+    if selected=="Províncies" or selected=="Catalunya":
+        df_prov_filtered = provincia_df[(provincia_df["GEO"]==geo) & (provincia_df["Any"]>=any_ini) & (provincia_df["Any"]<=any_fin)].pivot(index=["Any"], columns=["Tipologia", "Variable"], values="Valor")
+        df_prov_n = df_prov_filtered.sort_index(axis=1, level=[0,1])
+        num_cols = df_prov_n.select_dtypes(include=['float64', 'int64']).columns
+        df_prov_n[num_cols] = df_prov_n[num_cols].round(0)
+        df_prov_n[num_cols] = df_prov_n[num_cols].astype(int)
+        num_cols = df_prov_n.select_dtypes(include=['float64', 'int']).columns
+        df_prov_n[num_cols] = df_prov_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
+        return(df_prov_n)
+@st.cache_resource
+def tipog_donut(df_hab, prov):
+    donut_tipog = df_hab[df_hab["PROVINCIA"]==prov][["PROVINCIA", "TIPO"]].value_counts(normalize=True).reset_index()
+    donut_tipog.columns = ["PROVINCIA", "TIPO", "Habitatges en oferta"]
+    fig = go.Figure()
+    fig.add_trace(go.Pie(
+        labels=donut_tipog["TIPO"],
+        values=donut_tipog["Habitatges en oferta"],
+        hole=0.5, 
+        showlegend=True, 
+        marker=dict(
+            colors=["#008B6C", "#00D0A3",  "#66b9a7", "#DAE4E0"], 
+            line=dict(color='#FFFFFF', width=1) 
+        ),
+        textposition='outside',
+        textinfo='percent+label' 
+    ))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    fig.update_layout(
+        title=f'Habitatges en oferta per tipologia',
+        font=dict(size=12),
+        legend=dict(
+            x=0.85,  # Set legend position
+            y=0.85
+        )
+    )
+    return(fig)
+@st.cache_resource
+def num_dorms_prov(df_hab, prov):
+    table33_prov =  pd.crosstab(df_hab["PROVINCIA"], df_hab["Total dormitoris"]).reset_index().rename(columns={"PROVINCIA":"Província"})
+    table33_prov = table33_prov[table33_prov["Província"]==prov].drop("Província", axis=1).T.reset_index()
+    table33_prov.columns = ["Total dormitoris", "Habitatges en oferta"]
+
+    fig = go.Figure(go.Bar(x=table33_prov["Total dormitoris"], y=table33_prov["Habitatges en oferta"], marker_color='#66b9a7'))
+    fig.layout.yaxis = dict(title="Habitages en oferta", tickformat=",d")
+    fig.update_layout(
+        title=f"Habitatges en oferta segons nombre d'habitacions",
+        xaxis_title="Nombre d'habitacions",
+    )
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return(fig)
+@st.cache_resource
+def qualitats_prov(df_hab, prov):
+    table62_hab = df_hab[df_hab["PROVINCIA"]==prov][["Aire condicionat","Bomba de calor","Aerotèrmia","Calefacció","Preinstal·lació d'A.C./B. Calor/Calefacció",'Parquet','Armaris encastats','Placa de cocció amb gas','Placa de cocció vitroceràmica',"Placa d'inducció",'Plaques solars']].sum(axis=0)
+    table62_hab = pd.DataFrame({"Equipaments":table62_hab.index, "Total":table62_hab.values})
+    table62_hab = table62_hab.set_index("Equipaments").apply(lambda row: (row / df_hab.shape[0])*100)
+    table62_hab = table62_hab.sort_values("Total", ascending=True)
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=table62_hab["Total"],  # Use values as x-axis data
+        y=table62_hab.index,  # Use categories as y-axis data
+        orientation="h",  # Set orientation to horizontal
+        marker=dict(color="#66b9a7"),  # Set bar color
+    ))
+    fig.update_layout(
+        title="Qualitats d'habitatges en oferta",
+        xaxis_title="% d'habitatges en oferta",
+        yaxis_title="Qualitats",
+    )
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return(fig)
+@st.cache_resource
+def equipaments_prov(df_hab, prov):
+    table67_hab = df_hab[df_hab["PROVINCIA"]==prov][["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0)
+    table67_hab = pd.DataFrame({"Equipaments":table67_hab.index, "Total":table67_hab.values})
+    table67_hab = table67_hab.set_index("Equipaments").apply(lambda row: row.mul(100) / df_hab.shape[0])
+    table67_hab = table67_hab.sort_values("Total", ascending=True)
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=table67_hab["Total"],  # Use values as x-axis data
+        y=table67_hab.index,  # Use categories as y-axis data
+        orientation="h",  # Set orientation to horizontal
+        marker=dict(color="#66b9a7"),  # Set bar color
+    ))
+    fig.update_layout(
+        title="Equipaments d'habitatges en oferta",
+        xaxis_title="% d'habitatges en oferta",
+        yaxis_title="Equipaments",
+    )
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return(fig)
+@st.cache_resource
+def tipo_obra_prov(df_hab, prov):
+    table38hab_prov = df_hab[["PROVINCIA", "TIPH"]].value_counts().reset_index().sort_values(["PROVINCIA", "TIPH"])
+    table38hab_prov.columns = ["PROVINCIA", "TIPOLOGIA", "Habitatges"]
+    table38hab_prov = table38hab_prov.pivot_table(index="PROVINCIA", columns="TIPOLOGIA", values="Habitatges").reset_index().rename(columns={"PROVINCIA":"Província"})
+    table38hab_prov = table38hab_prov[table38hab_prov["Província"]==prov].drop("Província", axis=1).T.reset_index()
+    table38hab_prov.columns = ["Tipus", "Habitatges en oferta"]
+    fig = go.Figure()
+    fig.add_trace(go.Pie(
+        labels=table38hab_prov["Tipus"],
+        values=table38hab_prov["Habitatges en oferta"],
+        hole=0.5, 
+        showlegend=True, 
+        marker=dict(
+            colors=["#008B6C",  "#00D0A3"], 
+            line=dict(color='#FFFFFF', width=1) 
+        ),
+        textposition='outside',
+        textinfo='percent+label' 
+    ))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    fig.update_layout(
+        title=f'Habitatges en oferta per tipus (obra nova o rehabilitació)',
+        font=dict(size=12),
+        legend=dict(
+            x=0.7,  # Set legend position
+            y=0.85
+        )
+    )
+    return(fig)
+@st.cache_resource
+def cons_acabats(df_prom, prov):
+    fig = go.Figure()
+    fig.add_trace(go.Pie(
+        labels=["Habitatges en construcció", "Habitatges acabats"],
+        values=[metric_estat(df_prom, prov)[0] - metric_estat(df_prom, prov)[1], metric_estat(df_prom, prov)[1]],
+        hole=0.5, 
+        showlegend=True, 
+        marker=dict(
+            colors=["#008B6C",  "#00D0A3"], 
+            line=dict(color='#FFFFFF', width=1) 
+        ),
+        textposition='outside',
+        textinfo='percent+label' 
+    ))
+    fig.update_layout(
+        title=f'Habitatges en construcció i acabats',
+        font=dict(size=12),
+        legend=dict(
+            x=0.7,  # Set legend position
+            y=1.1
+        )
+    )
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return(fig)
+@st.cache_resource
+def metric_estat(df_prom, prov):
+    table11_prov = df_prom[["PROVINCIA", "HABIP"]].groupby("PROVINCIA").sum().reset_index()
+    hab_oferta = table11_prov[table11_prov["PROVINCIA"]==prov].iloc[0,1]
+    table17_hab_prov = bbdd_estudi_hab[["PROVINCIA", "ESTO"]].value_counts().reset_index().sort_values(["PROVINCIA", "ESTO"])
+    table17_hab_prov.columns = ["PROVINCIA","ESTAT", "PROMOCIONS"]
+    table17_hab_prov = table17_hab_prov.pivot_table(index="PROVINCIA", columns="ESTAT", values="PROMOCIONS").reset_index()
+    table17_hab_prov = table17_hab_prov[["PROVINCIA","Claus en mà"]].rename(columns={"PROVINCIA": "Província","Claus en mà":"Acabats sobre habitatges en oferta"})
+    acabats_oferta = table17_hab_prov[table17_hab_prov["Província"]==prov].iloc[0,1]
+    return([hab_oferta, acabats_oferta])
+@st.cache_resource
+def metric_rehab(df_hab, prov):
+    table38hab_prov = df_hab[["PROVINCIA", "TIPH"]].value_counts().reset_index().sort_values(["PROVINCIA", "TIPH"])
+    table38hab_prov.columns = ["PROVINCIA", "TIPOLOGIA", "Habitatges"]
+    table38hab_prov = table38hab_prov.pivot_table(index="PROVINCIA", columns="TIPOLOGIA", values="Habitatges").reset_index().rename(columns={"PROVINCIA":"Província"})
+    table38hab_prov = table38hab_prov[table38hab_prov["Província"]==prov].drop("Província", axis=1).T.reset_index()
+    table38hab_prov.columns = ["Tipus", "Habitatges en oferta"]
+    return([table38hab_prov.iloc[0,1], table38hab_prov.iloc[1,1]])
+############################################################# MUNICIPIS FUNCIONS #############################################
+def data_text_mun(df_hab, df_hab_mod, selected_mun):
+    table80_mun = df_hab_mod[df_hab_mod["Municipi"]==selected_mun][["Municipi", "TIPOG", "Superfície útil", "Preu mitjà", "Preu m2 útil"]].groupby(["Municipi"]).agg({"Municipi":['count'], "Superfície útil": [np.mean], "Preu mitjà": [np.mean], "Preu m2 útil": [np.mean]}).reset_index()
+    table25_mun = df_hab[df_hab["Municipi"]==selected_mun][["Municipi", "TIPOG"]].value_counts(normalize=True).reset_index().rename(columns={0:"Proporció"})
+    table61_hab = df_hab[df_hab["Municipi"]==selected_mun].groupby(['Total dormitoris']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
+    table61_lav = df_hab[df_hab["Municipi"]==selected_mun].groupby(['Banys i lavabos']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
+
+    try:
+        proporcio_tipo = round(table25_mun[table25_mun["TIPOG"]=="Habitatges plurifamiliars"]["Proporció"].values[0]*100,2)
+    except IndexError:
+        proporcio_tipo = 0
+
+    return([round(table80_mun["Preu mitjà"].values[0][0],2), round(table80_mun["Superfície útil"].values[0][0],2), 
+            round(table80_mun["Preu m2 útil"].values[0][0],2), proporcio_tipo, 
+            table61_hab["Total dormitoris"].values[0], table61_lav["Banys i lavabos"].values[0]])
+def plotmun_streamlit(data, selected_mun, kpi):
+    df = data[(data['Municipi']==selected_mun)]
+    fig = px.histogram(df, x=kpi, title= "", labels={'x':kpi, 'y':'Freqüència'})
+    fig.data[0].marker.color = "#66b9a7"
+    fig.layout.xaxis.title.text = kpi
+    fig.layout.yaxis.title.text = 'Freqüència'
+    mean_val = df[kpi].mean()
+    fig.layout.shapes = [dict(type='line', x0=mean_val, y0=0, x1=mean_val, y1=1, yref='paper', xref='x', 
+                            line=dict(color="black", width=2, dash='dot'))]
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return(fig)
+def count_plot_mun(data, selected_mun):
+    df = data[data['Municipi']==selected_mun]
+    df = df["TIPOG"].value_counts().sort_values(ascending=True)
+    fig = px.bar(df, y=df.index, x=df.values, orientation='h', title="", 
+                labels={'x':"Número d'habitatges", 'y':"TIPOG"}, text= df.values)
+    fig.layout.xaxis = dict(title="Nombre d'habitatges", tickformat=",d")
+    fig.layout.yaxis.title.text = "Tipologia"
+    fig.update_traces(marker=dict(color="#66b9a7"))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return fig
+def dormscount_plot_mun(data, selected_mun):
+    df = data[data['Municipi']==selected_mun]
+    custom_order = ["0D", "1D", "2D", "3D", "4D", "5+D"]
+    df = df["Total dormitoris"].value_counts().reindex(custom_order)
+    fig = px.bar(df,  y=df.values, x=df.index,title="", labels={'x':"Número d'habitacions", 'y':"Número d'habitatges"}, text= df.values)
+    fig.layout.yaxis = dict(title="Nombre d'habitatges", tickformat=",d")
+    fig.layout.xaxis.title.text = "Nombre d'habitacions"
+    fig.update_traces(marker=dict(color="#66b9a7"))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return fig
+
+def lavcount_plot_mun(data, selected_mun):
+    df = data[data['Municipi']==selected_mun]
+
+    df = df["Banys i lavabos"].value_counts().sort_values(ascending=True)
+    fig = px.bar(df,  y=df.values, x=df.index,title="", labels={'x':"Número de lavabos", 'y':"Número d'habitatges"}, text= df.values)
+    fig.layout.yaxis = dict(title="Nombre d'habitatges", tickformat=",d")
+    fig.layout.xaxis.title.text = "Nombre de lavabos"
+    fig.update_traces(marker=dict(color="#66b9a7"))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return fig
+@st.cache_resource
+def table_mun(Municipi, any_ini, any_fin):
+    df_mun_filtered = df_final[(df_final["GEO"]==Municipi) & (df_final["Any"]>=any_ini) & (df_final["Any"]<=any_fin)].drop(["Àmbits territorials","Corones","Comarques","Província", "codiine"], axis=1).pivot(index=["Any"], columns=["Tipologia", "Variable"], values="Valor")
+    df_mun_unitats = df_final[(df_final["GEO"]==Municipi) & (df_final["Any"]>=any_ini) & (df_final["Any"]<=any_fin)].drop(["Àmbits territorials","Corones","Comarques","Província", "codiine"], axis=1).drop_duplicates(["Any","Tipologia","Unitats"]).pivot(index=["Any"], columns=["Tipologia"], values="Unitats")
+    df_mun_unitats.columns= [("HABITATGES PLURIFAMILIARS", "Unitats"), ("HABITATGES UNIFAMILIARS", "Unitats"), ("TOTAL HABITATGES", "Unitats")]
+    df_mun_n = pd.concat([df_mun_filtered, df_mun_unitats], axis=1)
+    # df_mun_n[("HABITATGES PLURIFAMILIARS", "Unitats %")] = (df_mun_n[("HABITATGES PLURIFAMILIARS", "Unitats")]/df_mun_n[("TOTAL HABITATGES", "Unitats")])*100
+    # df_mun_n[("HABITATGES UNIFAMILIARS", "Unitats %")] = (df_mun_n[("HABITATGES UNIFAMILIARS", "Unitats")] /df_mun_n[("TOTAL HABITATGES", "Unitats")])*100
+    df_mun_n = df_mun_n.sort_index(axis=1, level=[0,1])
+    num_cols = df_mun_n.select_dtypes(include=['float64', 'Int64']).columns
+    df_mun_n[num_cols] = df_mun_n[num_cols].round(0)
+    df_mun_n[num_cols] = df_mun_n[num_cols].astype("Int64")
+    num_cols = df_mun_n.select_dtypes(include=['float64', 'Int64']).columns
+    df_mun_n[num_cols] = df_mun_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
+    return(df_mun_n)
+@st.cache_resource
+def plot_mun_hist_units(selected_mun, variable_int, any_ini, any_fin):
+    df_preus = df_vf_aux[(df_vf_aux['Variable']==variable_int) & (df_vf_aux['GEO']==selected_mun) & (df_vf_aux["Any"]>=any_ini) & (df_vf_aux["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
+    df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
+    df_preus['Any'] = df_preus['Any'].astype(int)
+    df_preus = df_preus[df_preus["Tipologia"]!="TOTAL HABITATGES"]
+    fig = px.bar(df_preus, x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text= "Valor")
+    fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
+    valid_years = sorted(df_preus['Any'].unique())
+    fig.update_xaxes(tickvals=valid_years)
+    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1.05, xanchor='right', x=0.75))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return fig
+@st.cache_resource
+def plot_mun_hist(selected_mun, variable_int, any_ini, any_fin):
+    df_preus = df_vf[(df_vf['Variable']==variable_int) & (df_vf['GEO']==selected_mun) & (df_vf["Any"]>=any_ini) & (df_vf["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
+    df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
+    df_preus['Any'] = df_preus['Any'].astype(int)
+    fig = px.bar(df_preus, x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#008B6C","#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text='Valor', barmode='group')
+    fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
+    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return fig
+############################################################ DISTRICTES FUNCIONS #############################################
+@st.cache_resource
+def data_text_dis(df_hab, selected_dis):
+    table80_dis = df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"]==selected_dis)][["Nom DIST", "TIPOG", "Superfície útil", "Preu mitjà", "Preu m2 útil"]].groupby(["Nom DIST"]).agg({"Nom DIST":['count'], "Superfície útil": [np.mean], "Preu mitjà": [np.mean], "Preu m2 útil": [np.mean]}).reset_index()
+    table25_dis = df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"]==selected_dis)][["Nom DIST", "TIPOG"]].value_counts(normalize=True).reset_index().rename(columns={0:"Proporció"})
+    table61_hab = df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"]==selected_dis)].groupby(['Total dormitoris']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
+    table61_lav = df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"]==selected_dis)].groupby(['Banys i lavabos']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
+
+    return([round(table80_dis["Preu mitjà"].values[0][0],2), round(table80_dis["Superfície útil"].values[0][0],2), 
+            round(table80_dis["Preu m2 útil"].values[0][0],2), round(table25_dis[table25_dis["TIPOG"]=="Habitatges plurifamiliars"]["Proporció"].values[0]*100,2), 
+            table61_hab["Total dormitoris"].values[0], table61_lav["Banys i lavabos"].values[0]])
+@st.cache_resource
+def plotdis_streamlit(data, selected_dis, kpi):
+    df = data[(data['Nom DIST']==selected_dis)]
+    fig = px.histogram(df, x=kpi, title= "", labels={'x':kpi, 'y':'Freqüència'})
+    fig.data[0].marker.color = "#66b9a7"
+    fig.layout.xaxis.title.text = kpi
+    fig.layout.yaxis.title.text = 'Freqüència'
+    mean_val = df[kpi].mean()
+    fig.layout.shapes = [dict(type='line', x0=mean_val, y0=0, x1=mean_val, y1=1, yref='paper', xref='x', 
+                            line=dict(color="black", width=2, dash='dot'))]
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return(fig)
+@st.cache_resource
+def count_plot_dis(data, selected_dis):
+    df = data[data['Nom DIST']==selected_dis]
+    df = df["TIPOG"].value_counts().sort_values(ascending=True)
+    fig = px.bar(df, y=df.index, x=df.values, orientation='h', title="", 
+                labels={'x':"Número d'habitatges", 'y':"TIPOG"}, text= df.values)
+    fig.layout.xaxis.title.text = "Número d'habitatges"
+    fig.layout.yaxis.title.text = "Tipologia"
+    fig.update_traces(marker=dict(color="#66b9a7"))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return fig
+@st.cache_resource
+def dormscount_plot_dis(data, selected_dis):
+    df = data[data['Nom DIST']==selected_dis]
+    custom_order = ["0D", "1D", "2D", "3D", "4D", "5+D"]
+    df = df["Total dormitoris"].value_counts().reindex(custom_order)
+    fig = px.bar(df,  y=df.values, x=df.index,title="", labels={'x':"Número d'habitacions", 'y':"Número d'habitatges"}, text= df.values)
+    fig.layout.yaxis.title.text = "Número d'habitatges"
+    fig.layout.xaxis.title.text = "Número d'habitacions"
+    fig.update_traces(marker=dict(color="#66b9a7"))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return fig
+@st.cache_resource
+def lavcount_plot_dis(data, selected_dis):
+    df = data[data['Nom DIST']==selected_dis]
+
+    df = df["Banys i lavabos"].value_counts().sort_values(ascending=True)
+    fig = px.bar(df,  y=df.values, x=df.index,title="", labels={'x':"Número de lavabos", 'y':"Número d'habitatges"}, text= df.values)
+    fig.layout.yaxis.title.text = "Número d'habitatges"
+    fig.layout.xaxis.title.text = "Número de lavabos"
+    fig.update_traces(marker=dict(color="#66b9a7"))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return fig
+@st.cache_resource
+def geo_dis(districte, any_ini, any_fin):
+    df_vf_aux = pd.DataFrame()
+    for df_frame, year in zip(["dis_2019", "dis_2020", "dis_2021", "dis_2022"], [2019, 2020, 2021, 2022]):
+        df_vf_aux = pd.concat([df_vf_aux, tidy_data(eval(df_frame), year)], axis=0)
+    df_vf_aux['Variable']= np.where(df_vf_aux['Variable']=="Preu de     venda per      m² útil (€)", "Preu de venda per m² útil (€)", df_vf_aux['Variable'])
+    df_vf_aux['Valor'] = pd.to_numeric(df_vf_aux['Valor'], errors='coerce')
+
+    df_vf_aux = df_vf_aux[df_vf_aux['GEO']!="Municipi de Barcelona"]
+    df_vf_aux["GEO"] = df_vf_aux["GEO"].str.replace(r"\d+\s", "")
+    df_vf_aux = df_vf_aux[df_vf_aux["GEO"].isin(["Ciutat Vella", "Eixample", "Sants-Montjuïc", 
+                                                "Les Corts", "Sarrià - Sant Gervasi", "Gràcia", 
+                                                "Horta-Guinardó", "Nou Barris", "Sant Andreu",
+                                                "Sant Martí"])]
+    df_vf_aux = df_vf_aux[df_vf_aux["GEO"]==districte]
+    df_wide = pd.pivot(data=df_vf_aux, index="Any", columns=["Tipologia", "Variable"], values="Valor")
+    num_cols = df_wide.select_dtypes(include=['float64', 'int64']).columns
+    df_wide[num_cols] = df_wide[num_cols].round(0)
+    df_wide[num_cols] = df_wide[num_cols].astype("Int64")
+    num_cols = df_wide.select_dtypes(include=['float64', 'Int64']).columns
+    df_wide[num_cols] = df_wide[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
+    df_wide = df_wide[(df_wide.index>=any_ini) & (df_wide.index<=any_fin)]
+    return(df_wide)
+@st.cache_resource
+def plot_dis_hist_units(selected_dis, variable_int, any_ini, any_fin):
+    df_preus = df_dis_long[(df_dis_long['Variable']==variable_int) & (df_dis_long['GEO']==selected_dis) & (df_dis_long["Any"]>=any_ini) & (df_dis_long["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
+    df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
+    df_preus['Any'] = df_preus['Any'].astype(int)
+    df_preus = df_preus[df_preus["Tipologia"]!="TOTAL HABITATGES"]
+    fig = px.bar(df_preus[df_preus["Valor"]>0], x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text= "Valor")
+    fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
+    valid_years = sorted(df_preus['Any'].unique())
+    fig.update_xaxes(tickvals=valid_years)
+    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1.05, xanchor='right', x=0.75))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return fig
+@st.cache_resource
+def plot_dis_hist(selected_dis, variable_int, any_ini, any_fin):
+    df_preus = df_dis_long[(df_dis_long['Variable']==variable_int) & (df_dis_long['GEO']==selected_dis) & (df_dis_long["Any"]>=any_ini) & (df_dis_long["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
+    df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
+    df_preus['Any'] = df_preus['Any'].astype(int)
+    fig = px.bar(df_preus[df_preus["Valor"]>0], x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#008B6C","#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text='Valor', barmode='group')
+    fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
+    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
+    fig.layout.paper_bgcolor = "#cce8e2"
+    fig.layout.plot_bgcolor = "#cce8e2"
+    return fig
 ############################################################  CATALUNYA: 2022 ################################################
 if selected == "Catalunya":
     st.sidebar.header("**ESTUDI D'OFERTA DE NOVA CONSTRUCCIÓ**")
     edicio_any = ["2022","2023"]
-    selected_edition = st.sidebar.radio("**Any**", edicio_any)
+    selected_edition = st.sidebar.radio("**Any**", edicio_any, edicio_any.index("2023"))
     if selected_edition=="2022":
         index_names = ["Introducció","Característiques", "Qualitats i equipaments", "Superfície i preus", "Comparativa 2022-2021"]
         selected_index = st.sidebar.radio("**Contingut**", index_names)
-
         if selected_index=="Introducció":
             st.subheader("**INTRODUCCIÓ**")
             st.write("""<p style="margin-top: 10px"> L’Estudi de l’Oferta d’Habitatge de Nova Construcció de 2022 ha inclòs un total de 84
@@ -747,57 +1349,14 @@ if selected == "Catalunya":
                 Finalment, la major part dels habitatges inclosos en l’estudi 2022 són d’obra nova (93,6%), reduint-se la rehabilitació integral
                 a un 6,4% (4 dècimes menys que a 2021), majoritàriament concentrada als municipis de la província de Barcelona
                 (88,9%) i de forma destacada al municipi de Barcelona (31,5% del total d’habitatges en venda).</p></body>""",
-            unsafe_allow_html=True
-        )
+            unsafe_allow_html=True)
             left_col, right_col = st.columns((1, 1))
             with left_col:
                 st.markdown("""**Nombre de promocions per província a Catalunya**""")
-                @st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
-                def map_prov_prom():
-                    provprom_map = bbdd_estudi_prom[["PROVINCIA"]].value_counts().reset_index()
-                    provprom_map.columns = ["NAME_2", "PROMOCIONS"]
-                    shapefile_prov = gpd.read_file(path + "Provincias.geojson")
-                    shapefile_prov = shapefile_prov[shapefile_prov["NAME_1"]=="Cataluña"]
-                    fig, ax = plt.subplots(1,1, figsize=(10,10))
-                    divider = make_axes_locatable(ax)
-                    tmp = shapefile_prov.copy()
-                    tmp = pd.merge(tmp, provprom_map, how="left", on="NAME_2")
-                    # cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
-                    cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#DAE4E0","#008B6C"]) 
-                    tmp.plot(column='PROMOCIONS', ax=ax, cmap=cmap, legend=False)
-                    tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
-                    for i, row in tmp.iterrows():
-                        x, y = row['geometry'].centroid.coords[0]
-                        ax.annotate(f"""{row['NAME_2']}\n{row["PROMOCIONS"]}""", xy=(x, y), xytext=(3,3), textcoords="offset points", fontsize=10, color="black")
-                                        # bbox=dict(facecolor='white', alpha=0.5)
-                                        # arrowprops=dict(facecolor='black', arrowstyle="->")
-                                        
-                    ax.axis('off')
-                    fig.patch.set_alpha(0)
-                    return(fig)
-                st.pyplot(map_prov_prom())
+                st.pyplot(map_prov_prom(bbdd_estudi_prom, shapefile_prov))
             with right_col:
                 st.markdown("**Nombre d'habitatges en oferta per municipis a Catalunya**")
-                @st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
-                def map_mun_hab_oferta():
-                    prommun_map = bbdd_estudi_prom[["CODIMUN", "Municipi","HABIP"]].groupby(["CODIMUN", "Municipi"]).sum().reset_index()
-                    prommun_map.columns = ["municipi", "Municipi_n", "Habitatges en oferta"]
-                    prommun_map["municipi"] = prommun_map["municipi"].astype(float)
-
-                    shapefile_mun = gpd.read_file(path + "shapefile_mun.geojson")
-                    shapefile_mun["municipi"] = shapefile_mun["municipi"].astype(float)
-                    tmp = pd.merge(shapefile_mun, prommun_map, how="left", on="municipi")
-                    fig, ax = plt.subplots(1,1, figsize=(20,20))
-                    divider = make_axes_locatable(ax)
-                    cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
-                    cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#AAC4BA","#008B6C"]) 
-
-                    tmp.plot(column='Habitatges en oferta', ax=ax,cax=cax, cmap=cmap, legend=True)
-                    tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
-                    ax.axis('off')
-                    fig.patch.set_alpha(0)
-                    return(fig)
-                st.pyplot(map_mun_hab_oferta())
+                st.pyplot(map_mun_hab_oferta(bbdd_estudi_prom, shapefile_mun))
 
         if selected_index=="Característiques":
             left_col, right_col = st.columns((1, 1))
@@ -815,19 +1374,7 @@ if selected == "Catalunya":
                 unsafe_allow_html=True
                 )
             with right_col:
-                def plot_caracteristiques():
-                    table61_tipo = bbdd_estudi_hab.groupby(['Total dormitoris', 'Banys i lavabos']).size().div(len(bbdd_estudi_hab_mod)).reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
-                    table61_tipo["Proporcions"] = table61_tipo["Proporcions"]*100
-                    table61_tipo["Tipologia"] = np.where(table61_tipo["Banys i lavabos"]==1, table61_tipo["Total dormitoris"].astype(str) + " dormitoris i " + table61_tipo["Banys i lavabos"].astype(str) + " bany", table61_tipo["Total dormitoris"].astype(str) + " dormitoris i " + table61_tipo["Banys i lavabos"].astype(str) + " banys")
-                    fig = px.bar(table61_tipo.head(4), x="Proporcions", y="Tipologia", orientation='h', title="", 
-                    labels={'x':"Proporcions sobre el total d'habitatges", 'y':"Tipologia"})
-                    fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges"
-                    fig.layout.yaxis.title.text = "Tipologia"
-                    fig.layout.title.text = "Principals tipologies dels habitatges en oferta"
-                    fig.update_traces(marker=dict(color="#66b9a7"))
-                    return(fig)
-                # st.write(plot_caracteristiques())
-                st.plotly_chart(plot_caracteristiques(), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_caracteristiques(bbdd_estudi_hab), use_container_width=True, responsive=True)
 
         if selected_index=="Qualitats i equipaments":
             st.subheader("**QUALITATS I EQUIPAMENTS**")
@@ -847,29 +1394,11 @@ if selected == "Catalunya":
             left_col, right_col = st.columns((1, 1))
             with left_col:
                 st.write("""<p><b>Principals qualitats dels habitatges</b></p>""", unsafe_allow_html=True)
-                def plot_qualitats():
-                    table62_hab = bbdd_estudi_hab[["Aire condicionat","Bomba de calor","Aerotèrmia","Calefacció","Preinstal·lació d'A.C./B. Calor/Calefacció",'Parquet','Armaris encastats','Placa de cocció amb gas','Placa de cocció vitroceràmica',"Placa d'inducció",'Plaques solars']].rename(columns={"Aerotèrmia":"Aerotèrmia"}).sum(axis=0)
-                    table62_hab = pd.DataFrame({"Qualitats":table62_hab.index, "Total":table62_hab.values})
-                    table62_hab = table62_hab.set_index("Qualitats").apply(lambda row: (row / bbdd_estudi_hab.shape[0])*100).reset_index().sort_values("Total", ascending=True)
-                    fig = px.bar(table62_hab, x="Total", y="Qualitats", orientation='h', title="", labels={'x':"Proporcions sobre el total d'habitatges", 'y':"Qualitats"})
-                    fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges"
-                    fig.layout.yaxis.title.text = "Qualitats"
-                    fig.update_traces(marker=dict(color="#66b9a7"))
-                    return(fig)
-                st.plotly_chart(plot_qualitats(), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_qualitats(bbdd_estudi_hab), use_container_width=True, responsive=True)
 
             with right_col:
                 st.write("""<p><b>Principals equipaments dels habitatges</b></p>""", unsafe_allow_html=True)
-                def plot_equipaments():
-                    table67_hab = bbdd_estudi_hab[["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0)
-                    table67_hab = pd.DataFrame({"Equipaments":table67_hab.index, "Total":table67_hab.values})
-                    table67_hab = table67_hab.set_index("Equipaments").apply(lambda row: row.mul(100) / bbdd_estudi_hab.shape[0]).reset_index().sort_values("Total", ascending=True)
-                    fig = px.bar(table67_hab, x="Total", y="Equipaments", orientation='h', title="", labels={'x':"Proporcions sobre el total d'habitatges", 'y':"Equipaments"})
-                    fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges"
-                    fig.layout.yaxis.title.text = "Equipaments"
-                    fig.update_traces(marker=dict(color="#66b9a7"))
-                    return(fig)
-                st.plotly_chart(plot_equipaments(), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_equipaments(bbdd_estudi_hab), use_container_width=True, responsive=True)
 
         if selected_index=="Superfície i preus":
             left_col, right_col = st.columns((1, 1))
@@ -905,52 +1434,14 @@ if selected == "Catalunya":
 
             with right_col:
                 st.write("""<p><b>Preu mitjà per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
-                def indicadors_preu_mitjanes():
-                    table76_tipo = bbdd_estudi_hab_mod[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).apply(np.mean).reset_index()
-                    table76_total = bbdd_estudi_hab_mod[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).apply(np.mean).reset_index()
-                    table76_total["TIPOG"] = "Total habitatges"
-                    table76 = pd.concat([table76_tipo, table76_total], axis=0)
-                    table76 = pd.merge(table76, bbdd_estudi_hab_mod[["TIPOG","Total dormitoris"]].groupby(["TIPOG","Total dormitoris"]).size().reset_index().rename(columns={0:"Total"}), how="left", on=["TIPOG","Total dormitoris"])
-                    table76 = table76.rename(columns={"TIPOG":"Tipologia"})
-                    fig = px.bar(table76, x="Preu mitjà", y="Total dormitoris", color="Tipologia", orientation='h', color_discrete_sequence=["#00D0A3","#AAC4BA","#008B6C"], barmode="group", title="", labels={'x':"Preu m\u00b2 útil (mitjana)", 'y':"Tipologia d'habitatge"})
-                    fig.layout.xaxis = dict(title="Preu mitjà", tickformat=",d")
-                    fig.layout.yaxis = dict(title="Tipologia d'habitatge")
-
-                    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
-                    return(fig)
-                st.plotly_chart(indicadors_preu_mitjanes(), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod), use_container_width=True, responsive=True)
             left, right = st.columns((1,1))
             with left:
                 st.write("""<p><b>Preu per m\u00b2 útil per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
-                def indicadors_preum2_mitjanes():
-                    table76_tipo = bbdd_estudi_hab_mod[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).apply(np.mean).reset_index()
-                    table76_total = bbdd_estudi_hab_mod[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).apply(np.mean).reset_index()
-                    table76_total["TIPOG"] = "Total habitatges"
-                    table76 = pd.concat([table76_tipo, table76_total], axis=0)
-                    table76 = pd.merge(table76, bbdd_estudi_hab_mod[["TIPOG","Total dormitoris"]].groupby(["TIPOG","Total dormitoris"]).size().reset_index().rename(columns={0:"Total"}), how="left", on=["TIPOG","Total dormitoris"])
-                    table76 = table76.rename(columns={"TIPOG":"Tipologia"})
-                    fig = px.bar(table76, x="Preu m2 útil", y="Total dormitoris", color="Tipologia", orientation='h', color_discrete_sequence=["#00D0A3","#AAC4BA","#008B6C"], barmode="group", title="", labels={'x':"Preu m\u00b2 útil (mitjana)", 'y':"Tipologia d'habitatge"})
-                    fig.layout.xaxis = dict(title="Preu per m\u00b2 útil", tickformat=",d")
-                    fig.layout.yaxis.title.text = "Tipologia d'habitatge"
-                    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
-                    return(fig)
-                st.plotly_chart(indicadors_preum2_mitjanes(), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod), use_container_width=True, responsive=True)
             with right:
                 st.write("""<p><b>Superfície útil per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
-                def indicadors_super_mitjanes():
-                    table76_tipo = bbdd_estudi_hab_mod[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).apply(np.mean).reset_index()
-                    table76_total = bbdd_estudi_hab_mod[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).apply(np.mean).reset_index()
-                    table76_total["TIPOG"] = "Total habitatges"
-                    table76 = pd.concat([table76_tipo, table76_total], axis=0)
-                    table76 = pd.merge(table76, bbdd_estudi_hab_mod[["TIPOG","Total dormitoris"]].groupby(["TIPOG","Total dormitoris"]).size().reset_index().rename(columns={0:"Total"}), how="left", on=["TIPOG","Total dormitoris"])
-                    table76 = table76.rename(columns={"TIPOG":"Tipologia"})
-                    fig = px.bar(table76, x="Superfície útil", y="Total dormitoris", color="Tipologia", orientation='h', color_discrete_sequence=["#00D0A3","#AAC4BA","#008B6C"], barmode="group", title="", labels={'x':"Preu m\u00b2 útil (mitjana)", 'y':"Tipologia d'habitatge"})
-                    fig.layout.xaxis.title.text = "Superfície útil"
-                    fig.layout.yaxis.title.text = "Tipologia d'habitatge"
-                    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
-                    return(fig)
-                st.plotly_chart(indicadors_super_mitjanes(), use_container_width=True, responsive=True)
-
+                st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod), use_container_width=True, responsive=True)
         if selected_index=="Comparativa 2022-2021":
             left_col, right_col = st.columns((1, 1))
             with left_col: 
@@ -1007,39 +1498,12 @@ if selected == "Catalunya":
             with right_col:
                 st.markdown("")
                 st.write("""<p><b>Variació anual (%) dels principals indicadors per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
-                @st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
-                def plot_var_CAT():
-                    table117 = pd.read_excel(path + "Estudi_oferta_taules 2022.xlsx", sheet_name="table117", header=1).iloc[1:,]
-                    table121 = pd.read_excel(path + "Estudi_oferta_taules 2022.xlsx", sheet_name="table121", header=1).iloc[1:,]
-                    table125 = pd.read_excel(path + "Estudi_oferta_taules 2022.xlsx", sheet_name="table125", header=1).iloc[1:,]
-                    table117 = table117[(table117["Província"].isna()) & (table117["Municipi"].isna())][["Variació % Preu m2 útil","Variació % Preu mitjà", "Variació % Superfície útil"]]
-                    table121 = table121[(table121["Província"].isna()) & (table121["Municipi"].isna())][["Variació % Preu m2 útil","Variació % Preu mitjà", "Variació % Superfície útil"]]
-                    table125 = table125[(table125["Província"].isna()) & (table125["Municipi"].isna())][["Variació % Preu m2 útil","Variació % Preu mitjà", "Variació % Superfície útil"]]
-                    table_var = pd.concat([table117, table121, table125], axis=0)
-                    table_var["Tipologia"] = ["Total habitatges", "Habitatges unifamiliars", "Habitatges plurifamiliars"]
-                    table_var_melted = pd.melt(table_var, id_vars="Tipologia", var_name = "Variable")
-
-                    fig = px.bar(table_var_melted, x="Tipologia", y="value", color="Variable", color_discrete_sequence=["#008B6C","#00D0A3","#AAC4BA"], barmode="group", title="", labels={'x':"Preu m\u00b2 útil (mitjana)", 'y':"Tipologia d'habitatge"})
-                    fig.layout.xaxis.title.text = "Tipologia"
-                    fig.layout.yaxis.title.text = "Variació anual (%)"
-                    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, x=0))
-                    return(fig)
-                st.plotly_chart(plot_var_CAT(), use_container_width=True, responsive=True)
-
-            def table_geo_cat(any_ini, any_fin):
-                    df_cat = df_final_cat[(df_final_cat["Any"]>=any_ini) & (df_final_cat["Any"]<=any_fin)].drop_duplicates(["Any", "Tipologia", "Variable", "Valor"]).pivot(index=["Any"], columns=["Tipologia", "Variable"], values="Valor")
-                    df_cat_n = df_cat.sort_index(axis=1, level=[0,1])
-                    num_cols = df_cat_n.select_dtypes(include=['float64', 'int64']).columns
-                    df_cat_n[num_cols] = df_cat_n[num_cols].round(0)
-                    df_cat_n[num_cols] = df_cat_n[num_cols].astype(int)
-                    num_cols = df_cat_n.select_dtypes(include=['float64', 'int']).columns
-                    df_cat_n[num_cols] = df_cat_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
-                    return(df_cat_n)
+                st.plotly_chart(plot_var_CAT(table117_22, table121_22, table125_22), use_container_width=True, responsive=True)
             st.markdown(table_geo_cat(2019, 2023).to_html(), unsafe_allow_html=True)
             st.markdown(filedownload(table_geo_cat(2019, 2022), f"Estudi_oferta_Catalunya.xlsx"), unsafe_allow_html=True)
 ############################################################  CATALUNYA: 2023 ################################################
     if selected_edition=="2023":
-        index_names = ["Introducció","Característiques", "Superfície i preus", "Comparativa 2023-2022"]
+        index_names = ["Introducció","Característiques", "Qualitats i equipaments", "Superfície i preus", "Comparativa 2023-2022"]
         selected_index = st.sidebar.radio("**Contingut**", index_names)
 
         if selected_index=="Introducció":
@@ -1073,53 +1537,10 @@ if selected == "Catalunya":
             left_col, right_col = st.columns((1, 1))
             with left_col:
                 st.markdown("**Nombre de promocions per província a Catalunya**")
-                @st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
-                def map_prov_prom():
-                    provprom_map = bbdd_estudi_prom_2023[["PROVINCIA"]].value_counts().reset_index()
-                    provprom_map.columns = ["NAME_2", "PROMOCIONS"]
-                    shapefile_prov = gpd.read_file(path + "Provincias.geojson")
-                    shapefile_prov = shapefile_prov[shapefile_prov["NAME_1"]=="Cataluña"]
-                    fig, ax = plt.subplots(1,1, figsize=(10,10))
-                    divider = make_axes_locatable(ax)
-                    tmp = shapefile_prov.copy()
-                    tmp = pd.merge(tmp, provprom_map, how="left", on="NAME_2")
-                    # cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
-                    cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#DAE4E0","#008B6C"]) 
-                    tmp.plot(column='PROMOCIONS', ax=ax, cmap=cmap, legend=False)
-                    tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
-                    for i, row in tmp.iterrows():
-                        x, y = row['geometry'].centroid.coords[0]
-                        ax.annotate(f"""{row['NAME_2']}\n{row["PROMOCIONS"]}""", xy=(x, y), xytext=(3,3), textcoords="offset points", fontsize=10, color="black")
-                                        # bbox=dict(facecolor='white', alpha=0.5)
-                                        # arrowprops=dict(facecolor='black', arrowstyle="->")
-                                        
-                    ax.axis('off')
-                    fig.patch.set_alpha(0)
-                    return(fig)
-                st.pyplot(map_prov_prom())
+                st.pyplot(map_prov_prom(bbdd_estudi_prom_2023, shapefile_prov))
             with right_col:
                 st.markdown("**Nombre d'habitatges en oferta per municipis a Catalunya**")
-                @st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
-                def map_mun_hab_oferta():
-                    prommun_map = bbdd_estudi_prom_2023[["CODIMUN", "Municipi","HABIP"]].groupby(["CODIMUN", "Municipi"]).sum().reset_index()
-                    prommun_map.columns = ["municipi", "Municipi_n", "Habitatges en oferta"]
-                    prommun_map["municipi"] = prommun_map["municipi"].astype(int)
-
-                    shapefile_mun = gpd.read_file(path + "shapefile_mun.geojson")
-                    shapefile_mun["municipi"] = shapefile_mun["codiine"].astype(int)
-
-                    tmp = pd.merge(shapefile_mun, prommun_map, how="left", on="municipi")
-                    fig, ax = plt.subplots(1,1, figsize=(20,20))
-                    divider = make_axes_locatable(ax)
-                    cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
-                    cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#AAC4BA","#008B6C"]) 
-
-                    tmp.plot(column='Habitatges en oferta', ax=ax,cax=cax, cmap=cmap, legend=True)
-                    tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
-                    ax.axis('off')
-                    fig.patch.set_alpha(0)
-                    return(fig)
-                st.pyplot(map_mun_hab_oferta())
+                st.pyplot(map_mun_hab_oferta(bbdd_estudi_prom_2023, shapefile_mun))
         if selected_index=="Característiques":
             left_col, right_col = st.columns((1, 1))
             with left_col:
@@ -1138,20 +1559,28 @@ if selected == "Catalunya":
                 unsafe_allow_html=True
                 )
             with right_col:
-                def plot_caracteristiques():
-                    table61_tipo = bbdd_estudi_hab_2023.groupby(['Total dormitoris', 'Banys i lavabos']).size().div(len(bbdd_estudi_hab_mod)).reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
-                    table61_tipo["Proporcions"] = table61_tipo["Proporcions"]*100
-                    table61_tipo["Tipologia"] = np.where(table61_tipo["Banys i lavabos"]==1, table61_tipo["Total dormitoris"].astype(str) + " dormitoris i " + table61_tipo["Banys i lavabos"].astype(str) + " bany", table61_tipo["Total dormitoris"].astype(str) + " dormitoris i " + table61_tipo["Banys i lavabos"].astype(str) + " banys")
-                    fig = px.bar(table61_tipo.head(4), x="Proporcions", y="Tipologia", orientation='h', title="", 
-                    labels={'x':"Proporcions sobre el total d'habitatges", 'y':"Tipologia"})
-                    fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges"
-                    fig.layout.yaxis.title.text = "Tipologia"
-                    fig.layout.title.text= "Principals tipologies dels habitatges en oferta (%)"
-                    fig.update_traces(marker=dict(color="#66b9a7"))
-                    return(fig)
-                # st.write(plot_caracteristiques())
-                st.plotly_chart(plot_caracteristiques(), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_caracteristiques(bbdd_estudi_hab_2023), use_container_width=True, responsive=True)
+        if selected_index=="Qualitats i equipaments":
+            st.subheader("**QUALITATS I EQUIPAMENTS**")
+            st.write("""
+            <p>
+                Les qualitats més recurrents en els habitatges són: la bomba de calor -fred i calor- (87,6%), 
+                la placa d’inducció (71,4%), el parquet (66,5%), la calefacció instal·lada només calor (64,5%), 
+                la aerotèrmia (58,8%) i els armaris encastats (53,4%).
+                Quant a equipaments, el més comú és l’ascensor (91,0%), 
+                seguit a certa distància per el traster (49,7%), la piscina comunitària (48,5%) 
+                i la zona enjardinada (38,1%).
+            </p>""",
+            unsafe_allow_html=True
+            )
+            left_col, right_col = st.columns((1, 1))
+            with left_col:
+                st.write("""<p><b>Principals qualitats dels habitatges</b></p>""", unsafe_allow_html=True)
+                st.plotly_chart(plot_qualitats(bbdd_estudi_hab_2023), use_container_width=True, responsive=True)
 
+            with right_col:
+                st.write("""<p><b>Principals equipaments dels habitatges</b></p>""", unsafe_allow_html=True)
+                st.plotly_chart(plot_equipaments(bbdd_estudi_hab_2023), use_container_width=True, responsive=True)
 
         if selected_index=="Superfície i preus":
             left_col, right_col = st.columns((1, 1))
@@ -1180,50 +1609,14 @@ if selected == "Catalunya":
 
             with right_col:
                 st.write("""<p><b>Preu mitjà per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
-                def indicadors_preu_mitjanes():
-                    table76_tipo = bbdd_estudi_hab_mod_2023[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).apply(np.mean).reset_index()
-                    table76_total = bbdd_estudi_hab_mod_2023[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).apply(np.mean).reset_index()
-                    table76_total["TIPOG"] = "Total habitatges"
-                    table76 = pd.concat([table76_tipo, table76_total], axis=0)
-                    table76 = pd.merge(table76, bbdd_estudi_hab_mod_2023[["TIPOG","Total dormitoris"]].groupby(["TIPOG","Total dormitoris"]).size().reset_index().rename(columns={0:"Total"}), how="left", on=["TIPOG","Total dormitoris"])
-                    table76 = table76.rename(columns={"TIPOG":"Tipologia"})
-                    fig = px.bar(table76, x="Preu mitjà", y="Total dormitoris", color="Tipologia", orientation='h', color_discrete_sequence=["#00D0A3","#AAC4BA","#008B6C"], barmode="group", title="", labels={'x':"Preu mitjà", 'y':"Tipologia d'habitatge"})
-                    fig.layout.xaxis = dict(title="Preu mitjà", tickformat=",d")
-                    fig.layout.yaxis.title.text = "Nombre d'habitacions"
-                    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
-                    return(fig)
-                st.plotly_chart(indicadors_preu_mitjanes(), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod_2023), use_container_width=True, responsive=True)
             left, right = st.columns((1,1))
             with left:
                 st.write("""<p><b>Preu per m\u00b2 útil per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
-                def indicadors_preum2_mitjanes():
-                    table76_tipo = bbdd_estudi_hab_mod_2023[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).apply(np.mean).reset_index()
-                    table76_total = bbdd_estudi_hab_mod_2023[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).apply(np.mean).reset_index()
-                    table76_total["TIPOG"] = "Total habitatges"
-                    table76 = pd.concat([table76_tipo, table76_total], axis=0)
-                    table76 = pd.merge(table76, bbdd_estudi_hab_mod_2023[["TIPOG","Total dormitoris"]].groupby(["TIPOG","Total dormitoris"]).size().reset_index().rename(columns={0:"Total"}), how="left", on=["TIPOG","Total dormitoris"])
-                    table76 = table76.rename(columns={"TIPOG":"Tipologia"})
-                    fig = px.bar(table76, x="Preu m2 útil", y="Total dormitoris", color="Tipologia", orientation='h', color_discrete_sequence=["#00D0A3","#AAC4BA","#008B6C"], barmode="group", title="", labels={'x':"Preu m\u00b2 útil (mitjana)", 'y':"Tipologia d'habitatge"})
-                    fig.layout.xaxis = dict(title="Preu per m\u00b2 útil", tickformat=",d")
-                    fig.layout.yaxis.title.text = "Nombre d'habitacions"
-                    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
-                    return(fig)
-                st.plotly_chart(indicadors_preum2_mitjanes(), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod_2023), use_container_width=True, responsive=True)
             with right:
                 st.write("""<p><b>Superfície útil per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
-                def indicadors_super_mitjanes():
-                    table76_tipo = bbdd_estudi_hab_mod_2023[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).apply(np.mean).reset_index()
-                    table76_total = bbdd_estudi_hab_mod_2023[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).apply(np.mean).reset_index()
-                    table76_total["TIPOG"] = "Total habitatges"
-                    table76 = pd.concat([table76_tipo, table76_total], axis=0)
-                    table76 = pd.merge(table76, bbdd_estudi_hab_mod_2023[["TIPOG","Total dormitoris"]].groupby(["TIPOG","Total dormitoris"]).size().reset_index().rename(columns={0:"Total"}), how="left", on=["TIPOG","Total dormitoris"])
-                    table76 = table76.rename(columns={"TIPOG":"Tipologia"})
-                    fig = px.bar(table76, x="Superfície útil", y="Total dormitoris", color="Tipologia", orientation='h', color_discrete_sequence=["#00D0A3","#AAC4BA","#008B6C"], barmode="group", title="", labels={'x':"Superfície útil", 'y':"Tipologia d'habitatge"})
-                    fig.layout.xaxis.title.text = "Superfície útil"
-                    fig.layout.yaxis.title.text = "Nombre d'habitacions"
-                    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
-                    return(fig)
-                st.plotly_chart(indicadors_super_mitjanes(), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod_2023), use_container_width=True, responsive=True)
 
         if selected_index=="Comparativa 2023-2022":
             left_col, right_col = st.columns((1, 1))
@@ -1253,65 +1646,18 @@ if selected == "Catalunya":
             with right_col:
                 st.markdown("")
                 st.write("""<p><b>Variació anual (%) dels principals indicadors per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
-                @st.cache_data(show_spinner="**Carregant les dades... Esperi, siusplau**", max_entries=500)
-                def plot_var_CAT():
-                    table117 = pd.read_excel(path + "Estudi_oferta_taules 2023.xlsx", sheet_name="table117", header=1).iloc[1:,]
-                    table121 = pd.read_excel(path + "Estudi_oferta_taules 2023.xlsx", sheet_name="table121", header=1).iloc[1:,]
-                    table125 = pd.read_excel(path + "Estudi_oferta_taules 2023.xlsx", sheet_name="table125", header=1).iloc[1:,]
-                    table117 = table117[(table117["Província"].isna()) & (table117["Municipi"].isna())][["Variació % Preu m2 útil","Variació % Preu mitjà", "Variació % Superfície útil"]]
-                    table121 = table121[(table121["Província"].isna()) & (table121["Municipi"].isna())][["Variació % Preu m2 útil","Variació % Preu mitjà", "Variació % Superfície útil"]]
-                    table125 = table125[(table125["Província"].isna()) & (table125["Municipi"].isna())][["Variació % Preu m2 útil","Variació % Preu mitjà", "Variació % Superfície útil"]]
-                    table_var = pd.concat([table117, table121, table125], axis=0)
-                    table_var["Tipologia"] = ["Total habitatges", "Habitatges unifamiliars", "Habitatges plurifamiliars"]
-                    table_var_melted = pd.melt(table_var, id_vars="Tipologia", var_name = "Variable")
-
-                    fig = px.bar(table_var_melted, x="Tipologia", y="value", color="Variable", color_discrete_sequence=["#008B6C","#00D0A3","#AAC4BA"], barmode="group", title="", labels={'x':"Preu m\u00b2 útil (mitjana)", 'y':"Tipologia d'habitatge"})
-                    fig.layout.xaxis.title.text = "Tipologia"
-                    fig.layout.yaxis.title.text = "Variació anual (%)"
-                    fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, x=0))
-                    return(fig)
-                st.plotly_chart(plot_var_CAT(), use_container_width=True, responsive=True)
-            def table_geo_cat(any_ini, any_fin):
-                df_cat = df_final_cat[(df_final_cat["Any"]>=any_ini) & (df_final_cat["Any"]<=any_fin)].drop_duplicates(["Any", "Tipologia", "Variable", "Valor"]).pivot(index=["Any"], columns=["Tipologia", "Variable"], values="Valor")
-                df_cat_n = df_cat.sort_index(axis=1, level=[0,1])
-                num_cols = df_cat_n.select_dtypes(include=['float64', 'int64']).columns
-                df_cat_n[num_cols] = df_cat_n[num_cols].round(0)
-                df_cat_n[num_cols] = df_cat_n[num_cols].astype(int)
-                num_cols = df_cat_n.select_dtypes(include=['float64', 'int']).columns
-                df_cat_n[num_cols] = df_cat_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
-                return(df_cat_n)
+                st.plotly_chart(plot_var_CAT(table117_23, table121_23, table125_23), use_container_width=True, responsive=True)
             st.markdown(table_geo_cat(2019, 2023).to_html(), unsafe_allow_html=True)
             st.markdown(filedownload(table_geo_cat(2019, 2022), f"Estudi_oferta_Catalunya.xlsx"), unsafe_allow_html=True)
 
 ############################################################  PROVÍNCIES I ÀMBITS TERRITORIALS ################################################
 
 if selected == "Províncies i àmbits":
-    def table_geo(geo, any_ini, any_fin, selected):
-        if selected=="Àmbits territorials":
-            df_prov_filtered = ambits_df[(ambits_df["GEO"]==geo) & (ambits_df["Any"]>=any_ini) & (ambits_df["Any"]<=any_fin)].pivot(index=["Any"], columns=["Tipologia", "Variable"], values="Valor")
-            df_prov_n = df_prov_filtered.sort_index(axis=1, level=[0,1])
-            num_cols = df_prov_n.select_dtypes(include=['float64', 'int64']).columns
-            df_prov_n[num_cols] = df_prov_n[num_cols].round(0)
-            df_prov_n[num_cols] = df_prov_n[num_cols].astype("float64")
-            num_cols = df_prov_n.select_dtypes(include=['float64', 'int']).columns
-            df_prov_n[num_cols] = df_prov_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
-            return(df_prov_n)
-        if selected=="Províncies" or selected=="Catalunya":
-            df_prov_filtered = provincia_df[(provincia_df["GEO"]==geo) & (provincia_df["Any"]>=any_ini) & (provincia_df["Any"]<=any_fin)].pivot(index=["Any"], columns=["Tipologia", "Variable"], values="Valor")
-            df_prov_n = df_prov_filtered.sort_index(axis=1, level=[0,1])
-            num_cols = df_prov_n.select_dtypes(include=['float64', 'int64']).columns
-            df_prov_n[num_cols] = df_prov_n[num_cols].round(0)
-            df_prov_n[num_cols] = df_prov_n[num_cols].astype(int)
-            num_cols = df_prov_n.select_dtypes(include=['float64', 'int']).columns
-            df_prov_n[num_cols] = df_prov_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
-            return(df_prov_n)
-    
     st.sidebar.header("**PROVÍNCIES I ÀMBITS TERRITORIALS DE CATALUNYA**")
     edicio_any = ["2022","2023"]
-    selected_edition = st.sidebar.radio("**Any**", edicio_any)
+    selected_edition = st.sidebar.radio("**Any**", edicio_any, edicio_any.index("2023"))
 
 ############################################################  PROVÍNCIES I ÀMBITS TERRITORIALS: 2022 ################################################
-
     if selected_edition=="2022":
         prov_names = ["Barcelona", "Girona", "Tarragona", "Lleida"]
         ambit_names = sorted([ambit_n for ambit_n in ambits_df["GEO"].unique().tolist() if ambit_n!="Catalunya"])
@@ -1415,174 +1761,33 @@ if selected == "Províncies i àmbits":
             min_year, max_year = st.sidebar.slider("**Interval d'anys de la mostra**", value=[2019, 2022], min_value=2019, max_value=2022)
             st.markdown(table_geo(selected_geo, min_year, max_year, selected_option).to_html(), unsafe_allow_html=True)
             st.markdown(filedownload(table_geo(selected_geo, min_year, max_year, selected_option), f"Estudi_oferta_{selected_geo}.xlsx"), unsafe_allow_html=True)
-            def tipog_donut(prov):
-                donut_tipog = bbdd_estudi_hab[bbdd_estudi_hab["PROVINCIA"]==prov][["PROVINCIA", "TIPO"]].value_counts(normalize=True).reset_index()
-                donut_tipog.columns = ["PROVINCIA", "TIPO", "Habitatges en oferta"]
-                fig = go.Figure()
-                fig.add_trace(go.Pie(
-                    labels=donut_tipog["TIPO"],
-                    values=donut_tipog["Habitatges en oferta"],
-                    hole=0.5, 
-                    showlegend=True, 
-                    marker=dict(
-                        colors=["#008B6C", "#00D0A3",  "#66b9a7", "#DAE4E0"], 
-                        line=dict(color='#FFFFFF', width=1) 
-                    ),
-                    textposition='outside',
-                    textinfo='percent+label' 
-                ))
-                fig.update_layout(
-                    title=f'Habitatges en oferta per tipologia',
-                    font=dict(size=12),
-                    legend=dict(
-                        x=0.85,  # Set legend position
-                        y=0.85
-                    )
-                )
-                return(fig)
-            def num_dorms_prov(prov):
-                table33_prov =  pd.crosstab(bbdd_estudi_hab_mod["PROVINCIA"], bbdd_estudi_hab_mod["Total dormitoris"]).reset_index().rename(columns={"PROVINCIA":"Província"})
-                table33_prov = table33_prov[table33_prov["Província"]==prov].drop("Província", axis=1).T.reset_index()
-                table33_prov.columns = ["Total dormitoris", "Habitatges en oferta"]
-
-                fig = go.Figure(go.Bar(x=table33_prov["Total dormitoris"], y=table33_prov["Habitatges en oferta"], marker_color='#66b9a7'))
-                fig.layout.yaxis = dict(title="Habitages en oferta", tickformat=",d")
-                fig.update_layout(
-                    title=f"Habitatges en oferta segons nombre d'habitacions",
-                    xaxis_title="Nombre d'habitacions",
-                )
-                return(fig)
-            def tipo_obra_prov(prov):
-                table38hab_prov = bbdd_estudi_hab[["PROVINCIA", "TIPH"]].value_counts().reset_index().sort_values(["PROVINCIA", "TIPH"])
-                table38hab_prov.columns = ["PROVINCIA", "TIPOLOGIA", "Habitatges"]
-                table38hab_prov = table38hab_prov.pivot_table(index="PROVINCIA", columns="TIPOLOGIA", values="Habitatges").reset_index().rename(columns={"PROVINCIA":"Província"})
-                table38hab_prov = table38hab_prov[table38hab_prov["Província"]==prov].drop("Província", axis=1).T.reset_index()
-                table38hab_prov.columns = ["Tipus", "Habitatges en oferta"]
-                fig = go.Figure()
-                fig.add_trace(go.Pie(
-                    labels=table38hab_prov["Tipus"],
-                    values=table38hab_prov["Habitatges en oferta"],
-                    hole=0.5, 
-                    showlegend=True, 
-                    marker=dict(
-                        colors=["#008B6C",  "#00D0A3"], 
-                        line=dict(color='#FFFFFF', width=1) 
-                    ),
-                    textposition='outside',
-                    textinfo='percent+label' 
-                ))
-                fig.update_layout(
-                    title=f'Habitatges en oferta per tipus (obra nova o rehabilitació)',
-                    font=dict(size=12),
-                    legend=dict(
-                        x=0.7,  # Set legend position
-                        y=0.85
-                    )
-                )
-                return(fig)
-            def metric_estat(prov):
-                table11_prov = bbdd_estudi_prom[["PROVINCIA", "HABIP"]].groupby("PROVINCIA").sum().reset_index()
-                hab_oferta = table11_prov[table11_prov["PROVINCIA"]==prov].iloc[0,1]
-                table17_hab_prov = bbdd_estudi_hab[["PROVINCIA", "ESTO"]].value_counts().reset_index().sort_values(["PROVINCIA", "ESTO"])
-                table17_hab_prov.columns = ["PROVINCIA","ESTAT", "PROMOCIONS"]
-                table17_hab_prov = table17_hab_prov.pivot_table(index="PROVINCIA", columns="ESTAT", values="PROMOCIONS").reset_index()
-                table17_hab_prov = table17_hab_prov[["PROVINCIA","Claus en mà"]].rename(columns={"PROVINCIA": "Província","Claus en mà":"Acabats sobre habitatges en oferta"})
-                acabats_oferta = table17_hab_prov[table17_hab_prov["Província"]==prov].iloc[0,1]
-                return([hab_oferta, acabats_oferta])
-            def metric_rehab(prov):
-                table38hab_prov = bbdd_estudi_hab[["PROVINCIA", "TIPH"]].value_counts().reset_index().sort_values(["PROVINCIA", "TIPH"])
-                table38hab_prov.columns = ["PROVINCIA", "TIPOLOGIA", "Habitatges"]
-                table38hab_prov = table38hab_prov.pivot_table(index="PROVINCIA", columns="TIPOLOGIA", values="Habitatges").reset_index().rename(columns={"PROVINCIA":"Província"})
-                table38hab_prov = table38hab_prov[table38hab_prov["Província"]==prov].drop("Província", axis=1).T.reset_index()
-                table38hab_prov.columns = ["Tipus", "Habitatges en oferta"]
-                return([table38hab_prov.iloc[0,1], table38hab_prov.iloc[1,1]])
-            def qualitats_prov(prov):
-                table62_hab = bbdd_estudi_hab[bbdd_estudi_hab["PROVINCIA"]==prov][["Aire condicionat","Bomba de calor","Aerotèrmia","Calefacció","Preinstal·lació d'A.C./B. Calor/Calefacció",'Parquet','Armaris encastats','Placa de cocció amb gas','Placa de cocció vitroceràmica',"Placa d'inducció",'Plaques solars']].sum(axis=0)
-                table62_hab = pd.DataFrame({"Equipaments":table62_hab.index, "Total":table62_hab.values})
-                table62_hab = table62_hab.set_index("Equipaments").apply(lambda row: (row / bbdd_estudi_hab.shape[0])*100)
-                table62_hab = table62_hab.sort_values("Total", ascending=True)
-                fig = go.Figure()
-                fig.add_trace(go.Bar(
-                    x=table62_hab["Total"],  # Use values as x-axis data
-                    y=table62_hab.index,  # Use categories as y-axis data
-                    orientation="h",  # Set orientation to horizontal
-                    marker=dict(color="#66b9a7"),  # Set bar color
-                ))
-                fig.update_layout(
-                    title="Qualitats d'habitatges en oferta",
-                    xaxis_title="% d'habitatges en oferta",
-                    yaxis_title="Qualitats",
-                )
-                return(fig)
-            def equipaments_prov(prov):
-                table67_hab = bbdd_estudi_hab[bbdd_estudi_hab["PROVINCIA"]==prov][["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0)
-                table67_hab = pd.DataFrame({"Equipaments":table67_hab.index, "Total":table67_hab.values})
-                table67_hab = table67_hab.set_index("Equipaments").apply(lambda row: row.mul(100) / bbdd_estudi_hab.shape[0])
-                table67_hab = table67_hab.sort_values("Total", ascending=True)
-                fig = go.Figure()
-                fig.add_trace(go.Bar(
-                    x=table67_hab["Total"],  # Use values as x-axis data
-                    y=table67_hab.index,  # Use categories as y-axis data
-                    orientation="h",  # Set orientation to horizontal
-                    marker=dict(color="#66b9a7"),  # Set bar color
-                ))
-                fig.update_layout(
-                    title="Equipaments d'habitatges en oferta",
-                    xaxis_title="% d'habitatges en oferta",
-                    yaxis_title="Equipaments",
-                )
-                return(fig)
-            
             left_col, right_col = st.columns((1,1))
             with left_col:
-                st.plotly_chart(tipog_donut(selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(tipog_donut(bbdd_estudi_hab, selected_geo), use_container_width=True, responsive=True)
             with right_col:
-                st.plotly_chart(num_dorms_prov(selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(num_dorms_prov(bbdd_estudi_hab_mod, selected_geo), use_container_width=True, responsive=True)
             left_col, right_col = st.columns((1,1))
             with left_col:
-                st.plotly_chart(qualitats_prov(selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(qualitats_prov(bbdd_estudi_hab, selected_geo), use_container_width=True, responsive=True)
             with right_col:
-                st.plotly_chart(equipaments_prov(selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(equipaments_prov(bbdd_estudi_hab, selected_geo), use_container_width=True, responsive=True)
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                def cons_acabats(prov):
-                    fig = go.Figure()
-                    fig.add_trace(go.Pie(
-                        labels=["Habitatges en construcció", "Habitatges acabats"],
-                        values=[metric_estat(prov)[0] - metric_estat(prov)[1], metric_estat(prov)[1]],
-                        hole=0.5, 
-                        showlegend=True, 
-                        marker=dict(
-                            colors=["#008B6C",  "#00D0A3"], 
-                            line=dict(color='#FFFFFF', width=1) 
-                        ),
-                        textposition='outside',
-                        textinfo='percent+label' 
-                    ))
-                    fig.update_layout(
-                        title=f'Habitatges en construcció i acabats',
-                        font=dict(size=12),
-                        legend=dict(
-                            x=0.7,  # Set legend position
-                            y=1.1
-                        )
-                    )
-                    return(fig)
-                st.plotly_chart(cons_acabats(selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(cons_acabats(bbdd_estudi_prom, selected_geo), use_container_width=True, responsive=True)
             with right_col:
                 st.markdown("")
                 st.markdown("")
-                st.metric("**Habitatges en oferta**", format(int(metric_estat(selected_geo)[0]), ",d"))
-                st.metric("**Habitatges en construcció**", format(int(metric_estat(selected_geo)[0] - metric_estat(selected_geo)[1]), ",d"))
-                st.metric("**Habitatges acabats**", format(int(metric_estat(selected_geo)[1]), ",d"))
+                st.metric("**Habitatges en oferta**", format(int(metric_estat(bbdd_estudi_prom, selected_geo)[0]), ",d"))
+                st.metric("**Habitatges en construcció**", format(int(metric_estat(bbdd_estudi_prom, selected_geo)[0] - metric_estat(bbdd_estudi_prom, selected_geo)[1]), ",d"))
+                st.metric("**Habitatges acabats**", format(int(metric_estat(bbdd_estudi_prom, selected_geo)[1]), ",d"))
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                st.plotly_chart(tipo_obra_prov(selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab, selected_geo), use_container_width=True, responsive=True)
             with right_col:
                 st.markdown("")
                 st.markdown("")
-                st.metric("**Habitatges de nova construcció**", format(int(metric_rehab(selected_geo)[0]), ",d"))
-                st.metric("**Habitatges de rehabilitació integral**", format(int(metric_rehab(selected_geo)[1]), ",d"))
+                st.metric("**Habitatges de nova construcció**", format(int(metric_rehab(bbdd_estudi_hab, selected_geo)[0]), ",d"))
+                st.metric("**Habitatges de rehabilitació integral**", format(int(metric_rehab(bbdd_estudi_hab, selected_geo)[1]), ",d"))
 
 ############################################################  PROVÍNCIES I ÀMBITS TERRITORIALS: 2023 ################################################
 
@@ -1684,172 +1889,46 @@ if selected == "Províncies i àmbits":
             min_year, max_year = st.sidebar.slider("**Interval d'anys de la mostra**", value=[2019, 2023], min_value=2019, max_value=2023)
             st.markdown(table_geo(selected_geo, min_year, max_year, selected_option).to_html(), unsafe_allow_html=True)
             st.markdown(filedownload(table_geo(selected_geo, min_year, max_year, selected_option), f"Estudi_oferta_{selected_geo}.xlsx"), unsafe_allow_html=True)
-            def tipog_donut(prov):
-                donut_tipog = bbdd_estudi_hab_2023[bbdd_estudi_hab_2023["PROVINCIA"]==prov][["PROVINCIA", "TIPO"]].value_counts(normalize=True).reset_index()
-                donut_tipog.columns = ["PROVINCIA", "TIPO", "Habitatges en oferta"]
-                fig = go.Figure()
-                fig.add_trace(go.Pie(
-                    labels=donut_tipog["TIPO"],
-                    values=donut_tipog["Habitatges en oferta"],
-                    hole=0.5, 
-                    showlegend=True, 
-                    marker=dict(
-                        colors=["#008B6C", "#00D0A3",  "#AAC4BA", "#DAE4E0"], 
-                        line=dict(color='#FFFFFF', width=1) 
-                    ),
-                    textposition='outside',
-                    textinfo='percent+label' 
-                ))
-                fig.update_layout(
-                    title=f'Habitatges en oferta per tipologia',
-                    font=dict(size=12),
-                    legend=dict(
-                        x=0.85,  # Set legend position
-                        y=0.85
-                    )
-                )
-                return(fig)
-            def num_dorms_prov(prov):
-                table33_prov =  pd.crosstab(bbdd_estudi_hab_mod_2023["PROVINCIA"], bbdd_estudi_hab_mod_2023["Total dormitoris"]).reset_index().rename(columns={"PROVINCIA":"Província"})
-                table33_prov = table33_prov[table33_prov["Província"]==prov].drop("Província", axis=1).T.reset_index()
-                table33_prov.columns = ["Total dormitoris", "Habitatges en oferta"]
-
-                fig = go.Figure(go.Bar(x=table33_prov["Total dormitoris"], y=table33_prov["Habitatges en oferta"], marker_color='#66b9a7'))
-                fig.layout.yaxis = dict(title="Habitages en oferta", tickformat=",d")
-                fig.update_layout(
-                    title=f"Habitatges en oferta segons nombre d'habitacions",
-                    xaxis_title="Nombre d'habitacions",
-                )
-                return(fig)
-            def tipo_obra_prov(prov):
-                table38hab_prov = bbdd_estudi_hab_2023[["PROVINCIA", "TIPH"]].value_counts().reset_index().sort_values(["PROVINCIA", "TIPH"])
-                table38hab_prov.columns = ["PROVINCIA", "TIPOLOGIA", "Habitatges"]
-                table38hab_prov = table38hab_prov.pivot_table(index="PROVINCIA", columns="TIPOLOGIA", values="Habitatges").reset_index().rename(columns={"PROVINCIA":"Província"})
-                table38hab_prov = table38hab_prov[table38hab_prov["Província"]==prov].drop("Província", axis=1).T.reset_index()
-                table38hab_prov.columns = ["Tipus", "Habitatges en oferta"]
-                fig = go.Figure()
-                fig.add_trace(go.Pie(
-                    labels=table38hab_prov["Tipus"],
-                    values=table38hab_prov["Habitatges en oferta"],
-                    hole=0.5, 
-                    showlegend=True, 
-                    marker=dict(
-                        colors=["#008B6C",  "#00D0A3"], 
-                        line=dict(color='#FFFFFF', width=1) 
-                    ),
-                    textposition='outside',
-                    textinfo='percent+label' 
-                ))
-                fig.update_layout(
-                    title=f'Habitatges en oferta per tipus (obra nova o rehabilitació)',
-                    font=dict(size=12),
-                    legend=dict(
-                        x=0.7,  # Set legend position
-                        y=0.85
-                    )
-                )
-                return(fig)
-            def metric_estat(prov):
-                table11_prov = bbdd_estudi_prom_2023[["PROVINCIA", "HABIP"]].groupby("PROVINCIA").sum().reset_index()
-                hab_oferta = table11_prov[table11_prov["PROVINCIA"]==prov].iloc[0,1]
-                table17_hab_prov = bbdd_estudi_hab_2023[["PROVINCIA", "ESTO"]].value_counts().reset_index().sort_values(["PROVINCIA", "ESTO"])
-                table17_hab_prov.columns = ["PROVINCIA","ESTAT", "PROMOCIONS"]
-                table17_hab_prov = table17_hab_prov.pivot_table(index="PROVINCIA", columns="ESTAT", values="PROMOCIONS").reset_index()
-                table17_hab_prov = table17_hab_prov[["PROVINCIA","Claus en mà"]].rename(columns={"PROVINCIA": "Província","Claus en mà":"Acabats sobre habitatges en oferta"})
-                acabats_oferta = table17_hab_prov[table17_hab_prov["Província"]==prov].iloc[0,1]
-                return([hab_oferta, acabats_oferta])
-            def metric_rehab(prov):
-                table38hab_prov = bbdd_estudi_hab_2023[["PROVINCIA", "TIPH"]].value_counts().reset_index().sort_values(["PROVINCIA", "TIPH"])
-                table38hab_prov.columns = ["PROVINCIA", "TIPOLOGIA", "Habitatges"]
-                table38hab_prov = table38hab_prov.pivot_table(index="PROVINCIA", columns="TIPOLOGIA", values="Habitatges").reset_index().rename(columns={"PROVINCIA":"Província"})
-                table38hab_prov = table38hab_prov[table38hab_prov["Província"]==prov].drop("Província", axis=1).T.reset_index()
-                table38hab_prov.columns = ["Tipus", "Habitatges en oferta"]
-                return([table38hab_prov.iloc[0,1], table38hab_prov.iloc[1,1]])
             left_col, right_col = st.columns((1,1))
             with left_col:
-                st.plotly_chart(tipog_donut(selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(tipog_donut(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, responsive=True)
             with right_col:
-                st.plotly_chart(num_dorms_prov(selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(num_dorms_prov(bbdd_estudi_hab_mod_2023, selected_geo), use_container_width=True, responsive=True)
+            left_col, right_col = st.columns((1,1))
+            with left_col:
+                st.plotly_chart(qualitats_prov(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, responsive=True)
+            with right_col:
+                st.plotly_chart(equipaments_prov(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, responsive=True)
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                def cons_acabats(prov):
-                    fig = go.Figure()
-                    fig.add_trace(go.Pie(
-                        labels=["Habitatges en construcció", "Habitatges acabats"],
-                        values=[metric_estat(prov)[0] - metric_estat(prov)[1], metric_estat(prov)[1]],
-                        hole=0.5, 
-                        showlegend=True, 
-                        marker=dict(
-                            colors=["#008B6C",  "#00D0A3"], 
-                            line=dict(color='#FFFFFF', width=1) 
-                        ),
-                        textposition='outside',
-                        textinfo='percent+label' 
-                    ))
-                    fig.update_layout(
-                        title=f'Habitatges en construcció i acabats',
-                        font=dict(size=12),
-                        legend=dict(
-                            x=0.7,  # Set legend position
-                            y=1.1
-                        )
-                    )
-                    return(fig)
-                st.plotly_chart(cons_acabats(selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(cons_acabats(bbdd_estudi_prom_2023, selected_geo), use_container_width=True, responsive=True)
             with right_col:
                 st.markdown("")
                 st.markdown("")
-                st.metric("**Habitatges en oferta**", format(int(metric_estat(selected_geo)[0]), ",d"))
-                st.metric("**Habitatges en construcció**", format(int(metric_estat(selected_geo)[0] - metric_estat(selected_geo)[1]), ",d"))
-                st.metric("**Habitatges acabats**", format(int(metric_estat(selected_geo)[1]), ",d"))
+                st.metric("**Habitatges en oferta**", format(int(metric_estat(bbdd_estudi_prom_2023, selected_geo)[0]), ",d"))
+                st.metric("**Habitatges en construcció**", format(int(metric_estat(bbdd_estudi_prom_2023, selected_geo)[0] - metric_estat(bbdd_estudi_prom_2023, selected_geo)[1]), ",d"))
+                st.metric("**Habitatges acabats**", format(int(metric_estat(bbdd_estudi_prom_2023, selected_geo)[1]), ",d"))
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                st.plotly_chart(tipo_obra_prov(selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, responsive=True)
             with right_col:
                 st.markdown("")
                 st.markdown("")
-                st.metric("**Habitatges de nova construcció**", format(int(metric_rehab(selected_geo)[0]), ",d"))
-                st.metric("**Habitatges de rehabilitació integral**", format(int(metric_rehab(selected_geo)[1]), ",d"))
+                st.metric("**Habitatges de nova construcció**", format(int(metric_rehab(bbdd_estudi_hab_2023, selected_geo)[0]), ",d"))
+                st.metric("**Habitatges de rehabilitació integral**", format(int(metric_rehab(bbdd_estudi_hab_2023, selected_geo)[1]), ",d"))
 ############################################################  MUNICIPIS DE CATALUNYA ################################################
 if selected == "Municipis":
     st.sidebar.header("**MUNICIPIS DE CATALUNYA**")
     edicio_any = ["2022","2023"]
-    selected_edition = st.sidebar.radio("**Any**", edicio_any)
-
+    selected_edition = st.sidebar.radio("**Any**", edicio_any, edicio_any.index("2023"))
 ############################################################  MUNICIPIS: 2022 ################################################
     if selected_edition=="2022":
         mun_names = sorted([name for name in df_vf[(df_vf["Any"]==2022) & (~df_vf["Valor"].isna())]["GEO"].unique() if name != "Catalunya"])
         selected_mun = st.sidebar.selectbox('**Municipi seleccionat:**', mun_names, index= mun_names.index("Barcelona"))
         st.subheader(f"MUNICIPI DE {selected_mun.upper().split(',')[0].strip()}")
-        def data_text(selected_mun):
-            table80_mun = bbdd_estudi_hab_mod[bbdd_estudi_hab_mod["Municipi"]==selected_mun][["Municipi", "TIPOG", "Superfície útil", "Preu mitjà", "Preu m2 útil"]].groupby(["Municipi"]).agg({"Municipi":['count'], "Superfície útil": [np.mean], "Preu mitjà": [np.mean], "Preu m2 útil": [np.mean]}).reset_index()
-            table25_mun = bbdd_estudi_hab[bbdd_estudi_hab_mod["Municipi"]==selected_mun][["Municipi", "TIPOG"]].value_counts(normalize=True).reset_index().rename(columns={0:"Proporció"})
-            table61_hab = bbdd_estudi_hab[bbdd_estudi_hab_mod["Municipi"]==selected_mun].groupby(['Total dormitoris']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
-            table61_lav = bbdd_estudi_hab[bbdd_estudi_hab_mod["Municipi"]==selected_mun].groupby(['Banys i lavabos']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
-
-            try:
-                proporcio_tipo = round(table25_mun[table25_mun["TIPOG"]=="Habitatges plurifamiliars"]["Proporció"].values[0]*100,2)
-            except IndexError:
-                proporcio_tipo = 0
-
-            return([round(table80_mun["Preu mitjà"].values[0][0],2), round(table80_mun["Superfície útil"].values[0][0],2), 
-                    round(table80_mun["Preu m2 útil"].values[0][0],2), proporcio_tipo, 
-                    table61_hab["Total dormitoris"].values[0], table61_lav["Banys i lavabos"].values[0]])
         st.markdown(f"""Els resultats de l'Estudi d'Oferta de Nova Construcció del 2022 pel municipi de {selected_mun.split(',')[0].strip()} mostren que el preu mitjà dels habitatges en venda es troba 
-        en {data_text(selected_mun)[0]:,.1f} € amb una superfície mitjana útil de {data_text(selected_mun)[1]:,.1f} m\u00b2. Per tant, el preu per m\u00b2 útil es troba en {data_text(selected_mun)[2]:,.1f} € de mitjana. Per tipologies, els habitatges plurifamiliars
-        representen el {data_text(selected_mun)[3]:,.1f}% sobre el total d'habitatges, la resta corresponen a habitatges unifamiliars. L'habitatge modal o més freqüent de nova construcció té {data_text(selected_mun)[4]} habitacions i {data_text(selected_mun)[5]} banys o lavabos.""")
-
-        def plotmun_streamlit(data, selected_mun, kpi):
-            df = data[(data['Municipi']==selected_mun)]
-            fig = px.histogram(df, x=kpi, title= "", labels={'x':kpi, 'y':'Freqüència'})
-            fig.data[0].marker.color = "#66b9a7"
-            fig.layout.xaxis.title.text = kpi
-            fig.layout.yaxis.title.text = 'Freqüència'
-            mean_val = df[kpi].mean()
-            fig.layout.shapes = [dict(type='line', x0=mean_val, y0=0, x1=mean_val, y1=1, yref='paper', xref='x', 
-                                    line=dict(color="black", width=2, dash='dot'))]
-            return(fig)
-
+        en {data_text_mun(bbdd_estudi_hab, bbdd_estudi_hab_mod, selected_mun)[0]:,.1f} € amb una superfície mitjana útil de {data_text_mun(bbdd_estudi_hab, bbdd_estudi_hab_mod, selected_mun)[1]:,.1f} m\u00b2. Per tant, el preu per m\u00b2 útil es troba en {data_text_mun(bbdd_estudi_hab, bbdd_estudi_hab_mod, selected_mun)[2]:,.1f} € de mitjana. Per tipologies, els habitatges plurifamiliars
+        representen el {data_text_mun(bbdd_estudi_hab, bbdd_estudi_hab_mod,selected_mun)[3]:,.1f}% sobre el total d'habitatges, la resta corresponen a habitatges unifamiliars. L'habitatge modal o més freqüent de nova construcció té {data_text_mun(bbdd_estudi_hab, bbdd_estudi_hab_mod, selected_mun)[4]} habitacions i {data_text_mun(bbdd_estudi_hab, bbdd_estudi_hab_mod, selected_mun)[5]} banys o lavabos.""")
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown(f"""**Distribució de preus per m\u00b2 útil**""")
@@ -1857,42 +1936,10 @@ if selected == "Municipis":
         with right_col:
             st.markdown(f"""**Distribució de superfície útil**""")
             st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod, selected_mun, "Superfície útil"), use_container_width=True, responsive=True)
-
         st.markdown(f"""
         **Tipologia d'habitatges de les promocions**
         """)
-        def count_plot_mun(data, selected_mun):
-            df = data[data['Municipi']==selected_mun]
-            df = df["TIPOG"].value_counts().sort_values(ascending=True)
-            fig = px.bar(df, y=df.index, x=df.values, orientation='h', title="", 
-                        labels={'x':"Número d'habitatges", 'y':"TIPOG"}, text= df.values)
-            fig.layout.xaxis = dict(title="Nombre d'habitatges", tickformat=",d")
-            fig.layout.yaxis.title.text = "Tipologia"
-            fig.update_traces(marker=dict(color="#66b9a7"))
-            return fig
-
         st.plotly_chart(count_plot_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, responsive=True)
-
-        def dormscount_plot_mun(data, selected_mun):
-            df = data[data['Municipi']==selected_mun]
-            custom_order = ["0D", "1D", "2D", "3D", "4D", "5+D"]
-            df = df["Total dormitoris"].value_counts().reindex(custom_order)
-            fig = px.bar(df,  y=df.values, x=df.index,title="", labels={'x':"Número d'habitacions", 'y':"Número d'habitatges"}, text= df.values)
-            fig.layout.yaxis = dict(title="Nombre d'habitatges", tickformat=",d")
-            fig.layout.xaxis.title.text = "Nombre d'habitacions"
-            fig.update_traces(marker=dict(color="#66b9a7"))
-            return fig
-        
-        def lavcount_plot_mun(data, selected_mun):
-            df = data[data['Municipi']==selected_mun]
-
-            df = df["Banys i lavabos"].value_counts().sort_values(ascending=True)
-            fig = px.bar(df,  y=df.values, x=df.index,title="", labels={'x':"Número de lavabos", 'y':"Número d'habitatges"}, text= df.values)
-            fig.layout.yaxis = dict(title="Nombre d'habitatges", tickformat=",d")
-            fig.layout.xaxis.title.text = "Nombre de lavabos"
-            fig.update_traces(marker=dict(color="#66b9a7"))
-            return fig
-
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
@@ -1901,49 +1948,13 @@ if selected == "Municipis":
         with right_col:
             st.markdown("""**Habitatges a la venda segons número de banys i lavabos**""")
             st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, responsive=True)
-
-
         st.subheader("Comparativa amb anys anteriors: Municipi de " + selected_mun.split(',')[0].strip())
-
-        def table_mun(Municipi, any_ini, any_fin):
-            df_mun_filtered = df_final[(df_final["GEO"]==Municipi) & (df_final["Any"]>=any_ini) & (df_final["Any"]<=any_fin)].drop(["Àmbits territorials","Corones","Comarques","Província", "codiine"], axis=1).pivot(index=["Any"], columns=["Tipologia", "Variable"], values="Valor")
-            df_mun_unitats = df_final[(df_final["GEO"]==Municipi) & (df_final["Any"]>=any_ini) & (df_final["Any"]<=any_fin)].drop(["Àmbits territorials","Corones","Comarques","Província", "codiine"], axis=1).drop_duplicates(["Any","Tipologia","Unitats"]).pivot(index=["Any"], columns=["Tipologia"], values="Unitats")
-            df_mun_unitats.columns= [("HABITATGES PLURIFAMILIARS", "Unitats"), ("HABITATGES UNIFAMILIARS", "Unitats"), ("TOTAL HABITATGES", "Unitats")]
-            df_mun_n = pd.concat([df_mun_filtered, df_mun_unitats], axis=1)
-            # df_mun_n[("HABITATGES PLURIFAMILIARS", "Unitats %")] = (df_mun_n[("HABITATGES PLURIFAMILIARS", "Unitats")]/df_mun_n[("TOTAL HABITATGES", "Unitats")])*100
-            # df_mun_n[("HABITATGES UNIFAMILIARS", "Unitats %")] = (df_mun_n[("HABITATGES UNIFAMILIARS", "Unitats")] /df_mun_n[("TOTAL HABITATGES", "Unitats")])*100
-            df_mun_n = df_mun_n.sort_index(axis=1, level=[0,1])
-            num_cols = df_mun_n.select_dtypes(include=['float64', 'Int64']).columns
-            df_mun_n[num_cols] = df_mun_n[num_cols].round(0)
-            df_mun_n[num_cols] = df_mun_n[num_cols].astype("Int64")
-            num_cols = df_mun_n.select_dtypes(include=['float64', 'Int64']).columns
-            df_mun_n[num_cols] = df_mun_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
-            return(df_mun_n)
         left_col, right_col = st.columns((1,1))
         with left_col:
             min_year, max_year = st.sidebar.slider("**Interval d'anys de la mostra:**", value=[2019, 2022], min_value=2019, max_value=2022)
         st.markdown(table_mun(selected_mun, min_year, max_year).to_html(), unsafe_allow_html=True)
         st.markdown(filedownload(table_mun(selected_mun, min_year, max_year), f"Estudi_oferta_{selected_mun}.xlsx"), unsafe_allow_html=True)
         st.markdown("")
-        def plot_mun_hist_units(selected_mun, variable_int, any_ini, any_fin):
-            df_preus = df_vf_aux[(df_vf_aux['Variable']==variable_int) & (df_vf_aux['GEO']==selected_mun) & (df_vf_aux["Any"]>=any_ini) & (df_vf_aux["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
-            df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
-            df_preus['Any'] = df_preus['Any'].astype(int)
-            df_preus = df_preus[df_preus["Tipologia"]!="TOTAL HABITATGES"]
-            fig = px.bar(df_preus, x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text= "Valor")
-            fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
-            valid_years = sorted(df_preus['Any'].unique())
-            fig.update_xaxes(tickvals=valid_years)
-            fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1.05, xanchor='right', x=0.75))
-            return fig
-        def plot_mun_hist(selected_mun, variable_int, any_ini, any_fin):
-            df_preus = df_vf[(df_vf['Variable']==variable_int) & (df_vf['GEO']==selected_mun) & (df_vf["Any"]>=any_ini) & (df_vf["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
-            df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
-            df_preus['Any'] = df_preus['Any'].astype(int)
-            fig = px.bar(df_preus, x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#008B6C","#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text='Valor', barmode='group')
-            fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
-            fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
-            return fig
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució dels habitatges de nova construcció per tipologia d'habitatge**""")
@@ -1964,35 +1975,9 @@ if selected == "Municipis":
         mun_names = sorted([name for name in df_vf[(df_vf["Any"]==2023) & (~df_vf["Valor"].isna())]["GEO"].unique() if name != "Catalunya"])
         selected_mun = st.sidebar.selectbox('**Municipi seleccionat:**', mun_names, index= mun_names.index("Barcelona"))
         st.subheader(f"MUNICIPI DE {selected_mun.upper().split(',')[0].strip()}")
-        def data_text(selected_mun):
-            table80_mun = bbdd_estudi_hab_2023[bbdd_estudi_hab_2023["Municipi"]==selected_mun][["Municipi", "TIPOG", "Superfície útil", "Preu mitjà", "Preu m2 útil"]].groupby(["Municipi"]).agg({"Municipi":['count'], "Superfície útil": [np.mean], "Preu mitjà": [np.mean], "Preu m2 útil": [np.mean]}).reset_index()
-            table25_mun = bbdd_estudi_hab_2023[bbdd_estudi_hab_2023["Municipi"]==selected_mun][["Municipi", "TIPOG"]].value_counts(normalize=True).reset_index().rename(columns={0:"Proporció"})
-            table61_hab = bbdd_estudi_hab_2023[bbdd_estudi_hab_2023["Municipi"]==selected_mun].groupby(['Total dormitoris']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
-            table61_lav = bbdd_estudi_hab_2023[bbdd_estudi_hab_2023["Municipi"]==selected_mun].groupby(['Banys i lavabos']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
-            try:
-                proporcio_tipo = round(table25_mun[table25_mun["TIPOG"]=="Habitatges plurifamiliars"]["Proporció"].values[0]*100,2)
-            except IndexError:
-                proporcio_tipo = 0
-
-            return([round(table80_mun["Preu mitjà"].values[0][0],2), round(table80_mun["Superfície útil"].values[0][0],2), 
-                    round(table80_mun["Preu m2 útil"].values[0][0],2), proporcio_tipo, 
-                    table61_hab["Total dormitoris"].values[0], table61_lav["Banys i lavabos"].values[0]])
-
         st.markdown(f"""Els resultats de l'Estudi d'Oferta de nova construcció del 2023 pel municipi de {selected_mun.split(',')[0].strip()} mostren que el preu mitjà dels habitatges en venda es troba 
-        en {data_text(selected_mun)[0]:,.1f} € amb una superfície mitjana útil de {data_text(selected_mun)[1]:,.1f} m\u00b2. Per tant, el preu per m\u00b2 útil es troba en {data_text(selected_mun)[2]:,.1f} € de mitjana. Per tipologies, els habitatges plurifamiliars
-        representen el {data_text(selected_mun)[3]:,.1f}% sobre el total d'habitatges, la resta corresponen a habitatges unifamiliars. L'habitatge modal o més freqüent de nova construcció té {data_text(selected_mun)[4]} habitacions i {data_text(selected_mun)[5]} banys o lavabos.""")
-
-        def plotmun_streamlit(data, selected_mun, kpi):
-            df = data[(data['Municipi']==selected_mun)]
-            fig = px.histogram(df, x=kpi, title= "", labels={'x':kpi, 'y':'Freqüència'})
-            fig.data[0].marker.color = "#66b9a7"
-            fig.layout.xaxis.title.text = kpi
-            fig.layout.yaxis.title.text = 'Freqüència'
-            mean_val = df[kpi].mean()
-            fig.layout.shapes = [dict(type='line', x0=mean_val, y0=0, x1=mean_val, y1=1, yref='paper', xref='x', 
-                                    line=dict(color="black", width=2, dash='dot'))]
-            return(fig)
-
+        en {data_text_mun(bbdd_estudi_hab_2023, bbdd_estudi_hab_mod_2023, selected_mun)[0]:,.1f} € amb una superfície mitjana útil de {data_text_mun(bbdd_estudi_hab_2023, bbdd_estudi_hab_mod_2023, selected_mun)[1]:,.1f} m\u00b2. Per tant, el preu per m\u00b2 útil es troba en {data_text_mun(bbdd_estudi_hab_2023, bbdd_estudi_hab_mod_2023, selected_mun)[2]:,.1f} € de mitjana. Per tipologies, els habitatges plurifamiliars
+        representen el {data_text_mun(bbdd_estudi_hab_2023, bbdd_estudi_hab_mod_2023, selected_mun)[3]:,.1f}% sobre el total d'habitatges, la resta corresponen a habitatges unifamiliars. L'habitatge modal o més freqüent de nova construcció té {data_text_mun(bbdd_estudi_hab_2023, bbdd_estudi_hab_mod_2023, selected_mun)[4]} habitacions i {data_text_mun(bbdd_estudi_hab_2023, bbdd_estudi_hab_mod_2023, selected_mun)[5]} banys o lavabos.""")
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown(f"""**Distribució de Preus per m\u00b2 útil**""")
@@ -2003,38 +1988,7 @@ if selected == "Municipis":
         st.markdown(f"""
         **Tipologia d'habitatges de les promocions**
         """)
-        def count_plot_mun(data, selected_mun):
-            df = data[data['Municipi']==selected_mun]
-            df = df["TIPOG"].value_counts().sort_values(ascending=True)
-            fig = px.bar(df, y=df.index, x=df.values, orientation='h', title="", 
-                        labels={'x':"Número d'habitatges", 'y':"TIPOG"}, text= df.values)
-            fig.layout.xaxis = dict(title="Nombre d'habitatges", tickformat=",d")
-            fig.layout.yaxis.title.text = "Tipologia"
-            fig.update_traces(marker=dict(color="#66b9a7"))
-            return fig
-
         st.plotly_chart(count_plot_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, responsive=True)
-
-        def dormscount_plot_mun(data, selected_mun):
-            df = data[data['Municipi']==selected_mun]
-            custom_order = ["0D", "1D", "2D", "3D", "4D", "5+D"]
-            df = df["Total dormitoris"].value_counts().reindex(custom_order)
-            fig = px.bar(df,  y=df.values, x=df.index,title="", labels={'x':"Número d'habitacions", 'y':"Número d'habitatges"}, text= df.values)
-            fig.layout.yaxis = dict(title="Nombre d'habitatges", tickformat=",d")
-            fig.layout.xaxis.title.text = "Nombre d'habitacions"
-            fig.update_traces(marker=dict(color="#66b9a7"))
-            return fig
-        
-        def lavcount_plot_mun(data, selected_mun):
-            df = data[data['Municipi']==selected_mun]
-
-            df = df["Banys i lavabos"].value_counts().sort_values(ascending=True)
-            fig = px.bar(df,  y=df.values, x=df.index,title="", labels={'x':"Número de lavabos", 'y':"Número d'habitatges"}, text= df.values)
-            fig.layout.yaxis = dict(title="Nombre d'habitatges", tickformat=",d")
-            fig.layout.xaxis.title.text = "Nombre de lavabos"
-            fig.update_traces(marker=dict(color="#66b9a7"))
-            return fig
-
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
@@ -2043,49 +1997,13 @@ if selected == "Municipis":
         with right_col:
             st.markdown("""**Habitatges a la venda segons número de Banys i lavabos**""")
             st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, responsive=True)
-
-
         st.subheader("Comparativa amb anys anteriors: Municipi de " + selected_mun.split(',')[0].strip())
-
-        def table_mun(Municipi, any_ini, any_fin):
-            df_mun_filtered = df_final[(df_final["GEO"]==Municipi) & (df_final["Any"]>=any_ini) & (df_final["Any"]<=any_fin)].drop(["Àmbits territorials","Corones","Comarques","Província", "codiine"], axis=1).pivot(index=["Any"], columns=["Tipologia", "Variable"], values="Valor")
-            df_mun_unitats = df_final[(df_final["GEO"]==Municipi) & (df_final["Any"]>=any_ini) & (df_final["Any"]<=any_fin)].drop(["Àmbits territorials","Corones","Comarques","Província", "codiine"], axis=1).drop_duplicates(["Any","Tipologia","Unitats"]).pivot(index=["Any"], columns=["Tipologia"], values="Unitats")
-            df_mun_unitats.columns= [("HABITATGES PLURIFAMILIARS", "Unitats"), ("HABITATGES UNIFAMILIARS", "Unitats"), ("TOTAL HABITATGES", "Unitats")]
-            df_mun_n = pd.concat([df_mun_filtered, df_mun_unitats], axis=1)
-            # df_mun_n[("HABITATGES PLURIFAMILIARS", "Unitats %")] = (df_mun_n[("HABITATGES PLURIFAMILIARS", "Unitats")]/df_mun_n[("TOTAL HABITATGES", "Unitats")])*100
-            # df_mun_n[("HABITATGES UNIFAMILIARS", "Unitats %")] = (df_mun_n[("HABITATGES UNIFAMILIARS", "Unitats")] /df_mun_n[("TOTAL HABITATGES", "Unitats")])*100
-            df_mun_n = df_mun_n.sort_index(axis=1, level=[0,1])
-            num_cols = df_mun_n.select_dtypes(include=['float64', 'Int64']).columns
-            df_mun_n[num_cols] = df_mun_n[num_cols].round(0)
-            df_mun_n[num_cols] = df_mun_n[num_cols].astype("Int64")
-            num_cols = df_mun_n.select_dtypes(include=['float64', 'Int64']).columns
-            df_mun_n[num_cols] = df_mun_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
-            return(df_mun_n)
         left_col, right_col = st.columns((1,1))
         with left_col:
             min_year, max_year = st.sidebar.slider("**Interval d'anys de la mostra:**", value=[2019, 2023], min_value=2019, max_value=2023)
         st.markdown(table_mun(selected_mun, min_year, max_year).to_html(), unsafe_allow_html=True)
         st.markdown(filedownload(table_mun(selected_mun, min_year, max_year), f"Estudi_oferta_{selected_mun}.xlsx"), unsafe_allow_html=True)
         st.markdown("")
-        def plot_mun_hist_units(selected_mun, variable_int, any_ini, any_fin):
-            df_preus = df_vf_aux[(df_vf_aux['Variable']==variable_int) & (df_vf_aux['GEO']==selected_mun) & (df_vf_aux["Any"]>=any_ini) & (df_vf_aux["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
-            df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
-            df_preus['Any'] = df_preus['Any'].astype(int)
-            df_preus = df_preus[df_preus["Tipologia"]!="TOTAL HABITATGES"]
-            fig = px.bar(df_preus, x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text= "Valor")
-            fig.layout.yaxis = dict(title="Unitats", tickformat=",d")
-            valid_years = sorted(df_preus['Any'].unique())
-            fig.update_xaxes(tickvals=valid_years)
-            fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1.05, xanchor='right', x=0.75))
-            return fig
-        def plot_mun_hist(selected_mun, variable_int, any_ini, any_fin):
-            df_preus = df_vf[(df_vf['Variable']==variable_int) & (df_vf['GEO']==selected_mun) & (df_vf["Any"]>=any_ini) & (df_vf["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
-            df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
-            df_preus['Any'] = df_preus['Any'].astype(int)
-            fig = px.bar(df_preus, x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#008B6C","#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text='Valor', barmode='group')
-            fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
-            fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
-            return fig
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució dels habitatges de nova construcció per tipologia d'habitatge**""")
@@ -2100,15 +2018,11 @@ if selected == "Municipis":
         with right_col:
             st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
             st.plotly_chart(plot_mun_hist(selected_mun, "Preu mitjà de venda de l'habitatge (€)", min_year, max_year), use_container_width=True, responsive=True)
-
-
 ############################################################  DISTRICTES DE BARCELONA ################################################
 if selected=="Districtes de Barcelona":
     st.sidebar.header("**DISTRICTES DE BARCELONA**")
     edicio_any = ["2022","2023"]
-    selected_edition = st.sidebar.radio("**Any**", edicio_any)
-
-
+    selected_edition = st.sidebar.radio("**Any**", edicio_any, edicio_any.index("2023"))
 ############################################################  DISTRICTES DE BARCELONA: 2022 ################################################
     if selected_edition=="2022":
         dis_names_aux_num = sorted(bbdd_estudi_prom["Nom DIST"].dropna().unique().tolist())
@@ -2170,30 +2084,9 @@ if selected=="Districtes de Barcelona":
                     preu de 630.559€ i un preu mitjà del metre quadrat útil
                     de 7.487€.""")
         st.subheader(f"{selected_dis.upper()}")
-        def data_text(selected_dis):
-            table80_dis = bbdd_estudi_hab[(bbdd_estudi_hab["Municipi"]=="Barcelona") & (bbdd_estudi_hab["Nom DIST"]==selected_dis)][["Nom DIST", "TIPOG", "Superfície útil", "Preu mitjà", "Preu m2 útil"]].groupby(["Nom DIST"]).agg({"Nom DIST":['count'], "Superfície útil": [np.mean], "Preu mitjà": [np.mean], "Preu m2 útil": [np.mean]}).reset_index()
-            table25_dis = bbdd_estudi_hab[(bbdd_estudi_hab["Municipi"]=="Barcelona") & (bbdd_estudi_hab["Nom DIST"]==selected_dis)][["Nom DIST", "TIPOG"]].value_counts(normalize=True).reset_index().rename(columns={0:"Proporció"})
-            table61_hab = bbdd_estudi_hab[(bbdd_estudi_hab["Municipi"]=="Barcelona") & (bbdd_estudi_hab["Nom DIST"]==selected_dis)].groupby(['Total dormitoris']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
-            table61_lav = bbdd_estudi_hab[(bbdd_estudi_hab["Municipi"]=="Barcelona") & (bbdd_estudi_hab["Nom DIST"]==selected_dis)].groupby(['Banys i lavabos']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
-
-            return([round(table80_dis["Preu mitjà"].values[0][0],2), round(table80_dis["Superfície útil"].values[0][0],2), 
-                    round(table80_dis["Preu m2 útil"].values[0][0],2), round(table25_dis[table25_dis["TIPOG"]=="Habitatges plurifamiliars"]["Proporció"].values[0]*100,2), 
-                    table61_hab["Total dormitoris"].values[0], table61_lav["Banys i lavabos"].values[0]])
-
         st.markdown(f"""Els resultats de l'Estudi d'Oferta de Nova Construcció de 2022 pel districte de {selected_dis} de la ciutat de Barcelona mostren que el preu mitjà dels habitatges en venda es troba 
-        en {data_text(selected_dis)[0]:,.1f} € amb una superfície mitjana útil de {data_text(selected_dis)[1]:,.1f} m\u00b2. Per tant, el preu per m\u00b2 útil es troba en {data_text(selected_dis)[2]:,.1f} € de mitjana. Per tipologies, els habitatges plurifamiliars
-        representen el {data_text(selected_dis)[3]:,.1f}% sobre el total d'habitatges. L'habitatge modal o més freqüent de nova construcció té {data_text(selected_dis)[4]} habitacions i {data_text(selected_dis)[5]} banys o lavabos.""")
-        def plotdis_streamlit(data, selected_dis, kpi):
-            df = data[(data['Nom DIST']==selected_dis)]
-            fig = px.histogram(df, x=kpi, title= "", labels={'x':kpi, 'y':'Freqüència'})
-            fig.data[0].marker.color = "#66b9a7"
-            fig.layout.xaxis.title.text = kpi
-            fig.layout.yaxis.title.text = 'Freqüència'
-            mean_val = df[kpi].mean()
-            fig.layout.shapes = [dict(type='line', x0=mean_val, y0=0, x1=mean_val, y1=1, yref='paper', xref='x', 
-                                    line=dict(color="black", width=2, dash='dot'))]
-            return(fig)
-        
+        en {data_text_dis(bbdd_estudi_hab, selected_dis)[0]:,.1f} € amb una superfície mitjana útil de {data_text_dis(bbdd_estudi_hab, selected_dis)[1]:,.1f} m\u00b2. Per tant, el preu per m\u00b2 útil es troba en {data_text_dis(bbdd_estudi_hab, selected_dis)[2]:,.1f} € de mitjana. Per tipologies, els habitatges plurifamiliars
+        representen el {data_text_dis(bbdd_estudi_hab, selected_dis)[3]:,.1f}% sobre el total d'habitatges. L'habitatge modal o més freqüent de nova construcció té {data_text_dis(bbdd_estudi_hab, selected_dis)[4]} habitacions i {data_text_dis(bbdd_estudi_hab, selected_dis)[5]} banys o lavabos.""")
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown(f"""**Distribució de preus per m\u00b2 útil**""")
@@ -2205,35 +2098,7 @@ if selected=="Districtes de Barcelona":
         st.markdown(f"""
         **Tipologia d'habitatges de les promocions**
         """)
-        def count_plot_dis(data, selected_dis):
-            df = data[data['Nom DIST']==selected_dis]
-            df = df["TIPOG"].value_counts().sort_values(ascending=True)
-            fig = px.bar(df, y=df.index, x=df.values, orientation='h', title="", 
-                        labels={'x':"Número d'habitatges", 'y':"TIPOG"}, text= df.values)
-            fig.layout.xaxis.title.text = "Número d'habitatges"
-            fig.layout.yaxis.title.text = "Tipologia"
-            fig.update_traces(marker=dict(color="#66b9a7"))
-            return fig
-
         st.plotly_chart(count_plot_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, responsive=True)
-        def dormscount_plot_dis(data, selected_dis):
-            df = data[data['Nom DIST']==selected_dis]
-            custom_order = ["0D", "1D", "2D", "3D", "4D", "5+D"]
-            df = df["Total dormitoris"].value_counts().reindex(custom_order)
-            fig = px.bar(df,  y=df.values, x=df.index,title="", labels={'x':"Número d'habitacions", 'y':"Número d'habitatges"}, text= df.values)
-            fig.layout.yaxis.title.text = "Número d'habitatges"
-            fig.layout.xaxis.title.text = "Número d'habitacions"
-            fig.update_traces(marker=dict(color="#66b9a7"))
-            return fig
-        def lavcount_plot_dis(data, selected_dis):
-            df = data[data['Nom DIST']==selected_dis]
-
-            df = df["Banys i lavabos"].value_counts().sort_values(ascending=True)
-            fig = px.bar(df,  y=df.values, x=df.index,title="", labels={'x':"Número de lavabos", 'y':"Número d'habitatges"}, text= df.values)
-            fig.layout.yaxis.title.text = "Número d'habitatges"
-            fig.layout.xaxis.title.text = "Número de lavabos"
-            fig.update_traces(marker=dict(color="#66b9a7"))
-            return fig
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
@@ -2243,55 +2108,14 @@ if selected=="Districtes de Barcelona":
             st.markdown("""**Habitatges a la venda segons número de banys i lavabos**""")
             st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, responsive=True)
 
-
         st.subheader(f"Comparativa amb anys anteriors: Districte de {selected_dis}")
-        def geo_dis(districte, any_ini, any_fin):
-            df_vf_aux = pd.DataFrame()
-            for df_frame, year in zip(["dis_2019", "dis_2020", "dis_2021", "dis_2022"], [2019, 2020, 2021, 2022]):
-                df_vf_aux = pd.concat([df_vf_aux, tidy_data(eval(df_frame), year)], axis=0)
-            df_vf_aux['Variable']= np.where(df_vf_aux['Variable']=="Preu de     venda per      m² útil (€)", "Preu de venda per m² útil (€)", df_vf_aux['Variable'])
-            df_vf_aux['Valor'] = pd.to_numeric(df_vf_aux['Valor'], errors='coerce')
 
-            df_vf_aux = df_vf_aux[df_vf_aux['GEO']!="Municipi de Barcelona"]
-            df_vf_aux["GEO"] = df_vf_aux["GEO"].str.replace(r"\d+\s", "")
-            df_vf_aux = df_vf_aux[df_vf_aux["GEO"].isin(["Ciutat Vella", "Eixample", "Sants-Montjuïc", 
-                                                        "Les Corts", "Sarrià - Sant Gervasi", "Gràcia", 
-                                                        "Horta-Guinardó", "Nou Barris", "Sant Andreu",
-                                                        "Sant Martí"])]
-            df_vf_aux = df_vf_aux[df_vf_aux["GEO"]==districte]
-            df_wide = pd.pivot(data=df_vf_aux, index="Any", columns=["Tipologia", "Variable"], values="Valor")
-            num_cols = df_wide.select_dtypes(include=['float64', 'int64']).columns
-            df_wide[num_cols] = df_wide[num_cols].round(0)
-            df_wide[num_cols] = df_wide[num_cols].astype("Int64")
-            num_cols = df_wide.select_dtypes(include=['float64', 'Int64']).columns
-            df_wide[num_cols] = df_wide[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
-            df_wide = df_wide[(df_wide.index>=any_ini) & (df_wide.index<=any_fin)]
-            return(df_wide)
         left_col, right_col = st.columns((1,1))
         with left_col:
             min_year, max_year = st.sidebar.slider("**Interval d'anys de la mostra:**", value=[2019, 2022], min_value=2019, max_value=2022)
         st.markdown(geo_dis(selected_dis, min_year, max_year).to_html(), unsafe_allow_html=True)
         st.markdown(filedownload(geo_dis(selected_dis, min_year, max_year), f"Estudi_oferta_{selected_dis}.xlsx"), unsafe_allow_html=True)
-        def plot_dis_hist_units(selected_dis, variable_int, any_ini, any_fin):
-            df_preus = df_dis_long[(df_dis_long['Variable']==variable_int) & (df_dis_long['GEO']==selected_dis) & (df_dis_long["Any"]>=any_ini) & (df_dis_long["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
-            df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
-            df_preus['Any'] = df_preus['Any'].astype(int)
-            df_preus = df_preus[df_preus["Tipologia"]!="TOTAL HABITATGES"]
-            fig = px.bar(df_preus[df_preus["Valor"]>0], x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text= "Valor")
-            fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
-            valid_years = sorted(df_preus['Any'].unique())
-            fig.update_xaxes(tickvals=valid_years)
-            fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1.05, xanchor='right', x=0.75))
-            return fig
-        def plot_dis_hist(selected_dis, variable_int, any_ini, any_fin):
-            df_preus = df_dis_long[(df_dis_long['Variable']==variable_int) & (df_dis_long['GEO']==selected_dis) & (df_dis_long["Any"]>=any_ini) & (df_dis_long["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
-            df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
-            df_preus['Any'] = df_preus['Any'].astype(int)
-            fig = px.bar(df_preus[df_preus["Valor"]>0], x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#008B6C","#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text='Valor', barmode='group')
-            fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
-            fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
-            return fig
-        
+
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("")
@@ -2339,30 +2163,9 @@ if selected=="Districtes de Barcelona":
                     </p>
                     """, unsafe_allow_html=True)
         st.subheader(f"{selected_dis.upper()}")
-        def data_text(selected_dis):
-            table80_mun = bbdd_estudi_hab_2023[(bbdd_estudi_hab_2023["Municipi"]=="Barcelona") & (bbdd_estudi_hab_2023["Nom DIST"]==selected_dis)][["Nom DIST", "TIPOG", "Superfície útil", "Preu mitjà", "Preu m2 útil"]].groupby(["Nom DIST"]).agg({"Nom DIST":['count'], "Superfície útil": [np.mean], "Preu mitjà": [np.mean], "Preu m2 útil": [np.mean]}).reset_index()
-            table25_mun = bbdd_estudi_hab_2023[(bbdd_estudi_hab_2023["Municipi"]=="Barcelona") & (bbdd_estudi_hab_2023["Nom DIST"]==selected_dis)][["Nom DIST", "TIPOG"]].value_counts(normalize=True).reset_index().rename(columns={0:"Proporció"})
-            table61_hab = bbdd_estudi_hab_2023[(bbdd_estudi_hab_2023["Municipi"]=="Barcelona") & (bbdd_estudi_hab_2023["Nom DIST"]==selected_dis)].groupby(['Total dormitoris']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
-            table61_lav = bbdd_estudi_hab_2023[(bbdd_estudi_hab_2023["Municipi"]=="Barcelona") & (bbdd_estudi_hab_2023["Nom DIST"]==selected_dis)].groupby(['Banys i lavabos']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
-
-            return([round(table80_mun["Preu mitjà"].values[0][0],2), round(table80_mun["Superfície útil"].values[0][0],2), 
-                    round(table80_mun["Preu m2 útil"].values[0][0],2), round(table25_mun[table25_mun["TIPOG"]=="Habitatges plurifamiliars"]["Proporció"].values[0]*100,2), 
-                    table61_hab["Total dormitoris"].values[0], table61_lav["Banys i lavabos"].values[0]])
-
         st.markdown(f"""Els resultats de l'Estudi d'Oferta de nova construcció del 2023 pel districte de {selected_dis} de la ciutat de Barcelona mostren que el preu mitjà dels habitatges en venda es troba 
-        en {data_text(selected_dis)[0]:,.1f} € amb una superfície mitjana útil de {data_text(selected_dis)[1]:,.1f} m\u00b2. Per tant, el preu per m\u00b2 útil es troba en {data_text(selected_dis)[2]:,.1f} € de mitjana. Per tipologies, els habitatges plurifamiliars
-        representen el {data_text(selected_dis)[3]:,.1f}% sobre el total d'habitatges. L'habitatge modal o més freqüent de nova construcció té {data_text(selected_dis)[4]} habitacions i {data_text(selected_dis)[5]} banys o lavabos.""")
-        def plotdis_streamlit(data, selected_dis, kpi):
-            df = data[(data['Nom DIST']==selected_dis)]
-            fig = px.histogram(df, x=kpi, title= "", labels={'x':kpi, 'y':'Freqüència'})
-            fig.data[0].marker.color = "#66b9a7"
-            fig.layout.xaxis.title.text = kpi
-            fig.layout.yaxis.title.text = 'Freqüència'
-            mean_val = df[kpi].mean()
-            fig.layout.shapes = [dict(type='line', x0=mean_val, y0=0, x1=mean_val, y1=1, yref='paper', xref='x', 
-                                    line=dict(color="black", width=2, dash='dot'))]
-            return(fig)
-        
+        en {data_text_dis(bbdd_estudi_hab_2023, selected_dis)[0]:,.1f} € amb una superfície mitjana útil de {data_text_dis(bbdd_estudi_hab_2023, selected_dis)[1]:,.1f} m\u00b2. Per tant, el preu per m\u00b2 útil es troba en {data_text_dis(bbdd_estudi_hab_2023, selected_dis)[2]:,.1f} € de mitjana. Per tipologies, els habitatges plurifamiliars
+        representen el {data_text_dis(bbdd_estudi_hab_2023, selected_dis)[3]:,.1f}% sobre el total d'habitatges. L'habitatge modal o més freqüent de nova construcció té {data_text_dis(bbdd_estudi_hab_2023, selected_dis)[4]} habitacions i {data_text_dis(bbdd_estudi_hab_2023, selected_dis)[5]} banys o lavabos.""")
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown(f"""**Distribució de Preus per m\u00b2 útil**""")
@@ -2374,35 +2177,7 @@ if selected=="Districtes de Barcelona":
         st.markdown(f"""
         **Tipologia d'habitatges de les promocions**
         """)
-        def count_plot_dis(data, selected_dis):
-            df = data[data['Nom DIST']==selected_dis]
-            df = df["TIPOG"].value_counts().sort_values(ascending=True)
-            fig = px.bar(df, y=df.index, x=df.values, orientation='h', title="", 
-                        labels={'x':"Número d'habitatges", 'y':"TIPOG"}, text= df.values)
-            fig.layout.xaxis.title.text = "Número d'habitatges"
-            fig.layout.yaxis.title.text = "Tipologia"
-            fig.update_traces(marker=dict(color="#66b9a7"))
-            return fig
-
         st.plotly_chart(count_plot_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, responsive=True)
-        def dormscount_plot_dis(data, selected_dis):
-            df = data[data['Nom DIST']==selected_dis]
-            custom_order = ["0D", "1D", "2D", "3D", "4D", "5+D"]
-            df = df["Total dormitoris"].value_counts().reindex(custom_order)
-            fig = px.bar(df,  y=df.values, x=df.index,title="", labels={'x':"Número d'habitacions", 'y':"Número d'habitatges"}, text= df.values)
-            fig.layout.yaxis.title.text = "Número d'habitatges"
-            fig.layout.xaxis.title.text = "Número d'habitacions"
-            fig.update_traces(marker=dict(color="#66b9a7"))
-            return fig
-        def lavcount_plot_dis(data, selected_dis):
-            df = data[data['Nom DIST']==selected_dis]
-
-            df = df["Banys i lavabos"].value_counts().sort_values(ascending=True)
-            fig = px.bar(df,  y=df.values, x=df.index,title="", labels={'x':"Número de lavabos", 'y':"Número d'habitatges"}, text= df.values)
-            fig.layout.yaxis.title.text = "Número d'habitatges"
-            fig.layout.xaxis.title.text = "Número de lavabos"
-            fig.update_traces(marker=dict(color="#66b9a7"))
-            return fig
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
@@ -2412,55 +2187,12 @@ if selected=="Districtes de Barcelona":
             st.markdown("""**Habitatges a la venda segons número de Banys i lavabos**""")
             st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, responsive=True)
 
-
         st.subheader(f"Comparativa amb anys anteriors: Districte de {selected_dis}")
-        def geo_dis(districte, any_ini, any_fin):
-            df_vf_aux = pd.DataFrame()
-            for df_frame, year in zip(["dis_2019", "dis_2020", "dis_2021", "dis_2022", "dis_2023"], [2019, 2020, 2021, 2022, 2023]):
-                df_vf_aux = pd.concat([df_vf_aux, tidy_data(eval(df_frame), year)], axis=0)
-            df_vf_aux['Variable']= np.where(df_vf_aux['Variable']=="Preu de     venda per      m² útil (€)", "Preu de venda per m² útil (€)", df_vf_aux['Variable'])
-            df_vf_aux['Valor'] = pd.to_numeric(df_vf_aux['Valor'], errors='coerce')
-
-            df_vf_aux = df_vf_aux[df_vf_aux['GEO']!="Municipi de Barcelona"]
-            df_vf_aux["GEO"] = df_vf_aux["GEO"].str.replace(r"\d+\s", "")
-            df_vf_aux = df_vf_aux[df_vf_aux["GEO"].isin(["Ciutat Vella", "Eixample", "Sants-Montjuïc", 
-                                                        "Les Corts", "Sarrià - Sant Gervasi", "Gràcia", 
-                                                        "Horta-Guinardó", "Nou Barris", "Sant Andreu",
-                                                        "Sant Martí"])]
-            df_vf_aux = df_vf_aux[df_vf_aux["GEO"]==districte]
-            df_wide = pd.pivot(data=df_vf_aux, index="Any", columns=["Tipologia", "Variable"], values="Valor")
-            num_cols = df_wide.select_dtypes(include=['float64', 'int64']).columns
-            df_wide[num_cols] = df_wide[num_cols].round(0)
-            df_wide[num_cols] = df_wide[num_cols].astype("Int64")
-            num_cols = df_wide.select_dtypes(include=['float64', 'Int64']).columns
-            df_wide[num_cols] = df_wide[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
-            df_wide = df_wide[(df_wide.index>=any_ini) & (df_wide.index<=any_fin)]
-            return(df_wide)
         left_col, right_col = st.columns((1,1))
         with left_col:
             min_year, max_year = st.sidebar.slider("**Interval d'anys de la mostra:**", value=[2019, 2023], min_value=2019, max_value=2023)
         st.markdown(geo_dis(selected_dis, min_year, max_year).to_html(), unsafe_allow_html=True)
         st.markdown(filedownload(geo_dis(selected_dis, min_year, max_year), f"Estudi_oferta_{selected_dis}.xlsx"), unsafe_allow_html=True)
-        def plot_dis_hist_units(selected_dis, variable_int, any_ini, any_fin):
-            df_preus = df_dis_long[(df_dis_long['Variable']==variable_int) & (df_dis_long['GEO']==selected_dis) & (df_dis_long["Any"]>=any_ini) & (df_dis_long["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
-            df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
-            df_preus['Any'] = df_preus['Any'].astype(int)
-            df_preus = df_preus[df_preus["Tipologia"]!="TOTAL HABITATGES"]
-            fig = px.bar(df_preus, x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text= "Valor")
-            fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
-            fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1.05, xanchor='right', x=0.75))
-            return fig
-        def plot_dis_hist(selected_dis, variable_int, any_ini, any_fin):
-            df_preus = df_dis_long[(df_dis_long['Variable']==variable_int) & (df_dis_long['GEO']==selected_dis) & (df_dis_long["Any"]>=any_ini) & (df_dis_long["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
-            df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
-            df_preus['Any'] = df_preus['Any'].astype(int)
-            fig = px.bar(df_preus, x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#008B6C","#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text='Valor', barmode='group')
-            fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
-            valid_years = sorted(df_preus['Any'].unique())
-            fig.update_xaxes(tickvals=valid_years)
-            fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
-            return fig
-        
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("")
@@ -2481,19 +2213,19 @@ if selected=="Districtes de Barcelona":
             st.plotly_chart(plot_dis_hist(selected_dis, "Preu mitjà de venda de l'habitatge (€)", min_year, max_year),use_container_width=True, responsive=True)
 
 
-if selected=="Contacte":
-    CONTACT_EMAIL = "estudis@apcecat.cat"
-    st.write("")
-    st.subheader(":mailbox: Contacteu-nos!")
-    contact_form = f"""
-    <form action="https://formsubmit.co/{CONTACT_EMAIL}" method="POST">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="text" name="name" placeholder="Nom" required>
-        <input type="email" name="email" placeholder="Correu electrònic" required>
-        <textarea name="message" placeholder="La teva consulta aquí"></textarea>
-        <button type="submit" class="button">Enviar ✉</button>
-    </form>
-    """
-    st.markdown(contact_form, unsafe_allow_html=True)
+# if selected=="Contacte":
+#     CONTACT_EMAIL = "estudis@apcecat.cat"
+#     st.write("")
+#     st.subheader(":mailbox: Contacteu-nos!")
+#     contact_form = f"""
+#     <form action="https://formsubmit.co/{CONTACT_EMAIL}" method="POST">
+#         <input type="hidden" name="_captcha" value="false">
+#         <input type="text" name="name" placeholder="Nom" required>
+#         <input type="email" name="email" placeholder="Correu electrònic" required>
+#         <textarea name="message" placeholder="La teva consulta aquí"></textarea>
+#         <button type="submit" class="button">Enviar ✉</button>
+#     </form>
+#     """
+#     st.markdown(contact_form, unsafe_allow_html=True)
 
 
