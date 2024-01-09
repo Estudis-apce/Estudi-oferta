@@ -783,6 +783,22 @@ def map_mun_hab_oferta(df_prom, shapefile_mun):
     ax.axis('off')
     fig.patch.set_alpha(0)
     return(fig)
+def map_mun_hab_oferta_23(shapefile_mun):
+    prommun_map = bbdd_estudi_prom_2023[["CODIMUN", "Municipi","HABIP"]].groupby(["CODIMUN", "Municipi"]).sum().reset_index()
+    prommun_map.columns = ["municipi", "Municipi_n", "Habitatges en oferta"]
+    prommun_map["municipi"] = prommun_map["municipi"].astype(int)
+    shapefile_mun["municipi"] = shapefile_mun["codiine"].astype(int)
+    tmp = pd.merge(shapefile_mun, prommun_map, how="left", on="municipi")
+    fig, ax = plt.subplots(1,1, figsize=(20,20))
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
+    cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#AAC4BA","#008B6C"]) 
+
+    tmp.plot(column='Habitatges en oferta', ax=ax,cax=cax, cmap=cmap, legend=True)
+    tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
+    ax.axis('off')
+    fig.patch.set_alpha(0)
+    return(fig)
 @st.cache_resource
 def plot_caracteristiques(df_hab):
     table61_tipo = bbdd_estudi_hab.groupby(['Total dormitoris', 'Banys i lavabos']).size().div(len(bbdd_estudi_hab_mod)).reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
@@ -1513,7 +1529,7 @@ if selected == "Catalunya":
                 st.pyplot(map_prov_prom(bbdd_estudi_prom_2023, shapefile_prov))
             with right_col:
                 st.markdown("**Nombre d'habitatges en oferta per municipis a Catalunya**")
-                st.pyplot(map_mun_hab_oferta(bbdd_estudi_prom_2023, shapefile_mun))
+                st.pyplot(map_mun_hab_oferta_23(shapefile_mun))
         if selected_index=="Característiques":
             left_col, right_col = st.columns((1, 1))
             with left_col:
