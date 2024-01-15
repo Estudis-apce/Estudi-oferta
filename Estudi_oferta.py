@@ -687,7 +687,7 @@ def geo_mun():
 
 
     ambits_df_aux1 = df_final.groupby(["Any", "Tipologia", "Variable", "Àmbits territorials"]).apply(weighted_mean).reset_index().rename(columns= {0:"Valor"})
-    ambits_df_aux2 = df_final[["Any","Àmbits territorials","Tipologia", "GEO", "Unitats"]].groupby(["Any", "Àmbits territorials", "Tipologia"]).sum().reset_index()
+    ambits_df_aux2 = df_final[["Any","Àmbits territorials","Tipologia", "GEO", "Unitats"]].drop_duplicates(["Any","Àmbits territorials","Tipologia", "GEO", "Unitats"]).groupby(["Any", "Àmbits territorials", "Tipologia"]).sum().reset_index()
     ambits_df_aux2_melted = pd.melt(ambits_df_aux2, id_vars=["Any", "Tipologia", "Àmbits territorials"], var_name="Variable", value_name="Unitats")
     ambits_df_aux2_melted["Unitats"] = ambits_df_aux2_melted["Unitats"].astype("int64")
     ambits_df_aux2_melted = ambits_df_aux2_melted.rename(columns={"Unitats":"Valor"})
@@ -724,13 +724,14 @@ def geo_dis_long():
     df_vf_aux['Valor'] = pd.to_numeric(df_vf_aux['Valor'], errors='coerce')
     df_vf_aux = df_vf_aux[df_vf_aux['GEO']!="Municipi de Barcelona"]
 
-    df_vf_aux = df_vf_aux[df_vf_aux["GEO"].isin(["Ciutat Vella", "01 Ciutat Vella",  "Eixample", "02 Eixample", "Sants-Montjuïc", "03 Sants-Montjuïc"
-                                        "Les Corts", "04 Les Corts", "Sarrià - Sant Gervasi", "05 Sarrià - Sant Gervasi", "Gràcia", "06 Gràcia",
+    df_vf_aux = df_vf_aux[df_vf_aux["GEO"].isin(["Ciutat Vella", "01 Ciutat Vella",  "Eixample", "02 Eixample", "Sants-Montjuïc", "03 Sants-Montjuïc", 
+                                        "Les Corts", "04 Les Corts", "Sarrià-Sant Gervasi", "Sarrià - Sant Gervasi", "05 Sarrià - Sant Gervasi", "Gràcia", "06 Gràcia",
                                         "Horta-Guinardó", "07 Horta-Guinardó", "Nou Barris", "08 Nou Barris", "Sant Andreu", "09 Sant Andreu",
                                         "Sant Martí", "10 Sant Martí"])]
+    df_vf_aux["GEO"] = df_vf_aux["GEO"].str.replace("Sarrià-Sant Gervasi", "Sarrià - Sant Gervasi")
     for i in ["01 ", "02 ", "03 ", "04 ", "05 ", "06 ", "07 ", "08 ", "09 ", "10 "]:
         df_vf_aux["GEO"] = df_vf_aux["GEO"].str.replace(i, "")
-
+    df_vf_aux = df_vf_aux.drop_duplicates(subset=["Any", "Tipologia", "Variable", "GEO"], keep='first')
     return(df_vf_aux)
 df_dis_long = geo_dis_long()
 
@@ -775,7 +776,7 @@ def plot_caracteristiques(df_hab):
     labels={'x':"Proporcions sobre el total d'habitatges", 'y':"Tipologia"})
     fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges"
     fig.layout.yaxis.title.text = "Tipologia"
-    fig.layout.title.text = "Principals tipologies dels habitatges en oferta"
+    fig.layout.title.text = "Principals tipologies dels habitatges en oferta (%)"
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
     fig.update_traces(marker=dict(color="#66b9a7"))
@@ -1090,6 +1091,7 @@ def plotmun_streamlit(data, selected_mun, kpi):
                             line=dict(color="black", width=2, dash='dot'))]
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
+    fig.layout.xaxis = dict(title=kpi, tickformat=",d")
     return(fig)
 @st.cache_resource
 def count_plot_mun(data, selected_mun):
@@ -1100,6 +1102,8 @@ def count_plot_mun(data, selected_mun):
     fig.layout.xaxis = dict(title="Nombre d'habitatges", tickformat=",d")
     fig.layout.yaxis.title.text = "Tipologia"
     fig.update_traces(marker=dict(color="#66b9a7"))
+    max_width = 0.1
+    fig.update_layout(bargap=(1 - max_width) / 2, bargroupgap=0)
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
     return fig
@@ -1112,6 +1116,10 @@ def dormscount_plot_mun(data, selected_mun):
     fig.layout.yaxis = dict(title="Nombre d'habitatges", tickformat=",d")
     fig.layout.xaxis.title.text = "Nombre d'habitacions"
     fig.update_traces(marker=dict(color="#66b9a7"))
+    max_width = 0.1
+    fig.update_layout(bargap=(1 - max_width) / 2, bargroupgap=0)
+    for trace in fig.data:
+        trace.text = [f"{val:,.0f}" if not np.isnan(val) else '' for val in trace.y]
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
     return fig
@@ -1124,6 +1132,10 @@ def lavcount_plot_mun(data, selected_mun):
     fig.layout.yaxis = dict(title="Nombre d'habitatges", tickformat=",d")
     fig.layout.xaxis.title.text = "Nombre de lavabos"
     fig.update_traces(marker=dict(color="#66b9a7"))
+    max_width = 0.00001
+    fig.update_layout(bargap=(1 - max_width) / 2, bargroupgap=0)
+    for trace in fig.data:
+        trace.text = [f"{val:,.0f}" if not np.isnan(val) else '' for val in trace.y]
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
     return fig
@@ -1152,6 +1164,10 @@ def plot_mun_hist_units(selected_mun, variable_int, any_ini, any_fin):
     fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
     valid_years = sorted(df_preus['Any'].unique())
     fig.update_xaxes(tickvals=valid_years)
+    for trace in fig.data:
+        trace.text = [f"{val:,.0f}" if not np.isnan(val) else '' for val in trace.y]
+    max_width = 0.2
+    fig.update_layout(bargap=(1 - max_width) / 2, bargroupgap=0)
     fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1.05, xanchor='right', x=0.75))
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
@@ -1163,6 +1179,10 @@ def plot_mun_hist(selected_mun, variable_int, any_ini, any_fin):
     df_preus['Any'] = df_preus['Any'].astype(int)
     fig = px.bar(df_preus, x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#008B6C","#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text='Valor', barmode='group')
     fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
+    for trace in fig.data:
+        trace.text = [f"{val:,.0f}" if not np.isnan(val) else '' for val in trace.y]
+    max_width = 0.5
+    fig.update_layout(bargap=(1 - max_width) / 2, bargroupgap=0)
     fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
@@ -1200,6 +1220,8 @@ def count_plot_dis(data, selected_dis):
     fig.layout.xaxis.title.text = "Número d'habitatges"
     fig.layout.yaxis.title.text = "Tipologia"
     fig.update_traces(marker=dict(color="#66b9a7"))
+    max_width = 0.1
+    fig.update_layout(bargap=(1 - max_width) / 2, bargroupgap=0)
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
     return fig
@@ -1212,6 +1234,8 @@ def dormscount_plot_dis(data, selected_dis):
     fig.layout.yaxis.title.text = "Número d'habitatges"
     fig.layout.xaxis.title.text = "Número d'habitacions"
     fig.update_traces(marker=dict(color="#66b9a7"))
+    max_width = 0.1
+    fig.update_layout(bargap=(1 - max_width) / 2, bargroupgap=0)
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
     return fig
@@ -1224,13 +1248,15 @@ def lavcount_plot_dis(data, selected_dis):
     fig.layout.yaxis.title.text = "Número d'habitatges"
     fig.layout.xaxis.title.text = "Número de lavabos"
     fig.update_traces(marker=dict(color="#66b9a7"))
+    max_width = 0.1
+    fig.update_layout(bargap=(1 - max_width) / 2, bargroupgap=0)
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
     return fig
 @st.cache_resource
 def geo_dis(districte, any_ini, any_fin):
     df_vf_aux = pd.DataFrame()
-    for df_frame, year in zip(["dis_2019", "dis_2020", "dis_2021", "dis_2022"], [2019, 2020, 2021, 2022]):
+    for df_frame, year in zip(["dis_2019", "dis_2020", "dis_2021", "dis_2022", "dis_2023"], [2019, 2020, 2021, 2022, 2023]):
         df_vf_aux = pd.concat([df_vf_aux, tidy_data(eval(df_frame), year)], axis=0)
     df_vf_aux['Variable']= np.where(df_vf_aux['Variable']=="Preu de     venda per      m² útil (€)", "Preu de venda per m² útil (€)", df_vf_aux['Variable'])
     df_vf_aux['Valor'] = pd.to_numeric(df_vf_aux['Valor'], errors='coerce')
@@ -1238,10 +1264,11 @@ def geo_dis(districte, any_ini, any_fin):
     df_vf_aux = df_vf_aux[df_vf_aux['GEO']!="Municipi de Barcelona"]
     df_vf_aux["GEO"] = df_vf_aux["GEO"].str.replace(r"\d+\s", "")
     df_vf_aux = df_vf_aux[df_vf_aux["GEO"].isin(["Ciutat Vella", "Eixample", "Sants-Montjuïc", 
-                                                "Les Corts", "Sarrià - Sant Gervasi", "Gràcia", 
+                                                "Les Corts", "Sarrià-Sant Gervasi", "Sarrià - Sant Gervasi", "Gràcia", 
                                                 "Horta-Guinardó", "Nou Barris", "Sant Andreu",
                                                 "Sant Martí"])]
-    df_vf_aux = df_vf_aux[df_vf_aux["GEO"]==districte]
+    df_vf_aux["GEO"] = df_vf_aux["GEO"].str.replace("Sarrià-Sant Gervasi", "Sarrià - Sant Gervasi")
+    df_vf_aux = df_vf_aux[df_vf_aux["GEO"]==districte].drop_duplicates(subset=["Any", "Tipologia", "Variable", "GEO"], keep="first")
     df_wide = pd.pivot(data=df_vf_aux, index="Any", columns=["Tipologia", "Variable"], values="Valor")
     num_cols = df_wide.select_dtypes(include=['float64', 'int64']).columns
     df_wide[num_cols] = df_wide[num_cols].round(0)
@@ -1260,6 +1287,8 @@ def plot_dis_hist_units(selected_dis, variable_int, any_ini, any_fin):
     fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
     valid_years = sorted(df_preus['Any'].unique())
     fig.update_xaxes(tickvals=valid_years)
+    max_width = 0.2
+    fig.update_layout(bargap=(1 - max_width) / 2, bargroupgap=0)
     fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1.05, xanchor='right', x=0.75))
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
@@ -1271,6 +1300,10 @@ def plot_dis_hist(selected_dis, variable_int, any_ini, any_fin):
     df_preus['Any'] = df_preus['Any'].astype(int)
     fig = px.bar(df_preus[df_preus["Valor"]>0], x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#008B6C","#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text='Valor', barmode='group')
     fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
+    for trace in fig.data:
+        trace.text = [f"{val:,.0f}" for val in trace.y]
+    max_width = 0.2
+    fig.update_layout(bargap=(1 - max_width) / 2, bargroupgap=0)
     fig.update_layout(font=dict(size=13), legend=dict(orientation='h', yanchor='bottom', y=1, xanchor='right', x=0.75))
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
@@ -1407,14 +1440,14 @@ if selected == "Catalunya":
                 )
 
             with right_col:
-                st.write("""<p><b>Preu mitjà per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
+                st.write("""<p><b>Preu mitjà per tipologia d'habitatge (€)</b></p>""", unsafe_allow_html=True)
                 st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod), use_container_width=True, responsive=True)
             left, right = st.columns((1,1))
             with left:
-                st.write("""<p><b>Preu per m\u00b2 útil per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
+                st.write("""<p><b>Preu per m\u00b2 útil per tipologia d'habitatge (€/m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
                 st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod), use_container_width=True, responsive=True)
             with right:
-                st.write("""<p><b>Superfície útil per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
+                st.write("""<p><b>Superfície útil per tipologia d'habitatge (m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
                 st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod), use_container_width=True, responsive=True)
         if selected_index=="Comparativa 2022-2021":
             left_col, right_col = st.columns((1, 1))
@@ -1471,10 +1504,10 @@ if selected == "Catalunya":
                 )
             with right_col:
                 st.markdown("")
-                st.write("""<p><b>Variació anual (%) dels principals indicadors per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
+                st.write("""<p><b>Variació anual dels principals indicadors per tipologia d'habitatge (%)</b></p>""", unsafe_allow_html=True)
                 st.plotly_chart(plot_var_CAT(table117_22, table121_22, table125_22), use_container_width=True, responsive=True)
-            st.markdown(table_geo_cat(2019, 2023).to_html(), unsafe_allow_html=True)
-            st.markdown(filedownload(table_geo_cat(2019, 2022), f"Estudi_oferta_Catalunya.xlsx"), unsafe_allow_html=True)
+            st.markdown(table_geo_cat(2019, 2022).to_html(), unsafe_allow_html=True)
+            st.markdown(filedownload(table_geo_cat(2019, 2022), f"Estudi_oferta_Catalunya_22.xlsx"), unsafe_allow_html=True)
 ############################################################  CATALUNYA: 2023 ################################################
     if selected_edition=="2023":
         index_names = ["Introducció","Característiques", "Qualitats i equipaments", "Superfície i preus", "Comparativa 2023-2022"]
@@ -1484,24 +1517,21 @@ if selected == "Catalunya":
             st.subheader("**INTRODUCCIÓ**")
             st.write("""<p style="margin-top: 10px"> 
             <p>
-            Les dades exposades presenten els resultats de l’anàlisi del mercat residencial d’habitatges de nova construcció a Catalunya de l'any 2023.
-            Es resumeixen les dades de l’oferta del mercat residencial d’obra nova, per tal de disposar d’informació actualitzada del sector i de la seva evolució, oferint-se aquestes dades en diferents nivells de 
-            desagregació territorial (província, municipi, …). Aquest treball té una base censal, essent el fruit d’una recerca exhaustiva de les ofertes de les promocions d’habitatge d’obra nova mitjançant un treball de camp
-            exhaustiu amb recerques on-line, telefòniques i algunes visites presencials. El cens parteix de la darrera actualització realitzada l’any precedent (2022). En els 135 municipis seleccionats per la seva significació en l’àmbit de l’habitatge 
-            (33 municipis més que els municipis on es va dur a terme el treball de camp de l’edició de 2022, que van ser 102), s’ha inventariat l’oferta d’obra nova i llurs característiques fonamentals, tant quantitatives com qualitatives. 
-            En l’execució del treball de camp no han estat incloses les promocions amb limitació d’informació disponible, bàsicament no han estat considerades com unitats vàlides per la mostra les promocions sense informació contrastada de preus 
-            i superfícies. El resultat final de l’edició d’enguany inclou promocions a 116 municipis dels 135 referenciats com a punt de partida.
+            Les dades exposades presenten els resultats de l'Estudi d'Oferta de Nova Construcció a Catalunya de l'any 2023 per tal de disposar d’informació actualitzada del sector i de la seva evolució, en diferents nivells de 
+            desagregació territorial (província, municipi, …). Aquest treball té una base censal resultat d’una recerca exhaustiva de les ofertes de les promocions d’habitatge d’obra nova mitjançant un treball de camp amb recerques on-line, telefòniques i algunes visites presencials. 
+            El cens parteix de la darrera actualització realitzada l’any precedent (2022). En aquesta edició incorporem 33 municipis addicionals incrementant l'abast de l'estudi fins a 135 municipis, seleccionats per criteris demográfics.
+            En l’execució del treball de camp no han estat incloses les promocions amb limitació d’informació disponible, és a dir, sense informació contrastada de preus i superfícies. 
             </p>
             <p>
-            L’estudi de 2023 inclou 116 municipis rellevants en l’àmbit de l’habitatge, distribuïts per tot el territori, en els quals s’han inventariat 1.123 promocions d’obra nova, amb un total de 10.296 habitatges a la venda. 
-            Respecte el 2022, el nombre de promocions registradesha incrementat en 195 promocions i el nombre total d’habitatges a la venda ha passat de 8.181 a 10.296, es a dir, un 26% més.
-            En relació a les bases mostrals de promocions i habitatges, les dades de 2023 inclouen 665 promocions de l’edició de 2022, es a dir, el 71,7% de les promocions de 2022, un any després continuen tenint algun habitatge en venda. 
-            Pel que fa als habitatges, dels 8.181 censats l’any 2022, el 24,0% han estat venuts i, per tant, es mantenen en oferta 6.221 habitatges dels estudiats l’any passat. Per completar la mostra de 2023, 
-            s’han incorporat 458 promocions noves que en el seu conjunt tenen una oferta de 4.075 habitatges.
+            Com a punt de partida, l’estudi d'oferta de 2023 inclou 116 municipis rellevants en l’àmbit de l’habitatge, distribuïts per tot el territori, en els quals s’han inventariat 1.123 promocions d’obra nova, amb un total de 10.296 habitatges a la venda. 
+            Respecte el 2022, el nombre de promocions registrades ha incrementat en 195 promocions i el nombre total d’habitatges a la venda ha passat de 8.181 a 10.296, és a dir, un 26% més.
+            En relació a les bases mostrals de promocions i habitatges, les dades de 2023 inclouen 665 promocions de l’edició de 2022, és a dir, el 71,7% de les promocions de 2022 continuen tenint algun habitatge en venda un any després. 
+            Pel que fa als habitatges, dels 8.181 censats l’any 2022, el 24,0% han estat venuts i, per tant, es mantenen en oferta 6.221 habitatges. Per completar la mostra de 2023, 
+            s’han incorporat 458 promocions noves que en el seu conjunt acumulen una oferta de 4.075 habitatges.
             </p>
             <p>
             El municipi amb més presència d’oferta és el de Barcelona, amb un total de 224 promocions i 1.560 habitatges en venda. A continuació, els municipis amb més promocions són Sabadell amb 55 promocions i 663 habitatges, 
-            Terrassa amb 51 promocions i 730 habitatges (és el segon municipi en ordre d’importància per número d’habitatges en oferta), Badalona amb 48 promocions i 315 habitatges i L’Hospitalet de Llobregat amb 46 promocions i 383 habitatges. 
+            Terrassa amb 51 promocions i 730 habitatges, Badalona amb 48 promocions i 315 habitatges i L’Hospitalet de Llobregat amb 46 promocions i 383 habitatges. 
             Per altra banda, s’han localitzat un total de 30 municipis amb una oferta inferior a 10 habitatges, corresponents a 1 o 2 promocions: en concret, 16 municipis a la província de Barcelona, 
             5 a la província de Girona, 3 a la província de Lleida i 6 a la província de Tarragona.        
             </p>
@@ -1541,11 +1571,11 @@ if selected == "Catalunya":
                 st.subheader("**CARACTERÍSTIQUES**")
                 st.write("""
                 <p>
-                El prototip d’habitatge (mitjà) a Catalunya tindria les següents característiques: 2,7 dormitoris, 1,9 banys i/o lavabos, el 74,7% cuina americana i el 25,3% cuina estàndard, i amb 1,0 terrasses, balcons i/o patis.
-                Segons el nombre d'habitacions: els tipus loft (40 habitatges) es caracteritzen per tenir un sol espai i majoritàriament amb cuina americana; els d’un sol dormitori (535 habitatges) majoritàriament tenen un sol bany (83,6%) 
+                El prototip d’habitatge mitjà a Catalunya tindria les següents característiques: 2,7 dormitoris, 1,9 banys i/o lavabos, 74,7% cuina americana, 25,3% cuina estàndard i amb 1 terrassa, balcó o pati.
+                Segons el nombre d'habitacions: els tipus loft (40 habitatges) es caracteritzen per tenir un sol espai i cuina americana; els d’un sol dormitori (535 habitatges) majoritàriament tenen un sol bany (83,6%) 
                 i cuina americana (93,3%); en els de dos dormitoris (3.100 habitatges) el 55,4% tenen més d’un bany, la cuina americana també és majoritària (86,3%), així com la disposició de terrasses, balcons i/o patis (75,0%); 
                 en els de tres dormitoris (5.222 habitatges) la pràctica totalitat (97,7%) tenen més d’un bany, la cuina americana també és majoritària (70,7%) i el 83,0% disposen de terrasses, balcons i/o patis; 
-                en els de quatre dormitoris (1.334 habitatges) pràcticament tots (el 99,9%) tenen més d’un bany, el 55,5% compten amb cuina americana, el 86,7% disposa de terrasses, balcons i/o patis i un 49,6% té safareig; 
+                en els de quatre dormitoris (1.334 habitatges) pràcticament tots tenen més d’un bany (99,9%), el 55,5% compten amb cuina americana, el 86,7% disposa de terrasses, balcons i/o patis i un 49,6% té safareig; 
                 en els de cinc i més dormitoris (65 habitatges) tots tenen dos banys o més, la cuina americana també és majoritària (69,2%), el 96,9% disposen de terrasses, balcons i/o patis i un 52,3% disposen de safareig.
                 Així, la principal tipologia en oferta seria la dels habitatges de 3 dormitoris i 2 banys (45,4%). Amb percentatges menors però significatius es contemplen els habitatges de 2 dormitoris i 2 banys (15,6%), 
                 els de 2 dormitoris i 1 bany (13,4%) i els de 4 dormitoris i 2 banys (8,1%).
@@ -1558,7 +1588,7 @@ if selected == "Catalunya":
             st.subheader("**QUALITATS I EQUIPAMENTS**")
             st.write("""
             <p>
-                Les qualitats més recurrents en els habitatges són: la bomba de calor -fred i calor- (87,6%), 
+                Les qualitats més recurrents als habitatges són: la bomba de calor -fred i calor- (87,6%), 
                 la placa d’inducció (71,4%), el parquet (66,5%), la calefacció instal·lada només calor (64,5%), 
                 la aerotèrmia (58,8%) i els armaris encastats (53,4%).
                 Quant a equipaments, el més comú és l’ascensor (91,0%), 
@@ -1569,11 +1599,11 @@ if selected == "Catalunya":
             )
             left_col, right_col = st.columns((1, 1))
             with left_col:
-                st.write("""<p><b>Principals qualitats dels habitatges</b></p>""", unsafe_allow_html=True)
+                st.write("""<p><b>Principals qualitats dels habitatges (%)</b></p>""", unsafe_allow_html=True)
                 st.plotly_chart(plot_qualitats(bbdd_estudi_hab_2023), use_container_width=True, responsive=True)
 
             with right_col:
-                st.write("""<p><b>Principals equipaments dels habitatges</b></p>""", unsafe_allow_html=True)
+                st.write("""<p><b>Principals equipaments dels habitatges (%)</b></p>""", unsafe_allow_html=True)
                 st.plotly_chart(plot_equipaments(bbdd_estudi_hab_2023), use_container_width=True, responsive=True)
 
         if selected_index=="Superfície i preus":
@@ -1582,34 +1612,34 @@ if selected == "Catalunya":
                 st.subheader("SUPERFÍCIES I PREUS")
                 st.write("""
                 <p>
-                En general, conforme augmenta la superfície, augmenta el nombre de dormitoris, situant-se la màxima recurrència en els habitatges de 3 dormitoris entre els 60 i els 90 m² (3.950 habitatges, 38,4% de l’oferta d’habitatges) 
-                i en els de 2 dormitoris amb superfícies inferiors als 70 m² (2.379 habitatges, 23,1% de l’oferta d’habitatges). En els extrems es trobarien els 721 habitatges de menys de 50 m² bàsicament amb 1o 2 dormitoris i, 
+                En general, conforme augmenta la superfície, incrementa el nombre de dormitoris, situant-se la màxima recurrència en els habitatges de 3 dormitoris entre els 60 i els 90 m² (3.950 habitatges, 38,4% de l’oferta d’habitatges) 
+                i en els de 2 dormitoris amb superfícies inferiors als 70 m² (2.379 habitatges, 23,1% de l’oferta d’habitatges). En els extrems es trobarien els 721 habitatges de menys de 50 m² bàsicament amb 1 o 2 dormitoris i els 
                 231 habitatges de més de 160 m² a l’entorn de 4 dormitoris. A la vista de les dades, s’expressa també una certa correlació entre les variables preu habitatge i nombre de dormitoris, 
-                de tal manera que quants més dormitoris té en disposició l’habitatge, major és el seu preu de venda -en general-. 
-                El 16,2% del conjunt d’habitatges en oferta de venda no supera els 210.000€ (l’any 2020 aquest percentatge era del 22,9% , l’any 2021 del 18,8% i l’any 2022 del 16,8% ), entre aquests habitatges es situen el 42,6% dels d’un dormitori.
-                Seguint la lògica expressada, un major nombre de dormitoris, implica –en general- una major superfície, per tant a la relació entre la variable preu i nombre de dormitoris cal afegir-li la variable superfície. 
-                Sempre tenint en compte la incidència d’altres variables (localització, qualitats, ...) que fan que aquesta relació no tingui un comportament lineal. Els dos pols de la relació superfície útil – preu, 
+                de tal manera que quants més dormitoris té en disposició l’habitatge, major és el seu preu de venda en general. 
+                El 16,2% del conjunt d’habitatges en oferta no supera els 210.000€ (l’any 2020 aquest percentatge era del 22,9%, l’any 2021 del 18,8% i l’any 2022 del 16,8%) i entre aquests habitatges es situen el 42,6% dels d’un dormitori.
+                Addicionalment i seguint la lògica expressada, un major nombre de dormitoris, implica generalment una major superfície, per tant, a la relació entre la variable preu i nombre de dormitoris cal afegir-li la variable superfície. 
+                No obstant això, cal considerar obviament la incidència d’altres variables (localització, qualitats, ...) que fan que aquesta relació no tingui un comportament lineal. Els dos extrems de la relació entre superfície útil i preu, 
                 serien el 53,5% dels habitatges de menys de 50 m² que es situen en preus inferiors a 210.000€ i el 64,5% d’habitatges de més de 160 m² que es situen en preus per sobre els 600.000€.
                 </p>
                 <p>      
-                La mitjana de la superfície útil dels habitatges censats, és de 80,6 m² i la de preu de 365.798€ (4.492,7€/m² útil). Per sota de la mitjana de preu, a nivell general, es situen els habitatges d’un i de dos dormitoris. 
+                La mitjana de la superfície útil dels habitatges censats és de 80,6 m² i la del preu, de 365.798€ (4.492,7€/m² útil). Generalment, per sota de la mitjana de preu es situen els habitatges d’un i de dos dormitoris. 
                 Si l’anàlisi es fa a partir de la mitjana del preu/m\u00b2 útil, per sota la mitjana resten els habitatges de 3 i 4 dormitoris. En els habitatges unifamiliars s’obtenen mitjanes de superfície força més altes (145,4 m²), 
-                així com de preu (540.465€), però el m² útil (3.741,5€) es situa per sota la mitjana general, evidenciant que el desplaçament a l’alça del preu no compensa el de la superfície. Els habitatges plurifamiliars estan més 
-                propers a les mitjanes generals doncs aporten força més influència sobre aquestes, essent aquesta aportació de 77,2 m² de superfície i de 356.751€ de preu (4.531,6€/m² útil).   
+                així com de preu (540.465€), però el m² útil (3.741,5€) es situa per sota la mitjana general, evidenciant que el desplaçament a l’alça del preu no compensa el de la superfície. Contràriament, els habitatges plurifamiliars es troben més 
+                propers a les mitjanes generals doncs aporten força més influència degut a la seva elevada proporció sobre el total, sent aquesta aportació de 77,2 m² de superfície i de 356.751€ de preu (4.531,6€/m² útil).   
                 </p>         
                 """,
                 unsafe_allow_html=True
                 )
 
             with right_col:
-                st.write("""<p><b>Preu mitjà per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
+                st.write("""<p><b>Preu mitjà per tipologia d'habitatge (€)</b></p>""", unsafe_allow_html=True)
                 st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod_2023), use_container_width=True, responsive=True)
             left, right = st.columns((1,1))
             with left:
-                st.write("""<p><b>Preu per m\u00b2 útil per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
+                st.write("""<p><b>Preu per m\u00b2 útil per tipologia d'habitatge (€/m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
                 st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod_2023), use_container_width=True, responsive=True)
             with right:
-                st.write("""<p><b>Superfície útil per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
+                st.write("""<p><b>Superfície útil per tipologia d'habitatge (m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
                 st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod_2023), use_container_width=True, responsive=True)
 
         if selected_index=="Comparativa 2023-2022":
@@ -1618,10 +1648,10 @@ if selected == "Catalunya":
                 st.subheader("**COMPARATIVA 2023-2022**") 
                 st.write("""
                 <p>
-                    L’any 2023 s’han registrat un total de 1.123 promocions, 195 més que les de 2022 (928 promocions). El nombre d'habitatges va augmentar de 8.181 al 2022 a 10.296 habitatges al 2023, que suposa un increment del 25,9%.
+                    L’any 2023 s’han registrat un total de 1.123 promocions i suposa un increment de 195 promocions respecte 2022. El nombre d'habitatges va augmentar de 8.181 al 2022 a 10.296 habitatges al 2023, que suposa un increment del 25,9%.
                     Cal esmentar que de les 928 promocions de 2022, 263 ja han estat totalment venudes al 2023 i, en el cas dels habitatges, el 24,0% han estat venuts.
                     Respecte de les quatre tipologies de promoció (unifamiliars aïllades o adossats i plurifamiliars en bloc obert o tancat), les variacions són molt atenuades respecte 2022, 
-                    mantenint-se la seva distribució. Si aquest mateix anàlisi es fa per habitatges, les variacions són reduides i els habitatges plurifamiliars són majoria (95,1% en 2023, 95,9% en 2022). 
+                    mantenint-se la seva distribució. Si aquest mateix anàlisi es fa per habitatges, les variacions són reduides i els habitatges plurifamiliars continuen sent majoritaris (95,1% en 2023, 95,9% en 2022). 
                 </p>
                 <p>
                     La superfície mitjana dels habitatges a la venda és de 80,6 m² (80,7 m² l’any 2022), amb una lleugera variació del -0,2%. Aquesta variació és irregular en els diferents tipus d’habitatges, 
@@ -1639,10 +1669,10 @@ if selected == "Catalunya":
                 )
             with right_col:
                 st.markdown("")
-                st.write("""<p><b>Variació anual (%) dels principals indicadors per tipologia d'habitatge</b></p>""", unsafe_allow_html=True)
+                st.write("""<p><b>Variació anual dels principals indicadors per tipologia d'habitatge (%)</b></p>""", unsafe_allow_html=True)
                 st.plotly_chart(plot_var_CAT(table117_23, table121_23, table125_23), use_container_width=True, responsive=True)
             st.markdown(table_geo_cat(2019, 2023).to_html(), unsafe_allow_html=True)
-            st.markdown(filedownload(table_geo_cat(2019, 2022), f"Estudi_oferta_Catalunya.xlsx"), unsafe_allow_html=True)
+            st.markdown(filedownload(table_geo_cat(2019, 2023), f"Estudi_oferta_Catalunya_2023.xlsx"), unsafe_allow_html=True)
 
 ############################################################  PROVÍNCIES I ÀMBITS TERRITORIALS ################################################
 
@@ -1659,6 +1689,19 @@ if selected == "Províncies i àmbits":
         if selected_option=="Àmbits territorials":
             selected_geo = st.sidebar.selectbox('', ambit_names, index= ambit_names.index("Metropolità"))
             st.subheader(f"{selected_geo}")
+            st.markdown(f"""Els resultats de l'Estudi d'Oferta de nova construcció del 2023 per l'ambit territorial {selected_geo.split(',')[0].strip()} mostren que el preu mitjà dels habitatges en venda es troba 
+            en {ambits_df[(ambits_df["Tipologia"]=="TOTAL HABITATGES") & (ambits_df["Variable"]=="Preu mitjà de venda de l'habitatge (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2022)]["Valor"].values[0]:,.1f} € 
+            amb una superfície mitjana útil de 
+            {ambits_df[(ambits_df["Tipologia"]=="TOTAL HABITATGES") & (ambits_df["Variable"]=="Superfície mitjana (m² útils)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2022)]["Valor"].values[0]:,.1f} m\u00b2. 
+            Per tant, el preu per m\u00b2 útil es situa en 
+            {ambits_df[(ambits_df["Tipologia"]=="TOTAL HABITATGES") & (ambits_df["Variable"]=="Preu de venda per m² útil (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2022)]["Valor"].values[0]:,.1f} € de mitjana. 
+            Per tipologies, els habitatges plurifamiliars obtenen una superfície mitjana de 
+            {ambits_df[(ambits_df["Tipologia"]=="HABITATGES PLURIFAMILIARS") & (ambits_df["Variable"]=="Superfície mitjana (m² útils)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2022)]["Valor"].values[0]:,.1f} m\u00b2
+            menor que els unifamiliars. Finalment, els habitatges plurifamiliars obtenen una mitjana de preu de 
+            {ambits_df[(ambits_df["Tipologia"]=="HABITATGES PLURIFAMILIARS") & (ambits_df["Variable"]=="Preu mitjà de venda de l'habitatge (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2022)]["Valor"].values[0]:,.1f} € 
+            i un preu de m\u00b2 útil de 
+            {ambits_df[(ambits_df["Tipologia"]=="HABITATGES PLURIFAMILIARS") & (ambits_df["Variable"]=="Preu de venda per m² útil (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2022)]["Valor"].values[0]:,.1f} m\u00b2
+            """)
             min_year, max_year = st.sidebar.slider("**Interval d'anys de la mostra**", value=[2019, 2022], min_value=2019, max_value=2022)
             st.markdown(table_geo(selected_geo, min_year, max_year, selected_option).to_html(), unsafe_allow_html=True)
             st.markdown(filedownload(table_geo(selected_geo, min_year, max_year, selected_option), f"Estudi_oferta_{selected_geo}.xlsx"), unsafe_allow_html=True)
@@ -1792,6 +1835,19 @@ if selected == "Províncies i àmbits":
         if selected_option=="Àmbits territorials":
             selected_geo = st.sidebar.selectbox('', ambit_names, index= ambit_names.index("Metropolità"))
             st.subheader(f"{selected_geo.upper()}")
+            st.markdown(f"""Els resultats de l'Estudi d'Oferta de nova construcció del 2023 per l'ambit territorial {selected_geo.split(',')[0].strip()} mostren que el preu mitjà dels habitatges en venda es troba 
+            en {ambits_df[(ambits_df["Tipologia"]=="TOTAL HABITATGES") & (ambits_df["Variable"]=="Preu mitjà de venda de l'habitatge (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2023)]["Valor"].values[0]:,.1f} € 
+            amb una superfície mitjana útil de 
+            {ambits_df[(ambits_df["Tipologia"]=="TOTAL HABITATGES") & (ambits_df["Variable"]=="Superfície mitjana (m² útils)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2023)]["Valor"].values[0]:,.1f} m\u00b2. 
+            Per tant, el preu per m\u00b2 útil es situa en 
+            {ambits_df[(ambits_df["Tipologia"]=="TOTAL HABITATGES") & (ambits_df["Variable"]=="Preu de venda per m² útil (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2023)]["Valor"].values[0]:,.1f} € de mitjana. 
+            Per tipologies, els habitatges plurifamiliars obtenen una superfície mitjana de 
+            {ambits_df[(ambits_df["Tipologia"]=="HABITATGES PLURIFAMILIARS") & (ambits_df["Variable"]=="Superfície mitjana (m² útils)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2023)]["Valor"].values[0]:,.1f} m\u00b2
+            menor que els unifamiliars. Finalment, els habitatges plurifamiliars obtenen una mitjana de preu de 
+            {ambits_df[(ambits_df["Tipologia"]=="HABITATGES PLURIFAMILIARS") & (ambits_df["Variable"]=="Preu mitjà de venda de l'habitatge (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2023)]["Valor"].values[0]:,.1f} € 
+            i un preu de m\u00b2 útil de 
+            {ambits_df[(ambits_df["Tipologia"]=="HABITATGES PLURIFAMILIARS") & (ambits_df["Variable"]=="Preu de venda per m² útil (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2023)]["Valor"].values[0]:,.1f} m\u00b2
+            """)
             min_year, max_year = st.sidebar.slider("**Interval d'anys de la mostra**", value=[2019, 2023], min_value=2019, max_value=2023)
             st.markdown(table_geo(selected_geo, min_year, max_year, selected_option).to_html(), unsafe_allow_html=True)
             st.markdown(filedownload(table_geo(selected_geo, min_year, max_year, selected_option), f"Estudi_oferta_{selected_geo}.xlsx"), unsafe_allow_html=True)
@@ -1801,8 +1857,8 @@ if selected == "Províncies i àmbits":
             if selected_geo=="Barcelona":
                 st.write(f"""Els municipis analitzats a l’Estudi de l’Oferta d’Habitatge
                             de Nova Construcció a Catalunya 2023 que pertanyen a
-                            la província de Barcelona fan que aquesta se situï en primera
-                            posició pel que fa a la mitjana de preu (385.036€)
+                            la província de Barcelona es situen de mitjana en primera
+                            posició pel que fa al preu (385.036€)
                             i també quant al preu €/m\u00b2 de superfície útil (4.757€),
                             ambdós influenciats pel municipi de Barcelona en incidir
                             sobre les mitjanes de forma determinant, tant per la seva
@@ -1810,7 +1866,7 @@ if selected == "Províncies i àmbits":
                             Barcelona se situa com la quarta província pel que fa a
                             la mitjana de superfície, de 79,6m\u00b2.
                             El número de promocions en oferta als municipis estudiats
-                            a la província de Barcelona l’any 2023 era
+                            a la província de Barcelona l’any 2023 va ser
                             de 894, amb 8.012 habitatges, xifra que representa el
                             79,6% del total de les promocions estudiades. El percentatge
                             d’habitatges que restaven per vendre és del
@@ -1827,38 +1883,38 @@ if selected == "Províncies i àmbits":
                             útil de 4.790,2€.""")
             if selected_geo=="Girona":
                 st.write(f"""Els municipis analitzats a l’Estudi de l'Oferta d'Habitatge de 2023 que pertanyen a
-                            la província de Girona fan que aquesta se situï en tercera
-                            posició en la mitjana de superfície (82,9 m\u00b2), i en segona
+                            la província de Girona es situen de mitjana en tercera
+                            posició respecte a la superfície útil (82,9 m\u00b2) i en segona
                             posició respecte al preu mitjà (349.647€) i el preu m\u00b2
                             de superfície útil (4.244,9€).
                             Pel que fa als habitatges plurifamiliars, la superfície
-                            mitjana se situa en els 79,6 m\u00b2, amb un preu mitjà
+                            mitjana es situa en els 79,6 m\u00b2, amb un preu mitjà
                             de 343.984€, i un preu per m\u00b2 de superfície útil
                             de 4.295€. Respecte dels habitatges unifamiliars,
                             aquestes mitjanes són de 140,1 m\u00b2 de superfície, un
-                            preu mitjà de 446.945€, i un preu per m\u00b2 de superfície
+                            preu mitjà de 446.945€ i un preu per m\u00b2 de superfície
                             útil de 3.392€.
                             El nombre de promocions en oferta als municipis estudiats
-                            a la província de Girona al 2023 era de 109 (un 9,7%
-                            del total de les promocions estudiades a Catalunya), que contenen 1200
+                            de la província de Girona al 2023 era de 109 (un 9,7%
+                            del total de les promocions estudiades a Catalunya), que contenen 1.200
                             habitatges en venda.
                             El percentatge d’habitatges que restaven per vendre és
                             del 51,3% sobre un total de 2.338 habitatges existents
                             a les promocions de la província.""")
             if selected_geo=="Tarragona":
                 st.write(f"""Els municipis analitzats a l’Estudi de l'Oferta d'Habitatge de 2023 que pertanyen a la
-                            província de Tarragona fan que aquesta se situï en segona
-                            posició pel que fa a superfície mitjana (83,5m\u00b2), i
+                            província de Tarragona es situen de mitjana en segona
+                            posició pel que fa a superfície (83,5m\u00b2), i
                             en tercera posició tant pel que fa a les mitjanes de preu
                             (254.667€) i de preu per m\u00b2 de superfície útil (3.029€).
                             Per tipologies d’habitatges, en els habitatges unifamiliars
                             les mitjanes registrades són: 140,5m\u00b2 de superfície,
                             amb un preu mitjà de 441.762, i un preu per m\u00b2 de superfície
                             útil de 3.354€. Pel que fa als habitatges plurifamiliars,
-                            la superfície mitjana se situa en els 74,7\u00b2, amb
+                            la superfície mitjana se situa en els 74,7m\u00b2, amb
                             un preu mitjà de 225.741€, i un preu per m\u00b2 útil de 2.979€.
                             El nombre de promocions en oferta als municipis estudiats
-                            a la província de Tarragona al 2023 era de 84, xifra
+                            a la província de Tarragona al 2023 va ser de 84, xifra
                             que representa un 7,4% del total de les promocions
                             estudiades a Catalunya. El percentatge d’habitatges que restaven per vendre és
                             del 32,3% sobre un total de 2.175 habitatges existents
@@ -1866,15 +1922,15 @@ if selected == "Províncies i àmbits":
             if selected_geo=="Lleida":
                 st.write(f"""Els municipis analitzats a l’Estudi de l'Oferta d'Habitatge de 2023 que pertanyen
                             a la província de Lleida obtenen la mitjana més alta de
-                            superfície (86,6 m\u00b2), i se situen en quarta posició pel que
-                            fa a preu del m\u00b2 de superfície útil (2.428€).
-                            Pel que fa els habitatges plurifamiliars, la superfície mitjana
-                            provincial és de 82,7 m\u00b2 i un preu mitjà per m\u00b2 útil de
+                            superfície (86,6 m\u00b2) i es situen en quarta posició pel que
+                            fa el preu del m\u00b2 de superfície útil (2.428€).
+                            Quant als habitatges plurifamiliars, la superfície mitjana
+                            provincial és de 82,7 m\u00b2 constituint un preu mitjà per m\u00b2 útil de
                             2.332€. En el cas dels habitatges unifamiliars,
                             aquestes quantitats són de 134,5 m\u00b2 de superfície mitjana
                             i de 3.586 la mitjana del preu m\u00b2 de superfície útil.
                             El nombre de promocions en oferta als municipis estudiats
-                            a la província de Lleida al 2023 era de 36 (amb 382
+                            a la província de Lleida al 2023 va ser de 36 (amb 382
                             habitatges en venda), dada que representa un 3,2% del
                             total de les promocions estudiades. El
                             percentatge d’habitatges que restaven per vendre és del
@@ -2136,12 +2192,11 @@ if selected=="Districtes de Barcelona":
         selected_dis = st.sidebar.selectbox('**Districte seleccionat:**', dis_names_aux)
         st.subheader("DISTRICTES DE BARCELONA")
         st.write(f"""<p>
-                    A la ciutat de Barcelona, l’estudi d’aquest any 2023 inclou un total de 224 promocions i 1.560 habitatges destinats a la venda, d’un total de 3.813 habitatges.
-                    Els districtes amb major nombre de promocions són Horta-Guinardó (40), Eixample (35) i Sant Martí (29). Els que disposen de menor nombre de promocions són Nou Barris (9) i Les Corts (6). 
-                    La quantificació del nombre d’habitatges en oferta de venda modifica l’ordre resultant per nombre de promocions, així els districtes amb més habitatges a la venda són  Eixample (256), Horta-Guinardó (255), Sant Andreu (209) i Sant Martí (203). 
-                    Els que disposen de l’oferta més escassa són Nou Barris (66) i Les Corts (24). 
-                    L’oferta dels habitatges a la venda es concentra en la tipologia de 2 dormitoris (41,4%) i de 3 dormitoris (36,3%), reduint-se al 12,5% els d’1 dormitori i al 7,3% els de 4 dormitoris. 
-                    Encara en percentatges menors es situen l’1,5% d’habitatges tipus loft i 1,0% d’habitatges de cinc o més dormitoris. 
+                    L'Estudi d'Oferta de nova construcció de 2023 a la ciutat de Barcelona inclou un total de 224 promocions i 1.560 habitatges destinats a la venda, d’un total de 3.813 habitatges.
+                    Els districtes amb major nombre de promocions són Horta-Guinardó (40), Eixample (35) i Sant Martí (29). Per altra banda, aquells que disposen de menor nombre de promocions són Nou Barris (9) i Les Corts (6). 
+                    El ranking del nombre d'habitatges en oferta de venda per districte canvia lleugerament: Eixample (256), Horta-Guinardó (255), Sant Andreu (209) i Sant Martí (203). Aquells districtes amb menys habitatges a la venda són Nou Barris (66) i Les Corts (24). 
+                    Addicionalment, l’oferta dels habitatges a la venda es concentra en la tipologia de 2 dormitoris (41,4%) i de 3 dormitoris (36,3%), reduint-se al 12,5% els d’1 dormitori i al 7,3% els de 4 dormitoris.
+                    En percentatges menors, es situen els habitatges tipus loft (1,5%) i els habitatges de cinc o més dormitoris (1,0%). 
                     </p>   
                     <p>
                     En general, existeix una correspondència directa entre la superfície i el nombre de dormitoris de l’habitatge en oferta. 
@@ -2149,10 +2204,10 @@ if selected=="Districtes de Barcelona":
                     que el 46,7% dels habitatges de tres dormitoris tinguin entre 70 i 90m² i que el 50,9% dels habitatges de quatre dormitoris tinguin superfícies entre els 80 i els 100 m².
                     Els preus mitjans per superfícies oscil·len des dels 305.645 euros en els habitatges de menys de 50 m², fins els 1.888.514 euros pels habitatges de més de 160 m² (52 habitatges). 
                     Més concretament, els valors mitjans estimats, en general, configurarien un habitatge tipus de 80,7 m² amb un preu de 628.339€ i un preu del m² de superfície útil de 7.429€.
-                    El ventall entre els 1.560 habitatges en oferta, respecte a la superfície, el preu i el preu per metre quadrat útil és amplíssim si s’observa pels districtes de la ciutat, 
-                    serveixi a tall de mostra la mitjana del preu màxim del metre quadrat útil que s’obté a Sarrià-Sant Gervasi (10.361€) i l’Eixample (9.949€), i la mitjana del preu mínim que s’obté a Sant Andreu (5.405€) i Nou Barris (5.368€).
+                    Els rangs de superfícies, preus mitjans i preus per metre quadrat útil és amplíssim pels diferents districtes de la ciutat. Com a tall de mostra la mitjana del preu màxim del metre quadrat útil 
+                    que s’obté a Sarrià-Sant Gervasi (10.361€) i l’Eixample (9.949€) i la mitjana del preu mínim que s’obté a Sant Andreu (5.405€) i Nou Barris (5.368€).
                     El preu de venda per metre quadrat útil dels habitatges a la venda varia lleugerament en un -0,8% en relació a 2022 (que el situa en 7.429€/m2).
-                    Aquest ajust és el resultat d’uns valor molt semblants en superfície mitjana i preu mitjà de venda els dos anys estudiats al municipi de Barcelona. 
+                    Aquest ajust és el resultat d’uns valors semblants en superfície mitjana i preu mitjà de venda dels últims 2 anys al municipi de Barcelona. 
                     Les variacions de preus presenten comportaments diferents en funció del districte, destaquem un increment del 13,9% en el preu per metre quadrat útil a Gràcia o del 10,7% a Sant Martí i un descens del 8,0% a l’Eixample.
                     </p>
                     """, unsafe_allow_html=True)
