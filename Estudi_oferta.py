@@ -54,7 +54,7 @@ with right_col:
         default_index=0,  # optional
         orientation="horizontal",
         styles={
-            "container": {"padding": "10px!important", "background-color": "#cce8e2", "margin-right":"10px"},
+            "container": {"padding": "10px!important", "background-color": "#cce8e2", "margin-right":"10px", "align":"center", "overflow":"hidden"},
             "icon": {"color": "#005c48", "font-size": "17px"},
             "nav-link": {
                 "font-size": "17px",
@@ -766,10 +766,9 @@ def map_prov_prom(df_prom, shapefile_prov):
     ax.axis('off')
     fig.patch.set_alpha(0)
     return(fig)
-# @st.cache_resource
 @st.cache_resource
 def plot_caracteristiques(df_hab):
-    table61_tipo = bbdd_estudi_hab.groupby(['Total dormitoris', 'Banys i lavabos']).size().div(len(bbdd_estudi_hab_mod)).reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
+    table61_tipo = df_hab.groupby(['Total dormitoris', 'Banys i lavabos']).size().div(len(df_hab)).reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
     table61_tipo["Proporcions"] = table61_tipo["Proporcions"]*100
     table61_tipo["Tipologia"] = np.where(table61_tipo["Banys i lavabos"]==1, table61_tipo["Total dormitoris"].astype(str) + " dormitoris i " + table61_tipo["Banys i lavabos"].astype(str) + " bany", table61_tipo["Total dormitoris"].astype(str) + " dormitoris i " + table61_tipo["Banys i lavabos"].astype(str) + " banys")
     fig = px.bar(table61_tipo.head(4), x="Proporcions", y="Tipologia", orientation='h', title="", 
@@ -785,7 +784,7 @@ def plot_caracteristiques(df_hab):
 def plot_qualitats(df_hab):
     table62_hab = df_hab[["Aire condicionat","Bomba de calor","Aerotèrmia","Calefacció","Preinstal·lació d'A.C./B. Calor/Calefacció",'Parquet','Armaris encastats','Placa de cocció amb gas','Placa de cocció vitroceràmica',"Placa d'inducció",'Plaques solars']].rename(columns={"Aerotèrmia":"Aerotèrmia"}).sum(axis=0)
     table62_hab = pd.DataFrame({"Qualitats":table62_hab.index, "Total":table62_hab.values})
-    table62_hab = table62_hab.set_index("Qualitats").apply(lambda row: (row / bbdd_estudi_hab.shape[0])*100).reset_index().sort_values("Total", ascending=True)
+    table62_hab = table62_hab.set_index("Qualitats").apply(lambda row: (row / df_hab.shape[0])*100).reset_index().sort_values("Total", ascending=True)
     fig = px.bar(table62_hab, x="Total", y="Qualitats", orientation='h', title="", labels={'x':"Proporcions sobre el total d'habitatges", 'y':"Qualitats"})
     fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges"
     fig.layout.yaxis.title.text = "Qualitats"
@@ -797,7 +796,7 @@ def plot_qualitats(df_hab):
 def plot_equipaments(df_hab):
     table67_hab = df_hab[["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0)
     table67_hab = pd.DataFrame({"Equipaments":table67_hab.index, "Total":table67_hab.values})
-    table67_hab = table67_hab.set_index("Equipaments").apply(lambda row: row.mul(100) / bbdd_estudi_hab.shape[0]).reset_index().sort_values("Total", ascending=True)
+    table67_hab = table67_hab.set_index("Equipaments").apply(lambda row: row.mul(100) / df_hab.shape[0]).reset_index().sort_values("Total", ascending=True)
     fig = px.bar(table67_hab, x="Total", y="Equipaments", orientation='h', title="", labels={'x':"Proporcions sobre el total d'habitatges", 'y':"Equipaments"})
     fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges"
     fig.layout.yaxis.title.text = "Equipaments"
@@ -1020,11 +1019,11 @@ def tipo_obra_prov(df_hab, prov):
     )
     return(fig)
 @st.cache_resource
-def cons_acabats(df_prom, prov):
+def cons_acabats(df_prom, df_hab, prov):
     fig = go.Figure()
     fig.add_trace(go.Pie(
         labels=["Habitatges en construcció", "Habitatges acabats"],
-        values=[metric_estat(df_prom, prov)[0] - metric_estat(df_prom, prov)[1], metric_estat(df_prom, prov)[1]],
+        values=[metric_estat(df_prom, df_hab, prov)[0] - metric_estat(df_prom, df_hab, prov)[1], metric_estat(df_prom, df_hab, prov)[1]],
         hole=0.5, 
         showlegend=True, 
         marker=dict(
@@ -1046,10 +1045,10 @@ def cons_acabats(df_prom, prov):
     fig.layout.plot_bgcolor = "#cce8e2"
     return(fig)
 @st.cache_resource
-def metric_estat(df_prom, prov):
+def metric_estat(df_prom, df_hab, prov):
     table11_prov = df_prom[["PROVINCIA", "HABIP"]].groupby("PROVINCIA").sum().reset_index()
     hab_oferta = table11_prov[table11_prov["PROVINCIA"]==prov].iloc[0,1]
-    table17_hab_prov = bbdd_estudi_hab[["PROVINCIA", "ESTO"]].value_counts().reset_index().sort_values(["PROVINCIA", "ESTO"])
+    table17_hab_prov = df_hab[["PROVINCIA", "ESTO"]].value_counts().reset_index().sort_values(["PROVINCIA", "ESTO"])
     table17_hab_prov.columns = ["PROVINCIA","ESTAT", "PROMOCIONS"]
     table17_hab_prov = table17_hab_prov.pivot_table(index="PROVINCIA", columns="ESTAT", values="PROMOCIONS").reset_index()
     table17_hab_prov = table17_hab_prov[["PROVINCIA","Claus en mà"]].rename(columns={"PROVINCIA": "Província","Claus en mà":"Acabats sobre habitatges en oferta"})
@@ -1810,13 +1809,13 @@ if selected == "Províncies i àmbits":
                 st.plotly_chart(equipaments_prov(bbdd_estudi_hab, selected_geo), use_container_width=True, responsive=True)
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                st.plotly_chart(cons_acabats(bbdd_estudi_prom, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(cons_acabats(bbdd_estudi_prom, bbdd_estudi_hab, selected_geo), use_container_width=True, responsive=True)
             with right_col:
                 st.markdown("")
                 st.markdown("")
-                st.metric("**Habitatges en oferta**", format(int(metric_estat(bbdd_estudi_prom, selected_geo)[0]), ",d"))
-                st.metric("**Habitatges en construcció**", format(int(metric_estat(bbdd_estudi_prom, selected_geo)[0] - metric_estat(bbdd_estudi_prom, selected_geo)[1]), ",d"))
-                st.metric("**Habitatges acabats**", format(int(metric_estat(bbdd_estudi_prom, selected_geo)[1]), ",d"))
+                st.metric("**Habitatges en oferta**", format(int(metric_estat(bbdd_estudi_prom, bbdd_estudi_hab,selected_geo)[0]), ",d"))
+                st.metric("**Habitatges en construcció**", format(int(metric_estat(bbdd_estudi_prom, bbdd_estudi_hab, selected_geo)[0] - metric_estat(bbdd_estudi_prom, bbdd_estudi_hab, selected_geo)[1]), ",d"))
+                st.metric("**Habitatges acabats**", format(int(metric_estat(bbdd_estudi_prom, bbdd_estudi_hab, selected_geo)[1]), ",d"))
             left_col, right_col = st.columns((2, 1))
             with left_col:
                 st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab, selected_geo), use_container_width=True, responsive=True)
@@ -1951,13 +1950,13 @@ if selected == "Províncies i àmbits":
                 st.plotly_chart(equipaments_prov(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, responsive=True)
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                st.plotly_chart(cons_acabats(bbdd_estudi_prom_2023, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(cons_acabats(bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, selected_geo), use_container_width=True, responsive=True)
             with right_col:
                 st.markdown("")
                 st.markdown("")
-                st.metric("**Habitatges en oferta**", format(int(metric_estat(bbdd_estudi_prom_2023, selected_geo)[0]), ",d"))
-                st.metric("**Habitatges en construcció**", format(int(metric_estat(bbdd_estudi_prom_2023, selected_geo)[0] - metric_estat(bbdd_estudi_prom_2023, selected_geo)[1]), ",d"))
-                st.metric("**Habitatges acabats**", format(int(metric_estat(bbdd_estudi_prom_2023, selected_geo)[1]), ",d"))
+                st.metric("**Habitatges en oferta**", format(int(metric_estat(bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, selected_geo)[0]), ",d"))
+                st.metric("**Habitatges en construcció**", format(int(metric_estat(bbdd_estudi_prom_2023,  bbdd_estudi_hab_2023, selected_geo)[0] - metric_estat(bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, selected_geo)[1]), ",d"))
+                st.metric("**Habitatges acabats**", format(int(metric_estat(bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, selected_geo)[1]), ",d"))
             left_col, right_col = st.columns((2, 1))
             with left_col:
                 st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, responsive=True)
