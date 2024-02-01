@@ -1826,7 +1826,6 @@ if selected == "Províncies i àmbits":
                 st.metric("**Habitatges de rehabilitació integral**", format(int(metric_rehab(bbdd_estudi_hab, selected_geo)[1]), ",d"))
 
 ############################################################  PROVÍNCIES I ÀMBITS TERRITORIALS: 2023 ################################################
-
     if selected_edition=="2023":
         prov_names = ["Barcelona", "Girona", "Tarragona", "Lleida"]
         ambit_names = sorted([ambit_n for ambit_n in ambits_df["GEO"].unique().tolist() if ambit_n!="Catalunya"])
