@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 import matplotlib.colors as colors
 import locale
 import json
-from streamlit_extras.stylable_container import stylable_container
+# from streamlit_extras.stylable_container import stylable_container
 
 ############################################################  TITULO DE PESTAÑA DE PÁGINA WEB ################################################
 path = ""
