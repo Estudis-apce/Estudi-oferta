@@ -342,11 +342,11 @@ def tidy_bbdd(df_prom, df_hab, any):
             "Parquet", "Armaris encastats", 'Placa de cocció amb gas', 
             'Placa de cocció vitroceràmica', "Placa d'inducció", 'Plaques solars', "Safareig","Terrasses, balcons i patis"]
     for i in vars:
-        bbdd_estudi_prom[i] = bbdd_estudi_prom[i].replace(np.nan, 0)
+        bbdd_estudi_prom[i] = bbdd_estudi_prom[i].replace({np.nan: 0})
     for i in vars_aux:
-        bbdd_estudi_hab[i] = bbdd_estudi_hab[i].replace(np.nan, 0)
-    bbdd_estudi_hab["Calefacció"] = bbdd_estudi_hab["Calefacció"].replace(' ', 0) 
-    bbdd_estudi_prom["Calefacció"] = bbdd_estudi_prom["Calefacció"].replace(' ', 0) 
+        bbdd_estudi_hab[i] = bbdd_estudi_hab[i].replace({np.nan: 0})
+    bbdd_estudi_hab["Calefacció"] = bbdd_estudi_hab["Calefacció"].replace({' ': 0}) 
+    bbdd_estudi_prom["Calefacció"] = bbdd_estudi_prom["Calefacció"].replace({' ': 0}) 
 
 
     bbdd_estudi_hab["Tram_Sup_util"] = bbdd_estudi_hab["Tram_Sup_util"].str.replace(" ", "")
@@ -580,11 +580,11 @@ def tidy_bbdd_2023(df_prom, df_hab, any):
             "Parquet", "Armaris encastats", 'Placa de cocció amb gas', 
             'Placa de cocció vitroceràmica', "Placa d'inducció", 'Plaques solars', "Safareig","Terrasses, balcons i patis"]
     for i in vars:
-        bbdd_estudi_prom[i] = bbdd_estudi_prom[i].replace(np.nan, 0)
+        bbdd_estudi_prom[i] = bbdd_estudi_prom[i].replace({np.nan : 0})
     for i in vars_aux:
-        bbdd_estudi_hab[i] = bbdd_estudi_hab[i].replace(np.nan, 0)
-    bbdd_estudi_hab["Calefacció"] = bbdd_estudi_hab["Calefacció"].replace(' ', 0) 
-    bbdd_estudi_prom["Calefacció"] = bbdd_estudi_prom["Calefacció"].replace(' ', 0) 
+        bbdd_estudi_hab[i] = bbdd_estudi_hab[i].replace({np.nan : 0})
+    bbdd_estudi_hab["Calefacció"] = bbdd_estudi_hab["Calefacció"].replace({' ': 0}) 
+    bbdd_estudi_prom["Calefacció"] = bbdd_estudi_prom["Calefacció"].replace({' ': 0}) 
 
 
     bbdd_estudi_hab["Tram_Sup_util"] = bbdd_estudi_hab["Tram_Sup_util"].str.replace(" ", "")
@@ -819,11 +819,11 @@ def tidy_bbdd_semestral(df_prom, df_hab, any):
             "Parquet", "Armaris encastats", 'Placa de cocció amb gas', 
             'Placa de cocció vitroceràmica', "Placa d'inducció", 'Plaques solars', "Safareig","Terrasses, balcons i patis"]
     for i in vars:
-        bbdd_estudi_prom[i] = bbdd_estudi_prom[i].replace(np.nan, 0)
+        bbdd_estudi_prom[i] = bbdd_estudi_prom[i].replace({np.nan : 0})
     for i in vars_aux:
-        bbdd_estudi_hab[i] = bbdd_estudi_hab[i].replace(np.nan, 0)
-    bbdd_estudi_hab["Calefacció"] = bbdd_estudi_hab["Calefacció"].replace(' ', 0) 
-    bbdd_estudi_prom["Calefacció"] = bbdd_estudi_prom["Calefacció"].replace(' ', 0) 
+        bbdd_estudi_hab[i] = bbdd_estudi_hab[i].replace({np.nan : 0})
+    bbdd_estudi_hab["Calefacció"] = bbdd_estudi_hab["Calefacció"].replace({' ': 0}) 
+    bbdd_estudi_prom["Calefacció"] = bbdd_estudi_prom["Calefacció"].replace({' ': 0}) 
 
 
     bbdd_estudi_hab["Tram_Sup_util"] = bbdd_estudi_hab["Tram_Sup_util"].str.replace(" ", "")
@@ -950,43 +950,31 @@ def geo_mun():
     df_vf = df_vf_merged[df_vf_merged["Variable"]!="Unitats"]
     df_unitats = df_vf_merged[df_vf_merged["Variable"]=="Unitats"].drop("Variable", axis=1)
     df_unitats = df_unitats.rename(columns={"Valor": "Unitats"})
-    # df_vf[df_vf["Província"].isna()]["GEO"].unique()
     df_final_cat = pd.merge(df_vf, df_unitats, how="left")
     df_final = df_final_cat[df_final_cat["GEO"]!="Catalunya"]
     df_final_cat_aux1 = df_final_cat[df_final_cat["GEO"]=="Catalunya"][["Any", "Tipologia", "Variable","Valor"]]
-    cat_df_aux2_melted = pd.melt(df_final_cat[df_final_cat["GEO"]=="Catalunya"][["Any", "Tipologia", "Unitats"]], id_vars=["Any", "Tipologia"], var_name="Variable", value_name="Unitats")
-    cat_df_aux2_melted["Unitats"] = cat_df_aux2_melted["Unitats"].astype("int64")
-    cat_df_aux2_melted = cat_df_aux2_melted.rename(columns={"Unitats":"Valor"})
+    cat_df_aux2_melted = pd.melt(df_final_cat[df_final_cat["GEO"]=="Catalunya"][["Any", "Tipologia", "Unitats"]], id_vars=["Any", "Tipologia"], var_name="Variable", value_name="Valor")
     df_final_cat = pd.concat([df_final_cat_aux1, cat_df_aux2_melted], axis=0)
 
 
-    ambits_df_aux1 = df_final.groupby(["Any", "Tipologia", "Variable", "Àmbits territorials"]).apply(weighted_mean).reset_index().rename(columns= {0:"Valor"})
-    ambits_df_aux2 = df_final[["Any","Àmbits territorials","Tipologia", "GEO", "Unitats"]].drop_duplicates(["Any","Àmbits territorials","Tipologia", "GEO", "Unitats"]).groupby(["Any", "Àmbits territorials", "Tipologia"]).sum().reset_index()
-    ambits_df_aux2_melted = pd.melt(ambits_df_aux2, id_vars=["Any", "Tipologia", "Àmbits territorials"], var_name="Variable", value_name="Unitats")
-    ambits_df_aux2_melted["Unitats"] = ambits_df_aux2_melted["Unitats"].astype("int64")
-    ambits_df_aux2_melted = ambits_df_aux2_melted.rename(columns={"Unitats":"Valor"})
+    ambits_df_aux1 = df_final.set_index(["Any", "Tipologia", "Variable", "Àmbits territorials"]).groupby(["Any", "Tipologia", "Variable", "Àmbits territorials"]).apply(weighted_mean).reset_index().rename(columns= {0:"Valor"})
+    ambits_df_aux2 = df_final[["Any","Àmbits territorials","Tipologia", "GEO", "Unitats"]].drop_duplicates(["Any","Àmbits territorials","Tipologia", "GEO", "Unitats"]).drop("GEO", axis=1).groupby(["Any", "Àmbits territorials", "Tipologia"]).sum().reset_index()
+    ambits_df_aux2_melted = pd.melt(ambits_df_aux2, id_vars=["Any", "Tipologia", "Àmbits territorials"], var_name="Variable", value_name="Valor")
     ambits_df = pd.concat([ambits_df_aux1, ambits_df_aux2_melted], axis=0)
     ambits_df = ambits_df.rename(columns={"Àmbits territorials":"GEO"})
 
-    comarques_df_aux1 = df_final.groupby(["Any", "Tipologia", "Variable", "Comarques"]).apply(weighted_mean).reset_index().rename(columns= {0:"Valor"}).dropna(axis=0)
-    comarques_df_aux2 = df_final[["Any","Comarques","Tipologia", "GEO", "Unitats"]].drop_duplicates(["Any","Comarques","Tipologia", "GEO", "Unitats"]).groupby(["Any", "Comarques", "Tipologia"]).sum().reset_index()
-    comarques_df_aux2_melted = pd.melt(comarques_df_aux2, id_vars=["Any", "Tipologia", "Comarques"], var_name="Variable", value_name="Unitats")
-    comarques_df_aux2_melted["Unitats"] = comarques_df_aux2_melted["Unitats"].astype("int64")
-    comarques_df_aux2_melted = comarques_df_aux2_melted.rename(columns={"Unitats":"Valor"})
+    comarques_df_aux1 = df_final.set_index(["Any", "Tipologia", "Variable", "Comarques"]).groupby(["Any", "Tipologia", "Variable", "Comarques"]).apply(weighted_mean).reset_index().rename(columns= {0:"Valor"}).dropna(axis=0)
+    comarques_df_aux2 = df_final[["Any","Comarques","Tipologia", "GEO", "Unitats"]].drop_duplicates(["Any","Comarques","Tipologia", "GEO", "Unitats"]).drop("GEO", axis=1).groupby(["Any", "Comarques", "Tipologia"]).sum().reset_index()
+    comarques_df_aux2_melted = pd.melt(comarques_df_aux2, id_vars=["Any", "Tipologia", "Comarques"], var_name="Variable", value_name="Valor")
     comarques_df = pd.concat([comarques_df_aux1, comarques_df_aux2_melted], axis=0)
     comarques_df = comarques_df.rename(columns={"Comarques":"GEO"})
 
-
-    provincia_df_aux1 = df_final.groupby(["Any", "Tipologia", "Variable", "Província"]).apply(weighted_mean).reset_index().rename(columns= {0:"Valor"})
-    provincia_df_aux2 = df_final[["Any","Província","Tipologia", "GEO", "Unitats"]].drop_duplicates(["Any","Província","Tipologia", "GEO", "Unitats"]).groupby(["Any", "Província", "Tipologia"]).sum().reset_index()
-    provincia_df_aux2_melted = pd.melt(provincia_df_aux2, id_vars=["Any", "Tipologia", "Província"], var_name="Variable", value_name="Unitats")
-    provincia_df_aux2_melted["Unitats"] = provincia_df_aux2_melted["Unitats"].astype("int64")
-    provincia_df_aux2_melted = provincia_df_aux2_melted.rename(columns={"Unitats":"Valor"})
+    provincia_df_aux1 = df_final.set_index(["Any", "Tipologia", "Variable", "Província"]).groupby(["Any", "Tipologia", "Variable", "Província"]).apply(weighted_mean).reset_index().rename(columns= {0:"Valor"})
+    provincia_df_aux2 = df_final[["Any","Província","Tipologia", "GEO", "Unitats"]].drop_duplicates(["Any","Província","Tipologia", "GEO", "Unitats"]).drop("GEO", axis=1).groupby(["Any", "Província", "Tipologia"]).sum().reset_index()
+    provincia_df_aux2_melted = pd.melt(provincia_df_aux2, id_vars=["Any", "Tipologia", "Província"], var_name="Variable", value_name="Valor")
     provincia_df = pd.concat([provincia_df_aux1, provincia_df_aux2_melted], axis=0)
     provincia_df = provincia_df.rename(columns={"Província":"GEO"})
-
     return([df_vf_aux, df_vf, df_final_cat, df_final, ambits_df, comarques_df, provincia_df])
-
 df_vf_aux, df_vf, df_final_cat, df_final, ambits_df, comarques_df, provincia_df = geo_mun()
 
 @st.cache_resource
@@ -1011,7 +999,7 @@ df_dis_long = geo_dis_long()
 
 def filedownload(df, filename):
     towrite = io.BytesIO()
-    df.to_excel(towrite, encoding='latin-1', index=True, header=True)
+    df.to_excel(towrite, index=True, header=True)
     towrite.seek(0)
     b64 = base64.b64encode(towrite.read()).decode("latin-1")
     href = f"""
@@ -1098,7 +1086,7 @@ def plot_qualitats(df_hab):
     table62_hab = pd.DataFrame({"Qualitats":table62_hab.index, "Total":table62_hab.values})
     table62_hab = table62_hab.set_index("Qualitats").apply(lambda row: (row / df_hab.shape[0])*100).reset_index().sort_values("Total", ascending=True)
     fig = px.bar(table62_hab, x="Total", y="Qualitats", orientation='h', title="", labels={'x':"Proporcions sobre el total d'habitatges", 'y':"Qualitats"})
-    fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges"
+    fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges (%)"
     fig.layout.yaxis.title.text = "Qualitats"
     fig.update_traces(marker=dict(color="#66b9a7"))
     fig.layout.paper_bgcolor = "#cce8e2"
@@ -1106,11 +1094,11 @@ def plot_qualitats(df_hab):
     return(fig)
 @st.cache_resource
 def plot_equipaments(df_hab):
-    table67_hab = df_hab[["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0)
+    table67_hab = df_hab[["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0, numeric_only=True)
     table67_hab = pd.DataFrame({"Equipaments":table67_hab.index, "Total":table67_hab.values})
     table67_hab = table67_hab.set_index("Equipaments").apply(lambda row: row.mul(100) / df_hab.shape[0]).reset_index().sort_values("Total", ascending=True)
     fig = px.bar(table67_hab, x="Total", y="Equipaments", orientation='h', title="", labels={'x':"Proporcions sobre el total d'habitatges", 'y':"Equipaments"})
-    fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges"
+    fig.layout.xaxis.title.text = "Proporcions sobre el total d'habitatges (%)"
     fig.layout.yaxis.title.text = "Equipaments"
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
@@ -1118,8 +1106,8 @@ def plot_equipaments(df_hab):
     return(fig)
 @st.cache_resource
 def indicadors_preu_mitjanes(df_hab):
-    table76_tipo = df_hab[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).apply(np.mean).reset_index()
-    table76_total = df_hab[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).apply(np.mean).reset_index()
+    table76_tipo = df_hab[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).mean().reset_index()
+    table76_total = df_hab[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).mean().reset_index()
     table76_total["TIPOG"] = "Total habitatges"
     table76 = pd.concat([table76_tipo, table76_total], axis=0)
     table76 = pd.merge(table76, df_hab[["TIPOG","Total dormitoris"]].groupby(["TIPOG","Total dormitoris"]).size().reset_index().rename(columns={0:"Total"}), how="left", on=["TIPOG","Total dormitoris"])
@@ -1133,8 +1121,8 @@ def indicadors_preu_mitjanes(df_hab):
     return(fig)
 @st.cache_resource
 def indicadors_preum2_mitjanes(df_hab):
-    table76_tipo = df_hab[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).apply(np.mean).reset_index()
-    table76_total = df_hab[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).apply(np.mean).reset_index()
+    table76_tipo = df_hab[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).mean().reset_index()
+    table76_total = df_hab[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).mean().reset_index()
     table76_total["TIPOG"] = "Total habitatges"
     table76 = pd.concat([table76_tipo, table76_total], axis=0)
     table76 = pd.merge(table76, df_hab[["TIPOG","Total dormitoris"]].groupby(["TIPOG","Total dormitoris"]).size().reset_index().rename(columns={0:"Total"}), how="left", on=["TIPOG","Total dormitoris"])
@@ -1148,8 +1136,8 @@ def indicadors_preum2_mitjanes(df_hab):
     return(fig)
 @st.cache_resource
 def indicadors_super_mitjanes(df_hab):
-    table76_tipo = df_hab[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris", "TIPOG"]).groupby(["TIPOG", "Total dormitoris"]).apply(np.mean).reset_index()
-    table76_total = df_hab[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).apply(np.mean).reset_index()
+    table76_tipo = df_hab[["Total dormitoris", "TIPOG","Superfície útil", "Preu mitjà", "Preu m2 útil"]].groupby(["TIPOG", "Total dormitoris"]).mean().reset_index()
+    table76_total = df_hab[["Total dormitoris","Superfície útil", "Preu mitjà", "Preu m2 útil"]].set_index(["Total dormitoris"]).groupby(["Total dormitoris"]).mean().reset_index()
     table76_total["TIPOG"] = "Total habitatges"
     table76 = pd.concat([table76_tipo, table76_total], axis=0)
     table76 = pd.merge(table76, df_hab[["TIPOG","Total dormitoris"]].groupby(["TIPOG","Total dormitoris"]).size().reset_index().rename(columns={0:"Total"}), how="left", on=["TIPOG","Total dormitoris"])
@@ -1191,7 +1179,7 @@ def table_geo_cat(any_ini, any_fin):
         df_cat_n[num_cols] = df_cat_n[num_cols].round(0)
         df_cat_n[num_cols] = df_cat_n[num_cols].astype(int)
         num_cols = df_cat_n.select_dtypes(include=['float64', 'int']).columns
-        df_cat_n[num_cols] = df_cat_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
+        df_cat_n[num_cols] = df_cat_n[num_cols].map(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
         return(df_cat_n)
 ####################################### PROVÍNCIES I AMBITS FUNCIONS #################################################
 @st.cache_resource
@@ -1203,7 +1191,7 @@ def table_geo(geo, any_ini, any_fin, selected):
         df_prov_n[num_cols] = df_prov_n[num_cols].round(0)
         df_prov_n[num_cols] = df_prov_n[num_cols].astype("float64")
         num_cols = df_prov_n.select_dtypes(include=['float64', 'int']).columns
-        df_prov_n[num_cols] = df_prov_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
+        df_prov_n[num_cols] = df_prov_n[num_cols].map(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
         return(df_prov_n)
     if selected=="Províncies" or selected=="Catalunya":
         df_prov_filtered = provincia_df[(provincia_df["GEO"]==geo) & (provincia_df["Any"]>=any_ini) & (provincia_df["Any"]<=any_fin)].pivot(index=["Any"], columns=["Tipologia", "Variable"], values="Valor")
@@ -1212,7 +1200,7 @@ def table_geo(geo, any_ini, any_fin, selected):
         df_prov_n[num_cols] = df_prov_n[num_cols].round(0)
         df_prov_n[num_cols] = df_prov_n[num_cols].astype(int)
         num_cols = df_prov_n.select_dtypes(include=['float64', 'int']).columns
-        df_prov_n[num_cols] = df_prov_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
+        df_prov_n[num_cols] = df_prov_n[num_cols].map(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
         return(df_prov_n)
 @st.cache_resource
 def tipog_donut(df_hab, prov):
@@ -1280,7 +1268,7 @@ def qualitats_prov(df_hab, prov):
     return(fig)
 @st.cache_resource
 def equipaments_prov(df_hab, prov):
-    table67_hab = df_hab[df_hab["PROVINCIA"]==prov][["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0)
+    table67_hab = df_hab[df_hab["PROVINCIA"]==prov][["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0, numeric_only=True)
     table67_hab = pd.DataFrame({"Equipaments":table67_hab.index, "Total":table67_hab.values})
     table67_hab = table67_hab.set_index("Equipaments").apply(lambda row: row.mul(100) / df_hab[df_hab["PROVINCIA"]==prov].shape[0])
     table67_hab = table67_hab.sort_values("Total", ascending=True)
@@ -1378,7 +1366,7 @@ def metric_rehab(df_hab, prov):
 @st.cache_resource
 def data_text_mun(df_hab, df_hab_mod, selected_mun):
     table80_mun = df_hab_mod[df_hab_mod["Municipi"]==selected_mun][["Municipi", "TIPOG", "Superfície útil", "Preu mitjà", "Preu m2 útil"]].groupby(["Municipi"]).agg({"Municipi":['count'], "Superfície útil": [np.mean], "Preu mitjà": [np.mean], "Preu m2 útil": [np.mean]}).reset_index()
-    table25_mun = df_hab[df_hab["Municipi"]==selected_mun][["Municipi", "TIPOG"]].value_counts(normalize=True).reset_index().rename(columns={0:"Proporció"})
+    table25_mun = df_hab[df_hab["Municipi"]==selected_mun][["Municipi", "TIPOG"]].value_counts(normalize=True).reset_index().rename(columns={"proportion":"Proporció"})
     table61_hab = df_hab[df_hab["Municipi"]==selected_mun].groupby(['Total dormitoris']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
     table61_lav = df_hab[df_hab["Municipi"]==selected_mun].groupby(['Banys i lavabos']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
 
@@ -1386,7 +1374,6 @@ def data_text_mun(df_hab, df_hab_mod, selected_mun):
         proporcio_tipo = round(table25_mun[table25_mun["TIPOG"]=="Habitatges plurifamiliars"]["Proporció"].values[0]*100,2)
     except IndexError:
         proporcio_tipo = 0
-
     return([round(table80_mun["Preu mitjà"].values[0][0],2), round(table80_mun["Superfície útil"].values[0][0],2), 
             round(table80_mun["Preu m2 útil"].values[0][0],2), proporcio_tipo, 
             table61_hab["Total dormitoris"].values[0], table61_lav["Banys i lavabos"].values[0]])
@@ -1462,12 +1449,12 @@ def table_mun(Municipi, any_ini, any_fin):
     df_mun_n[num_cols] = df_mun_n[num_cols].round(0)
     df_mun_n[num_cols] = df_mun_n[num_cols].astype("Int64")
     num_cols = df_mun_n.select_dtypes(include=['float64', 'Int64']).columns
-    df_mun_n[num_cols] = df_mun_n[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
+    df_mun_n[num_cols] = df_mun_n[num_cols].map(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
     return(df_mun_n)
 @st.cache_resource
 def plot_mun_hist_units(selected_mun, variable_int, any_ini, any_fin):
     df_preus = df_vf_aux[(df_vf_aux['Variable']==variable_int) & (df_vf_aux['GEO']==selected_mun) & (df_vf_aux["Any"]>=any_ini) & (df_vf_aux["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
-    df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
+    df_preus['Valor'] = np.where(df_preus['Valor']==0, np.nan, round(df_preus['Valor'], 1))
     df_preus['Any'] = df_preus['Any'].astype(int)
     df_preus = df_preus[df_preus["Tipologia"]!="TOTAL HABITATGES"]
     fig = px.bar(df_preus, x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text= "Valor")
@@ -1485,7 +1472,7 @@ def plot_mun_hist_units(selected_mun, variable_int, any_ini, any_fin):
 @st.cache_resource
 def plot_mun_hist(selected_mun, variable_int, any_ini, any_fin):
     df_preus = df_vf[(df_vf['Variable']==variable_int) & (df_vf['GEO']==selected_mun) & (df_vf["Any"]>=any_ini) & (df_vf["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
-    df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
+    df_preus['Valor'] = np.where(df_preus['Valor']==0, np.nan, round(df_preus['Valor'], 1))
     df_preus['Any'] = df_preus['Any'].astype(int)
     fig = px.bar(df_preus, x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#008B6C","#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text='Valor', barmode='group')
     fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
@@ -1499,13 +1486,12 @@ def plot_mun_hist(selected_mun, variable_int, any_ini, any_fin):
     return fig
 @st.cache_resource
 def matrix_hab_lav(df_hab, mun, pivot_name):
-    resum_mun_hab_lav = df_hab[(df_hab["Municipi"]==mun)].groupby(["Total dormitoris", "Banys i lavabos"])["Preu mitjà", "Preu m2 útil", "Superfície útil"].mean().reset_index()
+    resum_mun_hab_lav = df_hab[(df_hab["Municipi"]==mun)].groupby(["Total dormitoris", "Banys i lavabos"])[["Preu mitjà", "Preu m2 útil", "Superfície útil"]].mean().reset_index()
     resum_mun_hab_lav = resum_mun_hab_lav[(resum_mun_hab_lav["Total dormitoris"]>0) & (resum_mun_hab_lav["Banys i lavabos"]>0)]
     resum_mun_hab_lav["Total dormitoris"] = resum_mun_hab_lav["Total dormitoris"].astype(str) + " habitacions"
     resum_mun_hab_lav["Banys i lavabos"] = resum_mun_hab_lav["Banys i lavabos"].astype(str) + " lavabos"
     resum_mun_hab_lav = resum_mun_hab_lav.round(1)
-    num_cols = resum_mun_hab_lav.select_dtypes(include=['float64', 'Int64']).columns
-    resum_mun_hab_lav[num_cols] = resum_mun_hab_lav[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
+    resum_mun_hab_lav[["Preu mitjà", "Preu m2 útil", "Superfície útil"]] = resum_mun_hab_lav[["Preu mitjà", "Preu m2 útil", "Superfície útil"]].map(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
     if pivot_name=="Preu m2 útil":
         resum_mun_hab_lav_pivoted_preu = resum_mun_hab_lav.pivot(index="Total dormitoris", columns="Banys i lavabos", values=pivot_name)
         return(resum_mun_hab_lav_pivoted_preu)
@@ -1555,7 +1541,7 @@ def qualitats_mun(df_hab, mun):
     return(fig)
 @st.cache_resource
 def equipaments_mun(df_hab, mun):
-    table67_hab = df_hab[df_hab["Municipi"]==mun][["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0)
+    table67_hab = df_hab[df_hab["Municipi"]==mun][["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0, numeric_only=True)
     table67_hab = pd.DataFrame({"Equipaments":table67_hab.index, "Total":table67_hab.values})
     table67_hab = table67_hab.set_index("Equipaments").apply(lambda row: row.mul(100) / df_hab[df_hab["Municipi"]==mun].shape[0])
     table67_hab = table67_hab.sort_values("Total", ascending=True)
@@ -1600,18 +1586,28 @@ def plot_table_energ_mun(df_hab, mun):
     fig.layout.plot_bgcolor = "#cce8e2"
     return fig
 @st.cache_resource
-def n_promocions_habs_mun(df_hab, selected_mun):
-    grandaria_promo = df_hab[df_hab["Municipi"] == selected_mun]["NUMQUEST"].value_counts().reset_index().drop("index", axis=1)
-    grandaria_promo.index = grandaria_promo.index + 1
-    fig = px.bar(grandaria_promo,
-                x=grandaria_promo.index, 
-                y=grandaria_promo["NUMQUEST"],
+def n_promocions_habs_mun(df_prom, selected_mun):
+    grandaria_promo = df_prom[df_prom["Municipi"] == selected_mun][["HABIT"]].rename(columns={"HABIT":"count"}).reset_index().drop("index", axis=1)
+    grandaria_promo = grandaria_promo.sort_values("count", ascending=False).reset_index().drop("index", axis=1)
+    mean_promo = grandaria_promo["count"].mean()
+    fig = px.histogram(grandaria_promo, 
+                x=grandaria_promo["count"], nbins=11, 
                 )
     fig.update_layout(
-        xaxis_title="Nombre de promocions al municipi",
-        yaxis_title="Nombre d'habitatges per promoció",
+        xaxis_title="Nombre d'habitatges per promoció",
+        yaxis_title="Nombre de promocions al municipi",
+        bargap=0.1
     )
-    fig.update_xaxes(tickvals=sorted(grandaria_promo.index.unique()))
+    fig.add_annotation(
+        x=1, y=1,  
+        text=f"<b>Mitjana d'habitatges totals per promoció: {mean_promo:.0f}</b>",
+        showarrow=False,
+        xref="paper", yref="paper",
+        font=dict(size=15, color="black"),
+        bgcolor="#66b9a7", 
+        borderwidth=1,
+        borderpad=4
+    )
     fig.update_traces(marker=dict(color="#66b9a7"))
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
@@ -1647,7 +1643,7 @@ def aparcament_mun(df_hab, mun):
 @st.cache_resource
 def data_text_dis(df_hab, selected_dis):
     table80_dis = df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"]==selected_dis)][["Nom DIST", "TIPOG", "Superfície útil", "Preu mitjà", "Preu m2 útil"]].groupby(["Nom DIST"]).agg({"Nom DIST":['count'], "Superfície útil": [np.mean], "Preu mitjà": [np.mean], "Preu m2 útil": [np.mean]}).reset_index()
-    table25_dis = df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"]==selected_dis)][["Nom DIST", "TIPOG"]].value_counts(normalize=True).reset_index().rename(columns={0:"Proporció"})
+    table25_dis = df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"]==selected_dis)][["Nom DIST", "TIPOG"]].value_counts(normalize=True).reset_index().rename(columns={"proportion":"Proporció"})
     table61_hab = df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"]==selected_dis)].groupby(['Total dormitoris']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
     table61_lav = df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"]==selected_dis)].groupby(['Banys i lavabos']).size().reset_index(name='Proporcions').sort_values(by="Proporcions", ascending=False)
 
@@ -1716,7 +1712,7 @@ def geo_dis(districte, any_ini, any_fin):
     df_vf_aux['Valor'] = pd.to_numeric(df_vf_aux['Valor'], errors='coerce')
 
     df_vf_aux = df_vf_aux[df_vf_aux['GEO']!="Municipi de Barcelona"]
-    df_vf_aux["GEO"] = df_vf_aux["GEO"].str.replace(r"\d+\s", "")
+    df_vf_aux["GEO"] = df_vf_aux["GEO"].str.replace(r"\d+\s", "", regex=True)
     df_vf_aux = df_vf_aux[df_vf_aux["GEO"].isin(["Ciutat Vella", "Eixample", "Sants-Montjuïc", 
                                                 "Les Corts", "Sarrià-Sant Gervasi", "Sarrià - Sant Gervasi", "Gràcia", 
                                                 "Horta-Guinardó", "Nou Barris", "Sant Andreu",
@@ -1728,13 +1724,13 @@ def geo_dis(districte, any_ini, any_fin):
     df_wide[num_cols] = df_wide[num_cols].round(0)
     df_wide[num_cols] = df_wide[num_cols].astype("Int64")
     num_cols = df_wide.select_dtypes(include=['float64', 'Int64']).columns
-    df_wide[num_cols] = df_wide[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
+    df_wide[num_cols] = df_wide[num_cols].map(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
     df_wide = df_wide[(df_wide.index>=any_ini) & (df_wide.index<=any_fin)]
     return(df_wide)
 @st.cache_resource
 def plot_dis_hist_units(selected_dis, variable_int, any_ini, any_fin):
     df_preus = df_dis_long[(df_dis_long['Variable']==variable_int) & (df_dis_long['GEO']==selected_dis) & (df_dis_long["Any"]>=any_ini) & (df_dis_long["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
-    df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
+    df_preus['Valor'] = np.where(df_preus['Valor']==0, np.nan, round(df_preus['Valor'], 1))
     df_preus['Any'] = df_preus['Any'].astype(int)
     df_preus = df_preus[df_preus["Tipologia"]!="TOTAL HABITATGES"]
     fig = px.bar(df_preus[df_preus["Valor"]>0], x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text= "Valor")
@@ -1750,7 +1746,7 @@ def plot_dis_hist_units(selected_dis, variable_int, any_ini, any_fin):
 @st.cache_resource
 def plot_dis_hist(selected_dis, variable_int, any_ini, any_fin):
     df_preus = df_dis_long[(df_dis_long['Variable']==variable_int) & (df_dis_long['GEO']==selected_dis) & (df_dis_long["Any"]>=any_ini) & (df_dis_long["Any"]<=any_fin)].drop(['Variable'], axis=1).reset_index().drop('index', axis=1)
-    df_preus['Valor'] = np.where(df_preus['Valor']==0, np.NaN, round(df_preus['Valor'], 1))
+    df_preus['Valor'] = np.where(df_preus['Valor']==0, np.nan, round(df_preus['Valor'], 1))
     df_preus['Any'] = df_preus['Any'].astype(int)
     fig = px.bar(df_preus[df_preus["Valor"]>0], x='Any', y='Valor', color='Tipologia', color_discrete_sequence=["#008B6C","#AAC4BA","#00D0A3"], range_y=[0, None], labels={'Valor': variable_int, 'Any': 'Any'}, text='Valor', barmode='group')
     fig.layout.yaxis = dict(title= variable_int,tickformat=",d")
@@ -1764,13 +1760,12 @@ def plot_dis_hist(selected_dis, variable_int, any_ini, any_fin):
     return fig
 @st.cache_resource
 def matrix_hab_lav_dis(df_hab, dis, pivot_name):
-    resum_dis_hab_lav = df_hab[(df_hab['Municipi']=="Barcelona") & (df_hab['Nom DIST']==dis) & (df_hab["TIPOG"]=="Habitatges plurifamiliars")].groupby(["Total dormitoris", "Banys i lavabos"])["Preu mitjà", "Preu m2 útil", "Superfície útil"].mean().reset_index()
+    resum_dis_hab_lav = df_hab[(df_hab['Municipi']=="Barcelona") & (df_hab['Nom DIST']==dis) & (df_hab["TIPOG"]=="Habitatges plurifamiliars")].groupby(["Total dormitoris", "Banys i lavabos"])[["Preu mitjà", "Preu m2 útil", "Superfície útil"]].mean().reset_index()
     resum_dis_hab_lav = resum_dis_hab_lav[(resum_dis_hab_lav["Total dormitoris"]>0) & (resum_dis_hab_lav["Banys i lavabos"]>0)]
     resum_dis_hab_lav["Total dormitoris"] = resum_dis_hab_lav["Total dormitoris"].astype(str) + " habitacions"
     resum_dis_hab_lav["Banys i lavabos"] = resum_dis_hab_lav["Banys i lavabos"].astype(str) + " lavabos"
     resum_dis_hab_lav = resum_dis_hab_lav.round(1)
-    num_cols = resum_dis_hab_lav.select_dtypes(include=['float64', 'Int64']).columns
-    resum_dis_hab_lav[num_cols] = resum_dis_hab_lav[num_cols].applymap(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
+    resum_dis_hab_lav[["Preu mitjà", "Preu m2 útil", "Superfície útil"]] = resum_dis_hab_lav[["Preu mitjà", "Preu m2 útil", "Superfície útil"]].map(lambda x: '{:,.0f}'.format(x).replace(',', '#').replace('.', ',').replace('#', '.'))
     if pivot_name=="Preu m2 útil":
         resum_dis_hab_lav_pivoted_preu = resum_dis_hab_lav.pivot(index="Total dormitoris", columns="Banys i lavabos", values=pivot_name)
         return(resum_dis_hab_lav_pivoted_preu)
@@ -1821,7 +1816,7 @@ def qualitats_dis(df_hab, dis):
     return(fig)
 @st.cache_resource
 def equipaments_dis(df_hab, dis):
-    table67_hab = df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"]==dis)][["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0)
+    table67_hab = df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"]==dis)][["Zona enjardinada", "Parc infantil", "Piscina comunitària", "Traster", "Ascensor", "Equipament Esportiu", "Sala de jocs", "Sauna", "Altres", "Cap dels anteriors"]].sum(axis=0, numeric_only=True)
     table67_hab = pd.DataFrame({"Equipaments":table67_hab.index, "Total":table67_hab.values})
     table67_hab = table67_hab.set_index("Equipaments").apply(lambda row: row.mul(100) / df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"]==dis)].shape[0])
     table67_hab = table67_hab.sort_values("Total", ascending=True)
@@ -1866,18 +1861,29 @@ def plot_table_energ_dis(df_hab, dis):
     fig.layout.plot_bgcolor = "#cce8e2"
     return fig
 @st.cache_resource
-def n_promocions_habs_dis(df_hab, dis):
-    grandaria_promo = df_hab[(df_hab["Municipi"]=="Barcelona") & (df_hab["Nom DIST"] == dis)]["NUMQUEST"].value_counts().reset_index().drop("index", axis=1)
-    grandaria_promo.index = grandaria_promo.index + 1
-    fig = px.bar(grandaria_promo,
-                x=grandaria_promo.index, 
-                y=grandaria_promo["NUMQUEST"],
+def n_promocions_habs_dis(df_prom, dis):
+    grandaria_promo = df_prom[(df_prom["Municipi"]=="Barcelona") & (df_prom["Nom DIST"].str[3:] == dis)][["HABIT"]].rename(columns={"HABIT":"count"}).reset_index().drop("index", axis=1)
+    grandaria_promo = grandaria_promo.sort_values("count", ascending=False).reset_index().drop("index", axis=1)
+    mean_promo = grandaria_promo["count"].mean()
+    fig = px.histogram(grandaria_promo, 
+                x=grandaria_promo["count"], nbins=11, 
                 )
     fig.update_layout(
-        xaxis_title="Nombre de promocions al municipi",
-        yaxis_title="Nombre d'habitatges per promoció",
+        xaxis_title="Nombre d'habitatges per promoció",
+        yaxis_title="Nombre de promocions al municipi",
+        bargap=0.1
     )
-    fig.update_xaxes(tickvals=sorted(grandaria_promo.index.unique()))
+    fig.add_annotation(
+        x=1, y=1, 
+        text=f"<b>Mitjana d'habitatges totals per promoció: {mean_promo:.0f}</b>",
+        showarrow=False,
+        xref="paper", yref="paper",
+        font=dict(size=15, color="black"),
+        bgcolor="#66b9a7", 
+        borderwidth=1,
+        borderpad=4
+    )
+
     fig.update_traces(marker=dict(color="#66b9a7"))
     fig.layout.paper_bgcolor = "#cce8e2"
     fig.layout.plot_bgcolor = "#cce8e2"
@@ -1976,7 +1982,7 @@ if selected == "Catalunya":
                     divider = make_axes_locatable(ax)
                     cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
                     cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#AAC4BA","#008B6C"]) 
-
+                    tmp['Habitatges en oferta']= tmp['Habitatges en oferta'].astype(float)
                     tmp.plot(column='Habitatges en oferta', ax=ax,cax=cax, cmap=cmap, legend=True)
                     tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
                     ax.axis('off')
@@ -2021,9 +2027,11 @@ if selected == "Catalunya":
                 st.write("""<p><b>Principals qualitats dels habitatges</b></p>""", unsafe_allow_html=True)
                 st.plotly_chart(plot_qualitats(bbdd_estudi_hab), use_container_width=True, responsive=True)
 
+
             with right_col:
                 st.write("""<p><b>Principals equipaments dels habitatges</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(plot_equipaments(bbdd_estudi_hab), use_container_width=True, responsive=True)
+                # st.plotly_chart(plot_equipaments(bbdd_estudi_hab), use_container_width=True, responsive=True)
+                st.write(plot_equipaments(bbdd_estudi_hab))
 
         if selected_index=="Superfície i preus":
             left_col, right_col = st.columns((1, 1))
@@ -2175,7 +2183,7 @@ if selected == "Catalunya":
                     divider = make_axes_locatable(ax)
                     cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
                     cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#AAC4BA","#008B6C"]) 
-
+                    tmp['Habitatges en oferta']= tmp['Habitatges en oferta'].astype(float)
                     tmp.plot(column='Habitatges en oferta', ax=ax,cax=cax, cmap=cmap, legend=True)
                     tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
                     ax.axis('off')
@@ -2329,7 +2337,7 @@ if selected == "Catalunya":
                     divider = make_axes_locatable(ax)
                     cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
                     cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#AAC4BA","#008B6C"]) 
-
+                    tmp['Habitatges en oferta']= tmp['Habitatges en oferta'].astype(float)
                     tmp.plot(column='Habitatges en oferta', ax=ax,cax=cax, cmap=cmap, legend=True)
                     tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
                     ax.axis('off')
@@ -2820,7 +2828,7 @@ if selected == "Municipis":
             st.markdown("""**Habitatges a la venda segons número de lavabos**""")
             st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, responsive=True)
             st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
-            st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_hab, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_prom, selected_mun), use_container_width=True, responsive=True)
             st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
             st.plotly_chart(aparcament_mun(bbdd_estudi_hab, selected_mun), use_container_width=True, responsive=True)
 
@@ -2885,7 +2893,7 @@ if selected == "Municipis":
             st.markdown("""**Habitatges a la venda segons número de lavabos**""")
             st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, responsive=True)
             st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
-            st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_hab_2023, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_prom_2023, selected_mun), use_container_width=True, responsive=True)
             st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
             st.plotly_chart(aparcament_mun(bbdd_estudi_hab_2023, selected_mun), use_container_width=True, responsive=True)
 
@@ -3079,7 +3087,7 @@ if selected=="Districtes de Barcelona":
             st.markdown("""**Habitatges a la venda segons número de lavabos**""")
             st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, responsive=True)
             st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
-            st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_hab, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_prom, selected_dis), use_container_width=True, responsive=True)
             st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
             st.plotly_chart(aparcament_dis(bbdd_estudi_hab, selected_dis), use_container_width=True, responsive=True)
 
@@ -3168,7 +3176,7 @@ if selected=="Districtes de Barcelona":
             st.markdown("""**Habitatges a la venda segons número de lavabos**""")
             st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, responsive=True)
             st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
-            st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_hab_2023, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_prom_2023, selected_dis), use_container_width=True, responsive=True)
             st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
             st.plotly_chart(aparcament_dis(bbdd_estudi_hab_2023, selected_dis), use_container_width=True, responsive=True)
         st.subheader(f"Comparativa amb anys anteriors: Districte de {selected_dis}")
