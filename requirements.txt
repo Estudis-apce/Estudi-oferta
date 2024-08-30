@@ -1,7 +1,7 @@
 
 extra-streamlit-components==0.1.56
 matplotlib<=3.9.0
-numpy<=2.0.1
+numpy==1.23.1
 openpyxl==3.0.10
 pandas<=2.2.2
 plotly==5.11.0

@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 import plotly.express as px
 import base64
@@ -11,9 +10,7 @@ import geopandas as gpd
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import plotly.graph_objects as go
 import matplotlib.colors as colors
-import locale
 import json
-# from streamlit_extras.stylable_container import stylable_container
 
 ############################################################  TITULO DE PESTAÑA DE PÁGINA WEB ################################################
 path = ""
