@@ -92,42 +92,49 @@ def carregant_dades():
     bbdd_estudi_hab_2023 = list_of_df[3].copy()
     bbdd_estudi_prom_2024 = list_of_df[4].copy()
     bbdd_estudi_hab_2024 = list_of_df[5].copy()
-    mun_2018_2019 = list_of_df[6].copy()
-    mun_2020_2021 = list_of_df[7].copy()
-    mun_2022 = list_of_df[8].copy()
-    mun_2023 = list_of_df[9].copy()
-    mun_2024 = list_of_df[10].copy()
+    bbdd_estudi_prom_2025 = list_of_df[6].copy()
+    bbdd_estudi_hab_2025 = list_of_df[7].copy()
+    mun_2018_2019 = list_of_df[8].copy()
+    mun_2020_2021 = list_of_df[9].copy()
+    mun_2022 = list_of_df[10].copy()
+    mun_2023 = list_of_df[11].copy()
+    mun_2024 = list_of_df[12].copy()
+    mun_2025 = list_of_df[13].copy()
 
-    maestro_estudi = list_of_df[11].copy()
-    dis_2018_2019 = list_of_df[12].copy()
-    dis_2020_2021 = list_of_df[13].copy()
-    dis_2022 = list_of_df[14].copy()
-    dis_2023 = list_of_df[15].copy()
-    dis_2024 = list_of_df[16].copy()
+    maestro_estudi = list_of_df[14].copy()
+    dis_2018_2019 = list_of_df[15].copy()
+    dis_2020_2021 = list_of_df[16].copy()
+    dis_2022 = list_of_df[17].copy()
+    dis_2023 = list_of_df[18].copy()
+    dis_2024 = list_of_df[19].copy()
+    dis_2025 = list_of_df[20].copy()
 
-    table117_22 = list_of_df[17].copy()
-    table121_22 = list_of_df[18].copy()
-    table125_22 = list_of_df[19].copy()
+    table117_22 = list_of_df[21].copy()
+    table121_22 = list_of_df[22].copy()
+    table125_22 = list_of_df[23].copy()
 
-    table117_23 = list_of_df[20].copy()
-    table121_23 = list_of_df[21].copy()
-    table125_23 = list_of_df[22].copy()
+    table117_23 = list_of_df[24].copy()
+    table121_23 = list_of_df[25].copy()
+    table125_23 = list_of_df[26].copy()
 
-    table117_24 = list_of_df[23].copy()
-    table121_24 = list_of_df[24].copy()
-    table125_24 = list_of_df[25].copy()
+    table117_24 = list_of_df[27].copy()
+    table121_24 = list_of_df[28].copy()
+    table125_24 = list_of_df[29].copy()
 
-
-    return([bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, bbdd_estudi_prom_2024, bbdd_estudi_hab_2024, mun_2018_2019, mun_2020_2021,
-            mun_2022, mun_2023, mun_2024, maestro_estudi, dis_2018_2019, dis_2020_2021, dis_2022, dis_2023, dis_2024, table117_22,
-            table121_22, table125_22, table117_23, table121_23, table125_23, table117_24, table121_24, table125_24, shapefile_prov])
-
+    table117_25 = list_of_df[30].copy()
+    table121_25 = list_of_df[31].copy()
+    table125_25 = list_of_df[32].copy()
 
 
-bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, bbdd_estudi_prom_2024, bbdd_estudi_hab_2024, \
-mun_2018_2019, mun_2020_2021, mun_2022, mun_2023, mun_2024, maestro_estudi, dis_2018_2019, \
-dis_2020_2021, dis_2022, dis_2023, dis_2024, table117_22, table121_22, table125_22, table117_23, \
-table121_23, table125_23, table117_24, table121_24, table125_24, shapefile_prov = carregant_dades()
+    return([bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, bbdd_estudi_prom_2024, bbdd_estudi_hab_2024, bbdd_estudi_prom_2025, bbdd_estudi_hab_2025, mun_2018_2019, mun_2020_2021,mun_2022, mun_2023, mun_2024, mun_2025, maestro_estudi, dis_2018_2019, dis_2020_2021, dis_2022, dis_2023, dis_2024, dis_2025, table117_22,
+            table121_22, table125_22, table117_23, table121_23, table125_23, table117_24, table121_24, table125_24, table117_25, table121_25, table125_25, shapefile_prov])
+
+
+
+bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, bbdd_estudi_prom_2024, bbdd_estudi_hab_2024, bbdd_estudi_prom_2025, bbdd_estudi_hab_2025, \
+mun_2018_2019, mun_2020_2021, mun_2022, mun_2023, mun_2024, mun_2025, maestro_estudi, dis_2018_2019, \
+dis_2020_2021, dis_2022, dis_2023, dis_2024, dis_2025, table117_22, table121_22, table125_22, table117_23, \
+table121_23, table125_23, table117_24, table121_24, table125_24, table117_25, table121_25, table125_25, shapefile_prov = carregant_dades()
 
 
 ############################################################  IMPORTAMOS BBDD 2022 ################################################
@@ -846,11 +853,247 @@ def tidy_bbdd_2024(df_prom, df_hab, any):
 bbdd_estudi_prom_2024, bbdd_estudi_hab_2024, bbdd_estudi_hab_mod_2024 = tidy_bbdd_2024(bbdd_estudi_prom_2024, bbdd_estudi_hab_2024, 2024)
 
 
+############################################################  IMPORTAMOS BBDD FINAL 1S2025 ################################################
+@st.cache_resource
+def tidy_bbdd_semestral(df_prom, df_hab, any):
+    bbdd_estudi_prom = df_prom.copy()
+    bbdd_estudi_prom.columns = bbdd_estudi_prom.iloc[0,:]
+    bbdd_estudi_prom = bbdd_estudi_prom[bbdd_estudi_prom["ESTUDI"]==any]
+    bbdd_estudi_prom['TIPO_aux'] = np.where(bbdd_estudi_prom['TIPO'].isin([1,2]), 'Habitatges unifamiliars', 'Habitatges plurifamiliars')
+
+    mapping = {1: 'Unifamiliars aïllats', 
+            2: 'Unifamiliars adossats', 
+            3: 'Plurifamiliars en bloc obert', 
+            4: 'Plurifamiliars en bloc tancat'}
+
+    mapping1 = {1: "De nova Construcció",
+                2: "Rehabilitació integral"}
+
+    mapping2 = {1: "Pendent d'enderroc", 
+            2: "Solar", 
+            3: "Buidat", 
+            4: "Cimentació",
+            5: "Estructura",
+            6: "Tancaments exteriors",
+            7: "Tancaments interiors",
+            8: "Claus en mà",
+            9: "NS/NC"}
+
+    mapping3 = {
+                    1: 'A',
+                    1.2:"A",
+                    2: 'B',
+                    2.3: "B",
+                    3: 'C',
+                    4: 'D',
+                    4.5: "D",
+                    5: 'E',
+                    5.3 : "C",
+                    6: "F",
+                    7: "G",
+                    8: "En tràmits",
+                    9: "Sense informació"
+    }
+
+    mapping4 = {
+                    0: "Altres",
+                    1: "Plaça d'aparcament opcional",
+                    2: "Plaça d'aparcament inclosa",
+                    3: "Sense plaça d'aparcament",
+    }
+
+
+
+    bbdd_estudi_prom['TIPO'] = bbdd_estudi_prom['TIPO'].map(mapping)
+
+    bbdd_estudi_prom['TIPH'] = bbdd_estudi_prom['TIPH'].map(mapping1)
+
+
+    bbdd_estudi_prom['ESTO'] = bbdd_estudi_prom['ESTO'].map(mapping2)
+
+    bbdd_estudi_prom['QENERGC'] = bbdd_estudi_prom['QENERGC'].map(mapping3)
+
+    bbdd_estudi_prom['APAR'] = bbdd_estudi_prom['APAR'].map(mapping4)
+
+
+    # Importar BBDD habitatges
+    # bbdd_estudi_hab = pd.read_excel(path + 'BBDD juny 2024 APCE.xlsx', sheet_name='Habitatges 2024')
+    bbdd_estudi_hab = df_hab.copy()
+    bbdd_estudi_hab.columns = bbdd_estudi_hab.iloc[0,:]
+    bbdd_estudi_hab = bbdd_estudi_hab[bbdd_estudi_hab["ESTUDI"]==any]
+
+
+
+
+
+    # ["Total dormitoris","Banys i lavabos","Cuines estàndard","Cuines americanes","Terrasses, balcons i patis","Estudi/golfes","Safareig","Altres interiors","Altres exteriors"]
+
+    # ["DORM", "LAV", "cuina_normal", "cuina_amer", "TER", "Golfes", "Safareig","Altres interiors","Altres exteriors" ]
+
+    bbdd_estudi_hab['TIPOG'] = np.where(bbdd_estudi_hab['TIPO'].isin([1,2]), 'Habitatges unifamiliars', 'Habitatges plurifamiliars')
+    bbdd_estudi_hab['TIPO'] = bbdd_estudi_hab['TIPO'].map(mapping)
+    bbdd_estudi_hab['QENERGC'] = bbdd_estudi_hab['QENERGC'].map(mapping3)
+    bbdd_estudi_hab['APAR'] = bbdd_estudi_hab['APAR'].map(mapping4)
+
+    bbdd_estudi_hab = bbdd_estudi_hab.dropna(axis=1 , how ='all')
+
+
+
+    bbdd_estudi_hab = bbdd_estudi_hab.rename(columns = {'V0006':'Total dormitoris_aux', 
+                                                            "DORM": "Total dormitoris",
+                                                            "LAV": "Banys i lavabos",
+                                                            "TER": "Terrasses, balcons i patis",
+                                                            'NOMD01C':'Superfície útil',
+                                                            "Preu_m2_util": "Preu m2 útil",
+                                                            "NOMD01F_2022": "Preu mitjà",
+                                                            'NOMD01P':'Estudi/golfes', 
+                                                            'NOMD01Q':'Safareig', 
+                                                            'NOMD01K': 'Cuines estàndard', 
+                                                            'NOMD01L': 'Cuines americanes', 
+                                                            "NOMD01R": "Altres interiors", 
+                                                            "NOMD01S":"Altres exteriors"})
+
+    bbdd_estudi_prom = bbdd_estudi_prom.rename(columns = {'V0006':'Total dormitoris_aux', 
+                                                            "DORM": "Total dormitoris",
+                                                            "LAV": "Banys i lavabos",
+                                                            "TER": "Terrasses, balcons i patis",
+                                                            'NOMD01C':'Superfície útil',
+                                                            "Preu_m2_util": "Preu m2 útil",
+                                                            'NOMD01P':'Estudi/golfes', 
+                                                            'NOMD01Q':'Safareig', 
+                                                            'NOMD01K': 'Cuines estàndard', 
+                                                            'NOMD01L': 'Cuines americanes', 
+                                                            "NOMD01R": "Altres interiors", 
+                                                            "NOMD01S":"Altres exteriors"})
+
+
+    # Canviar de nom tots els equipaments
+    bbdd_estudi_hab = bbdd_estudi_hab.rename(columns = {'EQUIC_1': 'Zona enjardinada', 
+                                                        'EQUIC_2': 'Parc infantil',
+                                                        'EQUIC_3': 'Piscina comunitària', 
+                                                        'EQUIC_4': 'Traster', 
+                                                        'EQUIC_5': 'Ascensor', 
+                                                        'EQUIC_6': 'Equipament Esportiu',  
+                                                        'EQUIC_7': 'Sala de jocs', 
+                                                        'EQUIC_8': 'Sauna', 
+                                                        "EQUIC_9_50": "Altres",
+                                                        'EQUIC_99': 'Cap dels anteriors'})
+    bbdd_estudi_prom = bbdd_estudi_prom.rename(columns = {'EQUIC_1': 'Zona enjardinada', 
+                                                        'EQUIC_2': 'Parc infantil',
+                                                        'EQUIC_3': 'Piscina comunitària', 
+                                                        'EQUIC_4': 'Traster', 
+                                                        'EQUIC_5': 'Ascensor', 
+                                                        'EQUIC_6': 'Equipament Esportiu',  
+                                                        'EQUIC_7': 'Sala de jocs', 
+                                                        'EQUIC_8': 'Sauna', 
+                                                        "QUAL_ALTRES": "Altres",
+                                                        'EQUIC_99': 'Cap dels anteriors'})
+    bbdd_estudi_prom["Ascensor"] = np.where(bbdd_estudi_prom["Ascensor"]>=1, 1, bbdd_estudi_prom["Ascensor"])
+    bbdd_estudi_hab["Ascensor"] = np.where(bbdd_estudi_hab["Ascensor"]>=1, 1, bbdd_estudi_hab["Ascensor"])
+
+
+    # Canviar de nom totes les qualitats
+    bbdd_estudi_hab = bbdd_estudi_hab.rename(columns = {"QUALIC_5": "Aire condicionat", 
+                                                        "QUALIC_6": "Bomba de calor", 
+                                                        "QUALI_A": "Aerotèrmia", 
+                                                        'QUALIC_7':"Calefacció", 
+                                                        'QUALIC_8':"Preinstal·lació d'A.C./B. Calor/Calefacció", 
+                                                        'QUALIC_9': 'Parquet', 
+                                                        'QUALIC_10':'Armaris encastats',
+                                                        'QUALIC_12':'Placa de cocció amb gas',
+                                                        'QUALIC_13':'Placa de cocció vitroceràmica',
+                                                        "QUALIC_14":"Placa d'inducció",
+                                                        'QUALIC_22':'Plaques solars'})
+
+
+    bbdd_estudi_prom = bbdd_estudi_prom.rename(columns = {"QUALIC_5": "Aire condicionat", 
+                                                        "QUALIC_6": "Bomba de calor", 
+                                                        "QUALI_A": "Aerotèrmia", 
+                                                        'QUALIC_7':"Calefacció", 
+                                                        'QUALIC_8':"Preinstal·lació d'A.C./B. Calor/Calefacció", 
+                                                        'QUALIC_9': 'Parquet', 
+                                                        'QUALIC_10':'Armaris encastats',
+                                                        'QUALIC_12':'Placa de cocció amb gas',
+                                                        'QUALIC_13':'Placa de cocció vitroceràmica',
+                                                        "QUALIC_14":"Placa d'inducció",
+                                                        'QUALIC_22':'Plaques solars'})
+    #  Canviar nom a tipus de calefacció
+    bbdd_estudi_prom = bbdd_estudi_prom.rename(columns = {'CALEFC_3': 'De gasoil', 
+                                                        'CALEFC_4': 'De gas natural', 
+                                                        'CALEFC_5': 'De propà', 
+                                                        'CALEFC_6': "D'electricitat", 
+                                                        'CALEFC_9': "No s'indica tipus"})
+
+
+
+
+    bbdd_estudi_prom['TIPV'] = np.where(bbdd_estudi_prom['TIPV_1'] >= 1, "Venda a través d'immobiliària independent",
+                                        np.where(bbdd_estudi_prom['TIPV_2'] >= 1, "Venda a través d'immobiliaria del mateix promotor",
+                                                np.where(bbdd_estudi_prom['TIPV_3'] >= 1, "Venda directa del promotor", "Sense informació")))
+
+
+    # bbdd_estudi_prom['TIPOL_VENDA'] = np.where(bbdd_estudi_prom['TIPOL_VENDA_1'] == 1, "0D",
+    #                                     np.where(bbdd_estudi_prom['TIPOL_VENDA_2'] == 1, "1D",
+    #                                             np.where(bbdd_estudi_prom['TIPOL_VENDA_3'] == 1, "2D",
+    #                                                     np.where(bbdd_estudi_prom['TIPOL_VENDA_4'] == 1, "3D",
+    #                                                         np.where(bbdd_estudi_prom['TIPOL_VENDA_5'] == 1, "4D", 
+    #                                                             np.where(bbdd_estudi_prom['TIPOL_VENDA_6'] == 1, "5+D", "NA"))))))
+
+                        
+                                                    
+    #  "Venda a través d'immobiliària independent", "Venda a través d'immobiliaria del mateix promotor", "Venda directa del promotor"
+
+    bbdd_estudi_hab['TIPH'] = bbdd_estudi_hab['TIPH'].map(mapping1)
+
+    bbdd_estudi_hab['ESTO'] = bbdd_estudi_hab['ESTO'].map(mapping2)
+
+
+    vars = ['Zona enjardinada', 'Parc infantil', 'Piscina comunitària', 
+            'Traster', 'Ascensor', 'Equipament Esportiu', 
+            'Sauna', 'Altres', "Aire condicionat", "Bomba de calor", 
+            "Aerotèrmia", "Calefacció", "Preinstal·lació d'A.C./B. Calor/Calefacció", 
+            "Parquet", "Armaris encastats", 'Placa de cocció amb gas', 
+            'Placa de cocció vitroceràmica', "Placa d'inducció", 'Plaques solars', "APAR"]
+    vars_aux = ['Zona enjardinada', 'Parc infantil', 'Piscina comunitària', 
+            'Traster', 'Ascensor', 'Equipament Esportiu', 
+            'Sauna', 'Altres', "Aire condicionat", "Bomba de calor", 
+            "Aerotèrmia", "Calefacció", "Preinstal·lació d'A.C./B. Calor/Calefacció", 
+            "Parquet", "Armaris encastats", 'Placa de cocció amb gas', 
+            'Placa de cocció vitroceràmica', "Placa d'inducció", 'Plaques solars', "Safareig","Terrasses, balcons i patis"]
+    for i in vars:
+        bbdd_estudi_prom[i] = bbdd_estudi_prom[i].replace({np.nan : 0})
+    for i in vars_aux:
+        bbdd_estudi_hab[i] = bbdd_estudi_hab[i].replace({np.nan : 0})
+    bbdd_estudi_hab["Calefacció"] = bbdd_estudi_hab["Calefacció"].replace({' ': 0}) 
+    bbdd_estudi_prom["Calefacció"] = bbdd_estudi_prom["Calefacció"].replace({' ': 0}) 
+
+
+    bbdd_estudi_hab["Tram_Sup_util"] = bbdd_estudi_hab["Tram_Sup_util"].str.replace(" ", "")
+    bbdd_estudi_hab["Tram_Sup_util"] = bbdd_estudi_hab["Tram_Sup_util"].str[3:]
+
+
+
+    # Afegir categories a algunes columnes de la base de dades d'habitatge
+
+    room_dict =  {i: f"{i}D" if i <= 4 else "5+D" for i in range(0, 20)}
+    toilet_dict = {i: f"{i} Bany" if i <= 1 else "2 i més Banys" for i in range(1, 20)}
+    bbdd_estudi_hab_mod = bbdd_estudi_hab.copy()
+
+    bbdd_estudi_hab_mod['Total dormitoris'] = bbdd_estudi_hab_mod['Total dormitoris'].map(room_dict)
+    bbdd_estudi_hab_mod['Banys i lavabos'] = bbdd_estudi_hab_mod['Banys i lavabos'].map(toilet_dict)
+    bbdd_estudi_hab_mod["Terrasses, balcons i patis"] = np.where(bbdd_estudi_hab_mod["Terrasses, balcons i patis"]>=1, 1, 0)
+
+    bbdd_estudi_hab["Nom DIST"] = bbdd_estudi_hab["Nom DIST"].str.replace(r'^\d{2}\s', '', regex=True)
+    bbdd_estudi_hab_mod["Nom DIST"] = bbdd_estudi_hab_mod["Nom DIST"].str.replace(r'^\d{2}\s', '', regex=True)
+
+    return([bbdd_estudi_prom, bbdd_estudi_hab, bbdd_estudi_hab_mod])
+
+bbdd_estudi_prom_2025, bbdd_estudi_hab_2025, bbdd_estudi_hab_mod_2025 = tidy_bbdd_semestral(bbdd_estudi_prom_2025, bbdd_estudi_hab_2025, 2025)
 
 
 ############################################################  IMPORTAR HISTÓRICO DE MUNICIPIOS 2016 - 2024 ################################################
 @st.cache_resource
-def import_hist_mun(df_1819, df_2021, df_22, df_23, df_24, maestro_df):
+def import_hist_mun(df_1819, df_2021, df_22, df_23, df_24, df_25, maestro_df):
     # mun_2018_2019 = pd.read_excel(path + "Resum 2018 - 2019.xlsx", sheet_name="Municipis 2018-2019")
     mun_2018_2019 = df_1819.copy()
     mun_2019 = mun_2018_2019.iloc[:,14:27]
@@ -876,15 +1119,19 @@ def import_hist_mun(df_1819, df_2021, df_22, df_23, df_24, maestro_df):
     mun_2024 = mun_2024.iloc[:,14:27]
     mun_2024 = mun_2024.dropna(how ='all',axis=0)
 
+    mun_2025 = df_25.copy()
+    mun_2025 = mun_2025.iloc[:,14:27]
+    mun_2025 = mun_2025.dropna(how ='all',axis=0)
+
     # maestro_estudi = pd.read_excel(path + "Maestro estudi_oferta.xlsx", sheet_name="Maestro")
     maestro_estudi = maestro_df.copy()
 
-    return([mun_2019, mun_2020, mun_2021, mun_2022, mun_2023, mun_2024, maestro_estudi])
-mun_2019, mun_2020, mun_2021, mun_2022, mun_2023, mun_2024, maestro_estudi = import_hist_mun(mun_2018_2019, mun_2020_2021, mun_2022, mun_2023, mun_2024, maestro_estudi)
+    return([mun_2019, mun_2020, mun_2021, mun_2022, mun_2023, mun_2024, mun_2025, maestro_estudi])
+mun_2019, mun_2020, mun_2021, mun_2022, mun_2023, mun_2024, mun_2025, maestro_estudi = import_hist_mun(mun_2018_2019, mun_2020_2021, mun_2022, mun_2023, mun_2024, mun_2025, maestro_estudi)
 
 ############################################################  IMPORTAR HISTÓRICO DE DISTRITOS DE BCN 2016 - 2024 ################################################
 @st.cache_resource
-def import_hist_dis(df_1819, df_2021, df_22, df_23, df_24):
+def import_hist_dis(df_1819, df_2021, df_22, df_23, df_24, df_25):
     # dis_2018_2019 = pd.read_excel(path + "Resum 2018 - 2019.xlsx", sheet_name="BCN+districtes+barris")
     dis_2018_2019 = df_1819.copy()   
     dis_2019 = dis_2018_2019.iloc[:,14:27]
@@ -910,8 +1157,12 @@ def import_hist_dis(df_1819, df_2021, df_22, df_23, df_24):
     dis_2024 = dis_2024.iloc[:,14:27]
     dis_2024 = dis_2024.dropna(how ='all',axis=0)
 
-    return([dis_2019, dis_2020, dis_2021, dis_2022, dis_2023, dis_2024])
-dis_2019, dis_2020, dis_2021, dis_2022, dis_2023, dis_2024 = import_hist_dis(dis_2018_2019, dis_2020_2021, dis_2022, dis_2023, dis_2024)
+    dis_2025 = df_25.copy()
+    dis_2025 = dis_2025.iloc[:,14:27]
+    dis_2025 = dis_2025.dropna(how ='all',axis=0)
+
+    return([dis_2019, dis_2020, dis_2021, dis_2022, dis_2023, dis_2024, dis_2025])
+dis_2019, dis_2020, dis_2021, dis_2022, dis_2023, dis_2024, dis_2025 = import_hist_dis(dis_2018_2019, dis_2020_2021, dis_2022, dis_2023, dis_2024, dis_2025)
 ############################################################  IMPORTAR HISTÓRICO DE DISTRITOS DE BCN 2016 - 2024 ################################################
 @st.cache_resource
 def tidy_data(mun_year, year):
@@ -925,7 +1176,6 @@ def tidy_data(mun_year, year):
     df_melted = pd.melt(df, id_vars=['Any', 'Tipologia', 'Variable'], value_vars=geo, value_name='Valor')
     df_melted.columns.values[3] = 'GEO'
     return(df_melted)
-
 ############################################################  CALCULOS PROVINCIAS, AMBITOS TERRITORIALES Y COMARCAS ################################################
 def weighted_mean(data):
     weighted_sum = (data['Valor'] * data['Unitats']).sum()
@@ -936,7 +1186,7 @@ def weighted_mean(data):
 def geo_mun():
     df_vf_aux = pd.DataFrame()
 
-    for df_frame, year in zip(["mun_2019", "mun_2020", "mun_2021", "mun_2022", "mun_2023", "mun_2024"], [2019, 2020, 2021, 2022, 2023, 2024]):
+    for df_frame, year in zip(["mun_2019", "mun_2020", "mun_2021", "mun_2022", "mun_2023", "mun_2024", "mun_2025"], [2019, 2020, 2021, 2022, 2023, 2024, 2025]):
         df_vf_aux = pd.concat([df_vf_aux, tidy_data(eval(df_frame), year)], axis=0)
 
 
@@ -980,7 +1230,7 @@ df_vf_aux, df_vf, df_final_cat, df_final, ambits_df, comarques_df, provincia_df 
 @st.cache_resource
 def geo_dis_long():
     df_vf_aux = pd.DataFrame()
-    for df_frame, year in zip(["dis_2019", "dis_2020", "dis_2021", "dis_2022", "dis_2023", "dis_2024"], [2019, 2020, 2021, 2022, 2023, 2024]):
+    for df_frame, year in zip(["dis_2019", "dis_2020", "dis_2021", "dis_2022", "dis_2023", "dis_2024", "dis_2025"], [2019, 2020, 2021, 2022, 2023, 2024, 2025]):
         df_vf_aux = pd.concat([df_vf_aux, tidy_data(eval(df_frame), year)], axis=0)
     df_vf_aux['Variable']= np.where(df_vf_aux['Variable']=="Preu de     venda per      m² útil (€)", "Preu de venda per m² útil (€)", df_vf_aux['Variable'])
     df_vf_aux['Valor'] = pd.to_numeric(df_vf_aux['Valor'], errors='coerce')
@@ -1930,14 +2180,15 @@ if selected == "Catalunya":
     # """]):
     left, right = st.columns((1,1))
     with left:
-        edicio_any = ["2022","2023","2024"]
+        edicio_any = ["2022","2023","2024", "1S2025"]
         selected_edition = st.radio("**Any**", edicio_any, edicio_any.index("2024"), horizontal=True)
     with right:
-        index_names = ["Introducció","Característiques", "Qualitats i equipaments", "Superfície i preus", "Comparativa any anterior"]
-        selected_index = st.radio("**Contingut**", index_names, horizontal=True)
-        # if selected_edition=="2024":
-        #     index_names = ["Introducció","Característiques", "Superfície i preus", "Comparativa any anterior"]
-        #     selected_index = st.radio("**Contingut**", index_names, horizontal=True)
+        if selected_edition!="1S2025":
+            index_names = ["Introducció","Característiques", "Qualitats i equipaments", "Superfície i preus", "Comparativa any anterior"]
+            selected_index = st.radio("**Contingut**", index_names, horizontal=True)
+        if selected_edition=="1S2025":
+            index_names = ["Introducció","Característiques", "Superfície i preus", "Comparativa any anterior"]
+            selected_index = st.radio("**Contingut**", index_names, horizontal=True)
     if selected_edition=="2022":
         if selected_index=="Introducció":
             st.subheader("**ESTUDI D'OFERTA DE NOVA CONSTRUCCIÓ: INTRODUCCIÓ**")
@@ -2425,12 +2676,132 @@ if selected == "Catalunya":
                 st.plotly_chart(plot_var_CAT(table117_24, table121_24, table125_24), use_container_width=True, responsive=True)
             st.markdown(table_geo_cat(2019, int(selected_edition)).to_html(), unsafe_allow_html=True)
             st.markdown(filedownload(table_geo_cat(2019, int(selected_edition)), f"Estudi_oferta_Catalunya_2024.xlsx"), unsafe_allow_html=True)
+
+############################################################  CATALUNYA: 1S2025 ################################################
+    if selected_edition=="1S2025":
+        if selected_index=="Introducció":
+            st.subheader("**ESTUDI D'OFERTA DE NOVA CONSTRUCCIÓ: INTRODUCCIÓ**")
+            st.write("""<p style="margin-top: 10px"> 
+            <p>
+            L’Estudi de l’Oferta d’Habitatges de Nova Construcció a Catalunya en la seva edició de l’any 2025 contempla els resultats de l’anàlisi del mercat residencial d’habitatges de nova construcció a Catalunya amb les dades processades fins al mes de juny. Es tracta doncs, d’unes dades provisionals i que es completaran amb la resta de la recerca de dades que es durà a terme fins a finals d’any. Com novetat en l’edició de 2025, el nombre de municipis a estudiar s’ha incrementat, passant dels 141 de l’edició de 2024, a una selecció més amplia amb un total de 159 municipis. En l’execució del treball de camp no han estat incloses les promocions amb limitació d’informació disponible, bàsicament no han estat considerades com unitats vàlides per la mostra les promocions sense informació contrastada de preus i superfícies.
+            Els resultats que es presenten inclouen les informacions de les promocions localitzades a 123 municipis dels 159 objecte d’estudi. Novament, cal incidir en que es tracta de dades provisionals i que les feines de recerca continuen i la cobertura de municipis s’incrementarà a finals d’any.
+            </p>
+            <p>    
+            De les 1.138 promocions d’obra nova inventariades al 2024, 426, el 37,4% ja han estat totalment venudes al juny de 2025. En conseqüència, actualment la mostra de l’estudi inclou 712 promocions de les 1.138 de 2024, i la mostra ha estat completada amb 166 noves promocions. Així doncs, els resultats del mes de juny de 2025 inclouen un total de 878 promocions.
+            Les 878 promocions de 2025 censades fins el mes de juny, inclouen un total de 20.285 habitatges, dels quals, 6.184, el 30,5%, estan a la venda. Dels habitatges en venda, el 87,4% (5.403 habitatges) corresponen a promocions ja estudiades l’any 2024. En concret, l’any 2024 es van estudiar 6.610 habitatges i, d’aquests el 81,7% continuen a la venda.
+            </p>
+            <p>  
+            El municipi amb més presència d’oferta és el de Barcelona, amb un total de 106 promocions i 625 habitatges en venda. A continuació, els municipis amb més promocions són Badalona amb 42 promocions i 238 habitatges, Terrassa amb 34 promocions i 275 habitatges, Vilanova i la Geltrú amb 34 promocions i 261 habitatges, Sabadell amb 24 promocions i 266 habitatges, Girona amb 20 promocions i 236 habitatges, l’Hospitalet de Llobregat amb 20 promocions i 180 habitatges i Calonge i Sant Antoni amb 19 promocions i 272 habitatges. A la resta de capitals de província el nombre de promocions és més baix: Lleida 14 promocions i 106 habitatges, i en el cas de Tarragona la mostra és de 8 promocions i 72 habitatges.
+            </p>
+            """,
+            unsafe_allow_html=True
+        )
+            left_col, right_col = st.columns((1, 1))
+            with left_col:
+                st.markdown("**Nombre de promocions per província a Catalunya**")
+                st.pyplot(map_prov_prom(bbdd_estudi_prom_2025, shapefile_prov))
+            with right_col:
+                st.markdown("**Nombre d'habitatges en oferta per municipis a Catalunya**")
+                @st.cache_resource
+                def map_mun_hab_oferta25():
+                    prommun_map = bbdd_estudi_prom_2025[["CODIMUN", "Municipi","HABIP"]].groupby(["CODIMUN", "Municipi"]).sum().reset_index()
+                    prommun_map.columns = ["municipi", "Municipi_n", "Habitatges en oferta"]
+                    prommun_map["municipi"] = prommun_map["municipi"].astype(int)
+
+                    shapefile_mun = gpd.read_file(path + "shapefile_mun.geojson")
+                    shapefile_mun["municipi"] = shapefile_mun["codiine"].astype(int)
+
+                    tmp = pd.merge(shapefile_mun, prommun_map, how="left", on="municipi")
+                    fig, ax = plt.subplots(1,1, figsize=(20,20))
+                    divider = make_axes_locatable(ax)
+                    cax = divider.append_axes("right", size="3%", pad=-1) #resize the colorbar
+                    cmap = colors.LinearSegmentedColormap.from_list("mi_paleta", ["#AAC4BA","#008B6C"]) 
+                    tmp['Habitatges en oferta']= tmp['Habitatges en oferta'].astype(float)
+                    tmp.plot(column='Habitatges en oferta', ax=ax,cax=cax, cmap=cmap, legend=True)
+                    tmp.geometry.boundary.plot(color='black', ax=ax, linewidth=0.3) #Add some borders to the geometries
+                    ax.axis('off')
+                    fig.patch.set_alpha(0)
+                    return(fig)
+                st.pyplot(map_mun_hab_oferta25())
+        if selected_index=="Característiques":
+            st.subheader("**CARACTERÍSTIQUES**")
+            st.write("""
+            <p>
+            El 52,5% dels habitatges en oferta són de 3 dormitoris i el 27,1% de dos dormitoris. S’observa doncs, una concentració del 79,6% de l’oferta d’habitatges en les tipologies de 2 i 3 dormitoris. En el cas de l’oferta d’habitatges de 4 dormitoris, es situa en un 15,0%. La resta, loft, un dormitori i 5 i més dormitoris, tenen penetracions molt baixes (5,4% en el seu conjunt). Cal comentar que a data juny 2025 no disposem de cap habitatge tipus loft en oferta.
+            </p>      
+            <p>
+            El 92,7% de les promocions estudiades són d’obra nova i el 7,3% corresponen a rehabilitacions integrals. La presència de promocions de rehabilitació integral ascendeix fins a un 38,7% en el cas de la ciutat de Barcelona. En termes d’habitatges, l’oferta de rehabilitació integral és d’un 5,7% i puja fins a un 39,0% en el cas de la ciutat de Barcelona.
+            </p>""",
+            unsafe_allow_html=True
+            )
+            left_col, right_col = st.columns((1, 1))
+            with left_col:
+                st.write("")
+                st.write("")
+                st.plotly_chart(plot_caracteristiques(bbdd_estudi_hab_2025), use_container_width=True, responsive=True)
+            with right_col:
+                st.plotly_chart(plot_rehabilitacio_cat(bbdd_estudi_hab_2025), use_container_width=True, responsive=True)
+
+        if selected_index=="Superfície i preus":
+            st.subheader("SUPERFÍCIES I PREUS")
+            st.write("""
+            <p>
+            En general, conforme augmenta la superfície de l’habitatge, augmenta també el nombre de dormitoris, situant-se la màxima recurrència en els habitatges de 3 dormitoris (52,5% dels habitatges) amb una superfície mitjana de 86,0 m\u00b2 i en els de 2 dormitoris (27,1% dels habitatges) i una mitjana de superfície de 64,5 m\u00b2.
+            La mitjana de superfície útil dels habitatges censats és de 84,5 m\u00b2 (141,6 m\u00b2 en el cas dels habitatges unifamiliars i 79,3 m\u00b2 en els plurifamiliars). Pel que fa al preu mitjà, pel conjunt d’habitatges és de 398.676 €, 549.540 € en el cas dels unifamiliars i 384.884 € en el cas dels plurifamiliars.
+
+            </p> 
+            <p>
+            Els habitatges dels municipis de la província de Lleida, obtenen les mitjanes més altes de superfície, 96,7 m\u00b2. En el cas de la província de Tarragona, la mitjana de superfície és de 89,8 m\u00b2, en la província de Barcelona de 83,5 m\u00b2 i en la de Girona es localitza la mitjana de superfície més baixa, 82,6 m\u00b2.
+            Pel que fa als preus, les províncies de Barcelona i Girona presenten les xifres més elevades: 416.470 € i 396.237 € respectivament en termes de valor absolut, i 4.954 €/m\u00b2 i 4.729 €/m\u00b2 pel que fa al preu per m\u00b2 útil. Les províncies de Lleida (320.215 €) i Tarragona (311.537 €) tenen unes mitjanes de preu significativament més baixes i que es veuen reflectides també en el preu per m\u00b2/útil: 3.236 € y 3.568 € respectivament.
+            </p>      
+            """,
+            unsafe_allow_html=True
+            )
+
+            left_col, right_col = st.columns((1, 1))
+            with left_col:
+                st.write("""<p><b>Superfície útil per tipologia d'habitatge (m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
+                st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod_2025), use_container_width=True, responsive=True)
+            with right_col:
+                st.write("""<p><b>Preu mitjà per tipologia d'habitatge (€)</b></p>""", unsafe_allow_html=True)
+                st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod_2025), use_container_width=True, responsive=True)
+            left, center, right = st.columns((0.5,1,0.5))
+            with center:
+                st.write("""<p><b>Preu per m\u00b2 útil per tipologia d'habitatge (€/m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
+                st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod_2025), use_container_width=True, responsive=True)
+
+
+        if selected_index=="Comparativa any anterior":
+            left_col, right_col = st.columns((1, 1))
+            with left_col: 
+                st.subheader("**COMPARATIVA 1S2025-2024**")
+                st.write("""
+                <p>
+                La superfície mitjana dels habitatges a la venda a baixat lleugerament, en concret un -0,9%, passant dels 85,3 m2 de 2024 als actuals 84,5 m2. Els habitatges amb més presència, els de 3 dormitoris, baixen mínimament en termes de superfície útil un -0,1%.
+                </p>
+                <p>
+                El preu mitjà de l’habitatge a la venda en Catalunya és de 398.676 €, 1.647 € menys (-0,4%) que a finals de 2024 quan el preu es situava en 400.323 €. En el cas de la tipologia més habitual, 3 dormitoris, es produeix un increment de l’1,0%. Els habitatges de 4 dormitoris baixen un -0,6%, els d’1 dormitori baixen un -4,9%, els de 2 dormitoris un 0,2% i, en el cas de la tipologia de 5 i més dormitoris, el descens és d’un -12,3%.
+                El preu mitjà de venda de l’habitatge baixa només a la província de Barcelona, en concret un -1,4%. A la resta de províncies el preu de venda puja en relació a 2024, en el cas de Lleida un 17,7%, un 1,9% en el cas de Tarragona i un 1,6% en el cas de la província de Girona.
+                </p>
+                <p>
+                El preu de venda per m2 útil varia en el conjunt de Catalunya un 0,6% de 2024 a juny de 2025. Cal destacar el cas de les províncies de Tarragona i Lleida, on el preu de venda per m2 útil puja un 3,7% i un 6,4% respectivament.
+                </p>""",
+                unsafe_allow_html=True
+                )
+            with right_col:
+                st.markdown("")
+                st.write("""<p><b>Variació anual dels principals indicadors per tipologia d'habitatge (%)</b></p>""", unsafe_allow_html=True)
+                st.plotly_chart(plot_var_CAT(table117_25, table121_25, table125_25), use_container_width=True, responsive=True)
+            st.markdown(table_geo_cat(2019, 2026).to_html(), unsafe_allow_html=True)
+            st.markdown(filedownload(table_geo_cat(2019, 2026), f"Estudi_oferta_Catalunya_2025.xlsx"), unsafe_allow_html=True)        
+
+
 ############################################################  PROVÍNCIES I ÀMBITS TERRITORIALS ################################################
 
 if selected == "Províncies i àmbits":
     left, center, right = st.columns((1,1,1))
     with left:
-        edicio_any = ["2022","2023","2024"]
+        edicio_any = ["2022","2023","2024", "1S2025"]
         selected_edition = st.radio("**Any**", edicio_any, edicio_any.index("2024"), horizontal=True)
     with center:
         selected_option = st.radio("**Àrea geogràfica**", ["Províncies", "Àmbits territorials"], horizontal=True)
@@ -2845,11 +3216,71 @@ if selected == "Províncies i àmbits":
                 st.markdown("")
                 st.metric("**Habitatges de nova construcció**", format(int(metric_rehab(bbdd_estudi_hab_2024, selected_geo)[0]), ",d"))
                 st.metric("**Habitatges de rehabilitació integral**", format(int(metric_rehab(bbdd_estudi_hab_2024, selected_geo)[1]), ",d"))
+
+############################################################  PROVÍNCIES I ÀMBITS TERRITORIALS: 1S2025 ################################################
+    if selected_edition=="1S2025":
+        if selected_option=="Àmbits territorials":
+            st.subheader(f"{selected_geo.upper()}")
+            st.markdown(f"""Els resultats de l'Estudi d'Oferta de nova construcció del primer semestre de 2025 per l'ambit territorial {selected_geo.split(',')[0].strip()} mostren que el preu mitjà dels habitatges en venda es troba 
+            en {ambits_df[(ambits_df["Tipologia"]=="TOTAL HABITATGES") & (ambits_df["Variable"]=="Preu mitjà de venda de l'habitatge (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2025)]["Valor"].values[0]:,.1f} € 
+            amb una superfície mitjana útil de 
+            {ambits_df[(ambits_df["Tipologia"]=="TOTAL HABITATGES") & (ambits_df["Variable"]=="Superfície mitjana (m² útils)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2025)]["Valor"].values[0]:,.1f} m\u00b2. 
+            Per tant, el preu per m\u00b2 útil es situa en 
+            {ambits_df[(ambits_df["Tipologia"]=="TOTAL HABITATGES") & (ambits_df["Variable"]=="Preu de venda per m² útil (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2025)]["Valor"].values[0]:,.1f} €/m\u00b2 de mitjana. 
+            Per tipologies, els habitatges plurifamiliars obtenen una superfície mitjana de 
+            {ambits_df[(ambits_df["Tipologia"]=="HABITATGES PLURIFAMILIARS") & (ambits_df["Variable"]=="Superfície mitjana (m² útils)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2025)]["Valor"].values[0]:,.1f} m\u00b2, la seva mitjana de preu es troba en 
+            {ambits_df[(ambits_df["Tipologia"]=="HABITATGES PLURIFAMILIARS") & (ambits_df["Variable"]=="Preu mitjà de venda de l'habitatge (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2025)]["Valor"].values[0]:,.1f} € 
+            i un preu de m\u00b2 útil de 
+            {ambits_df[(ambits_df["Tipologia"]=="HABITATGES PLURIFAMILIARS") & (ambits_df["Variable"]=="Preu de venda per m² útil (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2025)]["Valor"].values[0]:,.1f} €/m\u00b2.
+            D'altra banda, els habitatges unifamiliars registren una superfície mitjana de {ambits_df[(ambits_df["Tipologia"]=="HABITATGES UNIFAMILIARS") & (ambits_df["Variable"]=="Superfície mitjana (m² útils)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2025)]["Valor"].values[0]:,.1f} m\u00b2 amb una mitjana de preu de {ambits_df[(ambits_df["Tipologia"]=="HABITATGES UNIFAMILIARS") & (ambits_df["Variable"]=="Preu mitjà de venda de l'habitatge (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2025)]["Valor"].values[0]:,.1f} €, per tant, el preu del m\u00b2 útil es situa en {ambits_df[(ambits_df["Tipologia"]=="HABITATGES UNIFAMILIARS") & (ambits_df["Variable"]=="Preu de venda per m² útil (€)") & (ambits_df["GEO"]==selected_geo) & (ambits_df["Any"]==2025)]["Valor"].values[0]:,.1f} €/m\u00b2.""")
+            st.markdown(table_geo(selected_geo, 2019, 2026, selected_option).to_html(), unsafe_allow_html=True)
+            st.markdown(filedownload(table_geo(selected_geo, 2019, 2026, selected_option), f"Estudi_oferta_{selected_geo}.xlsx"), unsafe_allow_html=True)
+        if selected_option=="Províncies":
+            st.subheader(f"PROVÍNCIA DE {selected_geo.upper()}")
+            st.markdown(f"""Els resultats de l'Estudi d'Oferta de nova construcció del primer semestre de 2025 per la província de {selected_geo} mostren que el preu mitjà dels habitatges en venda es troba en {provincia_df[(provincia_df["Tipologia"]=="TOTAL HABITATGES") & (provincia_df["Variable"]=="Preu mitjà de venda de l'habitatge (€)") & (provincia_df["GEO"]==selected_geo) & (provincia_df["Any"]==2025)]["Valor"].values[0]:,.1f} € amb una superfície mitjana útil de {provincia_df[(provincia_df["Tipologia"]=="TOTAL HABITATGES") & (provincia_df["Variable"]=="Superfície mitjana (m² útils)") & (provincia_df["GEO"]==selected_geo) & (provincia_df["Any"]==2025)]["Valor"].values[0]:,.1f} m\u00b2.Per tant, el preu per m\u00b2 útil es situa en {provincia_df[(provincia_df["Tipologia"]=="TOTAL HABITATGES") & (provincia_df["Variable"]=="Preu de venda per m² útil (€)") & (provincia_df["GEO"]==selected_geo) & (provincia_df["Any"]==2025)]["Valor"].values[0]:,.1f} €/m\u00b2 de mitjana. Per tipologies, els habitatges plurifamiliars obtenen una superfície mitjana de {provincia_df[(provincia_df["Tipologia"]=="HABITATGES PLURIFAMILIARS") & (provincia_df["Variable"]=="Superfície mitjana (m² útils)") & (provincia_df["GEO"]==selected_geo) & (provincia_df["Any"]==2025)]["Valor"].values[0]:,.1f} m\u00b2, la seva mitjana de preu es troba en {provincia_df[(provincia_df["Tipologia"]=="HABITATGES PLURIFAMILIARS") & (provincia_df["Variable"]=="Preu mitjà de venda de l'habitatge (€)") & (provincia_df["GEO"]==selected_geo) & (provincia_df["Any"]==2025)]["Valor"].values[0]:,.1f} € i un preu de m\u00b2 útil de {provincia_df[(provincia_df["Tipologia"]=="HABITATGES PLURIFAMILIARS") & (provincia_df["Variable"]=="Preu de venda per m² útil (€)") & (provincia_df["GEO"]==selected_geo) & (provincia_df["Any"]==2025)]["Valor"].values[0]:,.1f} €/m\u00b2. D'altra banda, els habitatges unifamiliars registren una superfície mitjana de {provincia_df[(provincia_df["Tipologia"]=="HABITATGES UNIFAMILIARS") & (provincia_df["Variable"]=="Superfície mitjana (m² útils)") & (provincia_df["GEO"]==selected_geo) & (provincia_df["Any"]==2025)]["Valor"].values[0]:,.1f} m\u00b2 amb una mitjana de preu de {provincia_df[(provincia_df["Tipologia"]=="HABITATGES UNIFAMILIARS") & (provincia_df["Variable"]=="Preu mitjà de venda de l'habitatge (€)") & (provincia_df["GEO"]==selected_geo) & (provincia_df["Any"]==2025)]["Valor"].values[0]:,.1f} €, per tant, el preu del m\u00b2 útil es situa en {provincia_df[(provincia_df["Tipologia"]=="HABITATGES UNIFAMILIARS") & (provincia_df["Variable"]=="Preu de venda per m² útil (€)") & (provincia_df["GEO"]==selected_geo) & (provincia_df["Any"]==2025)]["Valor"].values[0]:,.1f} €/m\u00b2.""")
+            if selected_geo=="Barcelona":
+                st.write(f""" """)
+            if selected_geo=="Girona":
+                st.write(f""" """)
+            if selected_geo=="Tarragona":
+                st.write(f""" """)
+            if selected_geo=="Lleida":
+                st.write(f""" """)
+            st.markdown(table_geo(selected_geo, 2019, 2026, selected_option).to_html(), unsafe_allow_html=True)
+            st.markdown(filedownload(table_geo(selected_geo, 2019, 2026, selected_option), f"Estudi_oferta_{selected_geo}.xlsx"), unsafe_allow_html=True)
+            left_col, right_col = st.columns((1,1))
+            with left_col:
+                st.plotly_chart(tipog_donut(bbdd_estudi_hab_2025, selected_geo), use_container_width=True, responsive=True)
+            with right_col:
+                st.plotly_chart(num_dorms_prov(bbdd_estudi_hab_mod_2025, selected_geo), use_container_width=True, responsive=True)
+            # left_col, right_col = st.columns((1,1))
+            # with left_col:
+            #     st.plotly_chart(qualitats_prov(bbdd_estudi_hab_2025, selected_geo), use_container_width=True, responsive=True)
+            # with right_col:
+            #     st.plotly_chart(equipaments_prov(bbdd_estudi_hab_2025, selected_geo), use_container_width=True, responsive=True)
+            left_col, right_col = st.columns((2, 1))
+            with left_col:
+                st.plotly_chart(cons_acabats(bbdd_estudi_prom_2025, bbdd_estudi_hab_2025, selected_geo), use_container_width=True, responsive=True)
+            with right_col:
+                st.markdown("")
+                st.markdown("")
+                st.metric("**Habitatges en oferta**", format(int(metric_estat(bbdd_estudi_prom_2025, bbdd_estudi_hab_2025, selected_geo)[0]), ",d"))
+                st.metric("**Habitatges en construcció**", format(int(metric_estat(bbdd_estudi_prom_2025,  bbdd_estudi_hab_2025, selected_geo)[0] - metric_estat(bbdd_estudi_prom_2025, bbdd_estudi_hab_2025, selected_geo)[1]), ",d"))
+                st.metric("**Habitatges acabats**", format(int(metric_estat(bbdd_estudi_prom_2025, bbdd_estudi_hab_2025, selected_geo)[1]), ",d"))
+            left_col, right_col = st.columns((2, 1))
+            with left_col:
+                st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab_2025, selected_geo), use_container_width=True, responsive=True)
+            with right_col:
+                st.markdown("")
+                st.markdown("")
+                st.metric("**Habitatges de nova construcció**", format(int(metric_rehab(bbdd_estudi_hab_2025, selected_geo)[0]), ",d"))
+                st.metric("**Habitatges de rehabilitació integral**", format(int(metric_rehab(bbdd_estudi_hab_2025, selected_geo)[1]), ",d"))
+
 ############################################################  MUNICIPIS DE CATALUNYA ################################################
 if selected == "Municipis":
     left, right = st.columns((1,1))
     with left:
-        edicio_any = ["2022","2023", "2024"]
+        edicio_any = ["2022","2023", "2024", "1S2025"]
         selected_edition = st.radio("**Any**", edicio_any, edicio_any.index("2024"), horizontal=True)
     with right:
         mun_names = sorted([name for name in df_vf[(df_vf["Any"]==int(selected_edition[-4:])) & (~df_vf["Valor"].isna())]["GEO"].unique() if name != "Catalunya"])
@@ -3048,11 +3479,77 @@ if selected == "Municipis":
             st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
             st.plotly_chart(plot_mun_hist(selected_mun, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
 
+############################################################  MUNICIPIS: 1S2025 ################################################
+    if selected_edition=="1S2025":
+        st.subheader(f"MUNICIPI DE {selected_mun.upper().split(',')[0].strip()}")
+        st.markdown(f"""Els resultats de l'Estudi d'Oferta de nova construcció del primer semestre de 2025 pel municipi de {selected_mun.split(',')[0].strip()} mostren que el preu mitjà dels habitatges en venda es troba 
+        en {data_text_mun(bbdd_estudi_hab_2025, bbdd_estudi_hab_mod_2025, selected_mun)[0]:,.1f} € amb una superfície mitjana útil de {data_text_mun(bbdd_estudi_hab_2025, bbdd_estudi_hab_mod_2025, selected_mun)[1]:,.1f} m\u00b2. Per tant, el preu per m\u00b2 útil es troba en {data_text_mun(bbdd_estudi_hab_2025, bbdd_estudi_hab_mod_2025, selected_mun)[2]:,.1f} € de mitjana. Per tipologies, els habitatges plurifamiliars
+        representen el {data_text_mun(bbdd_estudi_hab_2025, bbdd_estudi_hab_mod_2025, selected_mun)[3]:,.1f}% sobre el total d'habitatges, la resta corresponen a habitatges unifamiliars. L'habitatge modal o més freqüent de nova construcció té {data_text_mun(bbdd_estudi_hab_2025, bbdd_estudi_hab_mod_2025, selected_mun)[4]} habitacions i {data_text_mun(bbdd_estudi_hab_2025, bbdd_estudi_hab_mod_2025, selected_mun)[5]} banys o lavabos.""")
+
+        left_col, right_col = st.columns((1, 1))
+        with left_col:
+            st.markdown(f"""**Distribució de Preus per m\u00b2 útil**""")
+            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2025, selected_mun,"Preu m2 útil"), use_container_width=True, responsive=True)
+            st.markdown(f"""**Preus per m\u00b2 útil segons nombre d'habitacions i lavabos**""")
+            st.markdown(matrix_hab_lav(bbdd_estudi_hab_2025, selected_mun, "Preu m2 útil").to_html(), unsafe_allow_html=True)
+            st.write("")
+            st.write("")
+            st.write("")
+            st.markdown(f"""**Característiques principals dels habitatges en oferta**""")
+            st.plotly_chart(caracteristiques_mun(bbdd_estudi_hab_2025, selected_mun), use_container_width=True, responsive=True)
+            # st.markdown(f"""**Qualitats dels habitatges en oferta (% d'habitatges en oferta)**""")
+            # st.plotly_chart(qualitats_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, responsive=True)
+            st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
+            st.plotly_chart(dormscount_plot_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, responsive=True)
+            # st.markdown("""**Qualificació energètica dels habitatges en oferta (% d'habitatges)**""")
+            # st.plotly_chart(plot_table_energ_mun(bbdd_estudi_hab_2025, selected_mun), use_container_width=True, responsive=True)
+            # st.markdown("""**Proporció d'habitatges segons el tipus d'instal·lació de calefacció (%)**""")
+            # st.plotly_chart(cale_tipus_mun(bbdd_estudi_prom_2025, selected_mun), use_container_width=True, responsive=True)
+
+        with right_col:
+            st.markdown(f"""**Distribució de Superfície útil**""")
+            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2025, selected_mun, "Superfície útil"), use_container_width=True, responsive=True)
+            st.markdown(f"""**Superfície en m\u00b2 útils segons nombre d'habitacions i lavabos**""")
+            st.markdown(matrix_hab_lav(bbdd_estudi_hab_2025, selected_mun,"Superfície útil").to_html(), unsafe_allow_html=True)
+            st.write("")
+            st.write("")
+            st.write("")
+            st.markdown(f"""**Proporció d'habitatges en oferta a les promocions segons tipologia (%)**""")
+            st.plotly_chart(count_plot_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, responsive=True)
+            # st.markdown(f"""**Equipaments dels habitatges en oferta (% d'habitatges en oferta)**""")
+            # st.plotly_chart(equipaments_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, responsive=True)
+            st.markdown("""**Habitatges a la venda segons número de lavabos**""")
+            st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, responsive=True)
+            # st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
+            # st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_hab_2025, selected_mun), use_container_width=True, responsive=True)
+            # st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
+            # st.plotly_chart(aparcament_mun(bbdd_estudi_hab_2025, selected_mun), use_container_width=True, responsive=True)
+
+        st.subheader("Comparativa amb anys anteriors: Municipi de " + selected_mun.split(',')[0].strip())
+        left_col, right_col = st.columns((1,1))
+        st.markdown(table_mun(selected_mun, 2019, 2025).to_html(), unsafe_allow_html=True)
+        st.markdown(filedownload(table_mun(selected_mun, 2019, 2025), f"Estudi_oferta_{selected_mun}.xlsx"), unsafe_allow_html=True)
+        st.markdown("")
+        left_col, right_col = st.columns((1, 1))
+        with left_col:
+            st.markdown("""**Evolució dels habitatges de nova construcció per tipologia d'habitatge**""")
+            st.plotly_chart(plot_mun_hist_units(selected_mun, "Unitats", 2019, 2025), use_container_width=True, responsive=True)
+        with right_col:
+            st.markdown("""**Evolució de la superfície útil mitjana per tipologia d'habitatge**""")
+            st.plotly_chart(plot_mun_hist(selected_mun, 'Superfície mitjana (m² útils)', 2019, 2025), use_container_width=True, responsive=True)
+        left_col, right_col = st.columns((1, 1))
+        with left_col:
+            st.markdown("""**Evolució del preu de venda per m\u00b2 útil  per tipologia d'habitatge**""")
+            st.plotly_chart(plot_mun_hist(selected_mun, "Preu de venda per m² útil (€)", 2019, 2025), use_container_width=True, responsive=True)
+        with right_col:
+            st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
+            st.plotly_chart(plot_mun_hist(selected_mun, "Preu mitjà de venda de l'habitatge (€)", 2019, 2025), use_container_width=True, responsive=True)
+
 ############################################################  DISTRICTES DE BARCELONA ################################################
 if selected=="Districtes de Barcelona":
     left, right = st.columns((1,1))
     with left:
-        edicio_any = ["2022","2023", "2024"]
+        edicio_any = ["2022","2023", "2024","1S2025"]
         selected_edition = st.radio("**Any**", edicio_any, edicio_any.index("2024"), horizontal=True)
     with right:
         dis_names_aux_num = sorted(bbdd_estudi_prom["Nom DIST"].dropna().unique().tolist())
@@ -3345,6 +3842,84 @@ if selected=="Districtes de Barcelona":
             st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
             st.plotly_chart(plot_dis_hist(selected_dis, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)),use_container_width=True, responsive=True)
 
+############################################################  DISTRICTES DE BARCELONA: 1S2025 ################################################
+    if selected_edition=="1S2025":
+        st.subheader("DISTRICTES DE BARCELONA")
+        st.write(f"""<p>
+                        A la ciutat de Barcelona, els resultats del treball realitzat fins el mes de juny de 2025, inclouen un total de 106 promocions i 625 habitatges en venda, d’un total de 2.045 habitatges.
+                        Els districtes amb major nombre de promocions són Eixample (21) i Horta-Guinardó (19). Els que disposen d’un menor nombre de promocions són Gràcia (6), Sarrià-Sant Gervasi (6) i Les Corts (1). La quantificació del nombre d’habitatges en oferta presenta alguna variació en comparació amb el de promocions. Horta-Guinardó és el districte amb més habitatges (122) i l’Eixample ocupa el segon lloc amb una habitatge menys (121). La oferta més baixa d’habitatges es localitza en els mateixos districtes amb menys promocions: Gràcia (37), Sarrià-Sant Gervasi (29) i Les Corts (4).
+                        En el cas de la ciutat de Barcelona, les tipologies amb més oferta són les de 2 dormitoris amb un 41,1% i les de 3 dormitoris amb un 37,3% (al conjunt de Catalunya l’oferta de 3 dormitoris és superior a la de 2 dormitoris). Cal destacar que a la ciutat de Barcelona més de tres quartes parts de l’oferta correspon a habitatges de 2 o 3 dormitoris (78,4%).
+                    </p>
+                    <p>
+                        La superfície mitjana dels habitatges a la venda és de 83,3 m\u00b2 útils, amb un descens mínim del -0,3% en relació a finals de 2024 (83,5 m\u00b2). Aquesta variació no és homogènia en tots els districtes i, en els extrems trobem diferències importants. D’aquesta manera la superfície dels habitatges a la venda en Sarrià-Sant Gervasi baixa un -11,5%, mentre que en els districtes de Sant Martí i Les Corts incrementa 9,5% i 5,9% respectivament.
+                    </p>
+                    <p>
+                        El preu mitjà de l’habitatge a la venda a la ciutat de Barcelona és de 711.260 €, un 3,1% més en relació a finals de 2024 (689.881 €). En els districtes de Sant Martí i Gràcia, és on es produeix un increment més important, un 27,7% i 10,5% respectivament. 
+                        Pel que fa al preu per m\u00b2 útil, és de 7.962 €, valor que suposa una variació d’un 2,1% en relació a 2024 (7.798 €).
+                    </p>
+                    """, unsafe_allow_html=True)
+        st.subheader(f"{selected_dis.upper()}")
+        st.markdown(f"""Els resultats de l'Estudi d'Oferta de nova construcció del primer semestre de 2025 pel districte de {selected_dis} de la ciutat de Barcelona mostren que el preu mitjà dels habitatges en venda es troba 
+        en {data_text_dis(bbdd_estudi_hab_2025, selected_dis)[0]:,.1f} € amb una superfície mitjana útil de {data_text_dis(bbdd_estudi_hab_2025, selected_dis)[1]:,.1f} m\u00b2. Per tant, el preu per m\u00b2 útil es troba en {data_text_dis(bbdd_estudi_hab_2025, selected_dis)[2]:,.1f} € de mitjana. Per tipologies, els habitatges plurifamiliars
+        representen el {data_text_dis(bbdd_estudi_hab_2025, selected_dis)[3]:,.1f}% sobre el total d'habitatges. L'habitatge modal o més freqüent de nova construcció té {data_text_dis(bbdd_estudi_hab_2025, selected_dis)[4]} habitacions i {data_text_dis(bbdd_estudi_hab_2025, selected_dis)[5]} banys o lavabos.""")
+        left_col, right_col = st.columns((1, 1))
+        with left_col:
+            st.markdown(f"""**Distribució de Preus per m\u00b2 útil**""")
+            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2025, selected_dis,"Preu m2 útil"), use_container_width=True, responsive=True)
+            st.markdown(f"""**Preus per m\u00b2 útil segons nombre d'habitacions i lavabos**""")
+            st.markdown(matrix_hab_lav_dis(bbdd_estudi_hab_2025, selected_dis, "Preu m2 útil").to_html(), unsafe_allow_html=True)
+            st.write("")
+            st.write("")
+            st.write("")
+            st.markdown(f"""**Característiques principals dels habitatges en oferta**""")
+            st.plotly_chart(caracteristiques_dis(bbdd_estudi_hab_2025, selected_dis), use_container_width=True, responsive=True)
+            # st.markdown(f"""**Qualitats dels habitatges en oferta (% d'habitatges en oferta)**""")
+            # st.plotly_chart(qualitats_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, responsive=True)
+            st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
+            st.plotly_chart(dormscount_plot_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, responsive=True)
+            # st.markdown("""**Qualificació energètica dels habitatges en oferta (% d'habitatges)**""")
+            # st.plotly_chart(plot_table_energ_dis(bbdd_estudi_hab_2025, selected_dis), use_container_width=True, responsive=True)
+            # st.markdown("""**Proporció d'habitatges segons el tipus d'instal·lació de calefacció (%)**""")
+            # st.plotly_chart(cale_tipus_dis(bbdd_estudi_prom_2025, selected_dis), use_container_width=True, responsive=True)
+        with right_col:
+            st.markdown(f"""**Distribució de Superfície útil**""")
+            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2025, selected_dis, "Superfície útil"), use_container_width=True, responsive=True)
+            st.markdown(f"""**Superfície en m\u00b2 útils segons nombre d'habitacions i lavabos**""")
+            st.markdown(matrix_hab_lav_dis(bbdd_estudi_hab_2025, selected_dis,"Superfície útil").to_html(), unsafe_allow_html=True)
+            st.write("")
+            st.write("")
+            st.write("")
+            st.markdown(f"""**Proporció d'habitatges en oferta a les promocions segons tipologia (%)**""")
+            st.plotly_chart(count_plot_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, responsive=True)
+            # st.markdown(f"""**Equipaments dels habitatges en oferta (% d'habitatges en oferta)**""")
+            # st.plotly_chart(equipaments_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, responsive=True)
+            st.markdown("""**Habitatges a la venda segons número de lavabos**""")
+            st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, responsive=True)
+            # st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
+            # st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_hab_2025, selected_dis), use_container_width=True, responsive=True)
+            # st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
+            # st.plotly_chart(aparcament_dis(bbdd_estudi_hab_2025, selected_dis), use_container_width=True, responsive=True)
+        st.subheader(f"Comparativa amb anys anteriors: Districte de {selected_dis}")
+        st.markdown(geo_dis(selected_dis, 2019, 2026).to_html(), unsafe_allow_html=True)
+        st.markdown(filedownload(geo_dis(selected_dis, 2019, 2026), f"Estudi_oferta_{selected_dis}.xlsx"), unsafe_allow_html=True)
+        left_col, right_col = st.columns((1, 1))
+        with left_col:
+            st.markdown("")
+            st.markdown("")
+            st.markdown("""**Evolució dels habitatges de nova construcció per tipologia d'habitatge**""")
+            st.plotly_chart(plot_dis_hist_units(selected_dis, "Unitats", 2019, 2025), use_container_width=True, responsive=True)
+        with right_col:
+            st.markdown("")
+            st.markdown("")
+            st.markdown("""**Evolució de la superfície útil mitjana per tipologia d'habitatge**""")
+            st.plotly_chart(plot_dis_hist(selected_dis, 'Superfície mitjana (m² útils)', 2019, 2025), use_container_width=True, responsive=True)
+        left_col, right_col = st.columns((1, 1))
+        with left_col:
+            st.markdown("""**Evolució del preu de venda per m\u00b2 útil  per tipologia d'habitatge**""")
+            st.plotly_chart(plot_dis_hist(selected_dis, "Preu de venda per m² útil (€)", 2019, 2025), use_container_width=True, responsive=True)
+        with right_col:
+            st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
+            st.plotly_chart(plot_dis_hist(selected_dis, "Preu mitjà de venda de l'habitatge (€)", 2019, 2025),use_container_width=True, responsive=True)
 
 # if selected=="Contacte":
 #     CONTACT_EMAIL = "estudis@apcecat.cat"
