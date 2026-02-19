@@ -11,3 +11,5 @@ streamlit==1.32.2
 streamlit-authenticator==0.2.1
 streamlit-option-menu==0.3.2
 geopandas==0.12.2
+streamlit_folium==0.22.0
+folium==0.17.0
