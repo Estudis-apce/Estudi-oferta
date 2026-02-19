@@ -14,7 +14,6 @@ import json
 import folium
 from streamlit_folium import st_folium
 import branca
-
 ############################################################  TITULO DE PESTAÑA DE PÁGINA WEB ################################################
 path = ""
 st.set_page_config(
