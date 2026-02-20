@@ -58,7 +58,7 @@ with right_col:
     #     """]):
     selected = option_menu(
         menu_title=None,  # required
-        options=["Catalunya","Províncies i àmbits","Municipis", "Districtes de Barcelona"], # "Mapa interactiu"
+        options=["Catalunya","Províncies i àmbits","Municipis", "Districtes de Barcelona", "Mapa interactiu"], # 
         icons=[None,"map","house-fill","house-fill", "map"],
         menu_icon="cast",  # optional
         default_index=0,  # optional
@@ -3975,41 +3975,42 @@ if selected=="Districtes de Barcelona":
                 st.plotly_chart(plot_dis_hist(selected_dis, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)),use_container_width=True, responsive=True)
 
 
-# if selected=="Mapa interactiu":
-#     def folium_map(tmp, title, h=800):
-#         m = folium.Map([41.7, 1.6], zoom_start= 8, tiles="CartoDB voyager", width="100%", height=f"{h}px")
-#         v = tmp["valor"]
-#         vmin = float(v.min()) if v.notna().any() else 0.0
-#         vmax = float(v.max()) if v.notna().any() else 1.0
-#         cm = branca.colormap.LinearColormap(["#ffffcc", "#AAC4BA", "#008B6C"], vmin=vmin, vmax=vmax, caption=title)
-#         folium.GeoJson(
-#             tmp.__geo_interface__,
-#             tooltip=folium.GeoJsonTooltip(fields=["nom_muni_x", "valor", "unitats"], aliases=["Municipi:", "Valor:", "Unitats:"], localize=True),
-#             style_function=lambda f: {
-#                 "fillColor": cm(f["properties"]["valor"]) if f["properties"]["valor"] is not None else "transparent",
-#                 "color": "#444", "weight": 0.15,
-#                 "fillOpacity": 0.9 if f["properties"]["valor"] is not None else 0.0,
-#             },
-#         ).add_to(m)
-#         cm.add_to(m)
-#         return m
-#     opc = {
-#         "Preu per m² útil": "Preu de venda per m² útil (€)",
-#         "Preu mitjà": "Preu mitjà de venda de l'habitatge (€)",
-#         "Superfície útil": "Superfície mitjana (m² útils)",
-#     }
-#     left, mid, right = st.columns(3)
-#     with left:
-#         label = st.selectbox("Indicador", list(opc.keys()))
-#     with mid:
-#         any = st.selectbox("Any", list(range(2022, 2026)), index=list(range(2022, 2026)).index(2025))
-#     with right:
-#         tipologia = st.selectbox("Tipologia", sorted(df_final["Tipologia"].dropna().str.lower().str.capitalize().unique().tolist()))
-#     _shp = load_shp(path + "shapefile_mun.geojson")
-#     df_map = prep_map_df(df_final, any, tipologia.upper(), opc[label])
-#     tmp = build_tmp(_shp, df_map)
-#     m = folium_map(tmp, f"{label} · {tipologia.lower().capitalize()} · {any}", h=800)
-#     st_folium(m, use_container_width=True, height=800, returned_objects=[])
+if selected=="Mapa interactiu":
+    def folium_map(tmp, title, h=800):
+        m = folium.Map([41.7, 1.6], zoom_start= 8, tiles="CartoDB voyager", width="100%", height=f"{h}px")
+        v = tmp["valor"]
+        vmin = float(v.min()) if v.notna().any() else 0.0
+        vmax = float(v.max()) if v.notna().any() else 1.0
+        cm = branca.colormap.LinearColormap(["#ffffcc", "#AAC4BA", "#008B6C"], vmin=vmin, vmax=vmax, caption=title)
+        folium.GeoJson(
+            tmp.__geo_interface__,
+            tooltip=folium.GeoJsonTooltip(fields=["nom_muni_x", "valor", "unitats"], aliases=["Municipi:", "Valor:", "Unitats:"], localize=True),
+            style_function=lambda f: {
+                "fillColor": cm(f["properties"]["valor"]) if f["properties"]["valor"] is not None else "transparent",
+                "color": "#444", "weight": 0.15,
+                "fillOpacity": 0.9 if f["properties"]["valor"] is not None else 0.0,
+            },
+        ).add_to(m)
+        cm.add_to(m)
+        return m
+    opc = {
+        "Preu per m² útil": "Preu de venda per m² útil (€)",
+        "Preu mitjà": "Preu mitjà de venda de l'habitatge (€)",
+        "Superfície útil": "Superfície mitjana (m² útils)",
+    }
+    left, mid, right = st.columns(3)
+    with left:
+        label = st.selectbox("Indicador", list(opc.keys()))
+    with mid:
+        any = st.selectbox("Any", list(range(2022, 2026)), index=list(range(2022, 2026)).index(2025))
+    with right:
+        tipologia = st.selectbox("Tipologia", sorted(df_final["Tipologia"].dropna().str.lower().str.capitalize().unique().tolist()))
+    _shp = load_shp(path + "shapefile_mun.geojson")
+    df_map = prep_map_df(df_final, any, tipologia.upper(), opc[label])
+    tmp = build_tmp(_shp, df_map)
+    m = folium_map(tmp, f"{label} · {tipologia.lower().capitalize()} · {any}", h=800)
+    st_folium(m, use_container_width=True, height=800, returned_objects=[])
+
 
 
 # if selected=="Contacte":
