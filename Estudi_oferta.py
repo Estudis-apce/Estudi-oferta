@@ -2276,7 +2276,7 @@ if selected == "Catalunya":
                 unsafe_allow_html=True
                 )
             with right_col:
-                st.plotly_chart(plot_caracteristiques(bbdd_estudi_hab), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_caracteristiques(bbdd_estudi_hab), use_container_width=True, config={"responsive": True})
 
         if selected_index=="Qualitats i equipaments":
             st.subheader("**QUALITATS I EQUIPAMENTS**")
@@ -2296,12 +2296,12 @@ if selected == "Catalunya":
             left_col, right_col = st.columns((1, 1))
             with left_col:
                 st.write("""<p><b>Principals qualitats dels habitatges</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(plot_qualitats(bbdd_estudi_hab), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_qualitats(bbdd_estudi_hab), use_container_width=True, config={"responsive": True})
 
 
             with right_col:
                 st.write("""<p><b>Principals equipaments dels habitatges</b></p>""", unsafe_allow_html=True)
-                # st.plotly_chart(plot_equipaments(bbdd_estudi_hab), use_container_width=True, responsive=True)
+                # st.plotly_chart(plot_equipaments(bbdd_estudi_hab), use_container_width=True, config={"responsive": True})
                 st.write(plot_equipaments(bbdd_estudi_hab))
 
         if selected_index=="Superfície i preus":
@@ -2338,14 +2338,14 @@ if selected == "Catalunya":
 
             with right_col:
                 st.write("""<p><b>Preu mitjà per tipologia d'habitatge (€)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod), use_container_width=True, config={"responsive": True})
             left, right = st.columns((1,1))
             with left:
                 st.write("""<p><b>Preu per m\u00b2 útil per tipologia d'habitatge (€/m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod), use_container_width=True, config={"responsive": True})
             with right:
                 st.write("""<p><b>Superfície útil per tipologia d'habitatge (m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod), use_container_width=True, config={"responsive": True})
         if selected_index=="Comparativa any anterior":
             left_col, right_col = st.columns((1, 1))
             with left_col: 
@@ -2402,7 +2402,7 @@ if selected == "Catalunya":
             with right_col:
                 st.markdown("")
                 st.write("""<p><b>Variació anual dels principals indicadors per tipologia d'habitatge (%)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(plot_var_CAT(table117_22, table121_22, table125_22), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_var_CAT(table117_22, table121_22, table125_22), use_container_width=True, config={"responsive": True})
             st.markdown(table_geo_cat(2019, int(selected_edition)).to_html(), unsafe_allow_html=True)
             st.markdown(filedownload(table_geo_cat(2019, int(selected_edition)), f"Estudi_oferta_Catalunya_22.xlsx"), unsafe_allow_html=True)
 
@@ -2479,7 +2479,7 @@ if selected == "Catalunya":
                 unsafe_allow_html=True
                 )
             with right_col:
-                st.plotly_chart(plot_caracteristiques(bbdd_estudi_hab_2023), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_caracteristiques(bbdd_estudi_hab_2023), use_container_width=True, config={"responsive": True})
         if selected_index=="Qualitats i equipaments":
             st.subheader("**QUALITATS I EQUIPAMENTS**")
             st.write("""
@@ -2496,11 +2496,11 @@ if selected == "Catalunya":
             left_col, right_col = st.columns((1, 1))
             with left_col:
                 st.write("""<p><b>Principals qualitats dels habitatges (%)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(plot_qualitats(bbdd_estudi_hab_2023), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_qualitats(bbdd_estudi_hab_2023), use_container_width=True, config={"responsive": True})
 
             with right_col:
                 st.write("""<p><b>Principals equipaments dels habitatges (%)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(plot_equipaments(bbdd_estudi_hab_2023), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_equipaments(bbdd_estudi_hab_2023), use_container_width=True, config={"responsive": True})
 
         if selected_index=="Superfície i preus":
             left_col, right_col = st.columns((1, 1))
@@ -2529,14 +2529,14 @@ if selected == "Catalunya":
 
             with right_col:
                 st.write("""<p><b>Preu mitjà per tipologia d'habitatge (€)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod_2023), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod_2023), use_container_width=True, config={"responsive": True})
             left, right = st.columns((1,1))
             with left:
                 st.write("""<p><b>Preu per m\u00b2 útil per tipologia d'habitatge (€/m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod_2023), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod_2023), use_container_width=True, config={"responsive": True})
             with right:
                 st.write("""<p><b>Superfície útil per tipologia d'habitatge (m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod_2023), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod_2023), use_container_width=True, config={"responsive": True})
 
         if selected_index=="Comparativa any anterior":
             left_col, right_col = st.columns((1, 1))
@@ -2566,7 +2566,7 @@ if selected == "Catalunya":
             with right_col:
                 st.markdown("")
                 st.write("""<p><b>Variació anual dels principals indicadors per tipologia d'habitatge (%)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(plot_var_CAT(table117_23, table121_23, table125_23), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_var_CAT(table117_23, table121_23, table125_23), use_container_width=True, config={"responsive": True})
             st.markdown(table_geo_cat(2019, int(selected_edition)).to_html(), unsafe_allow_html=True)
             st.markdown(filedownload(table_geo_cat(2019, int(selected_edition)), f"Estudi_oferta_Catalunya_2023.xlsx"), unsafe_allow_html=True)
 
@@ -2625,7 +2625,7 @@ if selected == "Catalunya":
                 unsafe_allow_html=True
                 )
             with right_col:
-                st.plotly_chart(plot_caracteristiques(bbdd_estudi_hab_2024), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_caracteristiques(bbdd_estudi_hab_2024), use_container_width=True, config={"responsive": True})
         if selected_index=="Qualitats i equipaments":
             st.subheader("**QUALITATS I EQUIPAMENTS**")
             st.write("""
@@ -2637,11 +2637,11 @@ if selected == "Catalunya":
             left_col, right_col = st.columns((1, 1))
             with left_col:
                 st.write("""<p><b>Principals qualitats dels habitatges (%)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(plot_qualitats(bbdd_estudi_hab_2024), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_qualitats(bbdd_estudi_hab_2024), use_container_width=True, config={"responsive": True})
 
             with right_col:
                 st.write("""<p><b>Principals equipaments dels habitatges (%)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(plot_equipaments(bbdd_estudi_hab_2024), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_equipaments(bbdd_estudi_hab_2024), use_container_width=True, config={"responsive": True})
 
         if selected_index=="Superfície i preus":
             left_col, right_col = st.columns((1, 1))
@@ -2660,14 +2660,14 @@ if selected == "Catalunya":
 
             with right_col:
                 st.write("""<p><b>Preu mitjà per tipologia d'habitatge (€)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod_2024), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod_2024), use_container_width=True, config={"responsive": True})
             left, right = st.columns((1,1))
             with left:
                 st.write("""<p><b>Preu per m\u00b2 útil per tipologia d'habitatge (€/m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod_2024), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod_2024), use_container_width=True, config={"responsive": True})
             with right:
                 st.write("""<p><b>Superfície útil per tipologia d'habitatge (m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod_2024), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod_2024), use_container_width=True, config={"responsive": True})
 
         if selected_index=="Comparativa any anterior":
             left_col, right_col = st.columns((1, 1))
@@ -2694,7 +2694,7 @@ if selected == "Catalunya":
             with right_col:
                 st.markdown("")
                 st.write("""<p><b>Variació anual dels principals indicadors per tipologia d'habitatge (%)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(plot_var_CAT(table117_24, table121_24, table125_24), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_var_CAT(table117_24, table121_24, table125_24), use_container_width=True, config={"responsive": True})
             st.markdown(table_geo_cat(2019, int(selected_edition)).to_html(), unsafe_allow_html=True)
             st.markdown(filedownload(table_geo_cat(2019, int(selected_edition)), f"Estudi_oferta_Catalunya_2024.xlsx"), unsafe_allow_html=True)
 
@@ -2753,7 +2753,7 @@ if selected == "Catalunya":
                 unsafe_allow_html=True
                 )
             with right_col:
-                st.plotly_chart(plot_caracteristiques(bbdd_estudi_hab_2025), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_caracteristiques(bbdd_estudi_hab_2025), use_container_width=True, config={"responsive": True})
         if selected_index=="Qualitats i equipaments":
             st.subheader("**QUALITATS I EQUIPAMENTS**")
             st.write("""
@@ -2765,11 +2765,11 @@ if selected == "Catalunya":
             left_col, right_col = st.columns((1, 1))
             with left_col:
                 st.write("""<p><b>Principals qualitats dels habitatges (%)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(plot_qualitats(bbdd_estudi_hab_2025), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_qualitats(bbdd_estudi_hab_2025), use_container_width=True, config={"responsive": True})
 
             with right_col:
                 st.write("""<p><b>Principals equipaments dels habitatges (%)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(plot_equipaments(bbdd_estudi_hab_2025), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_equipaments(bbdd_estudi_hab_2025), use_container_width=True, config={"responsive": True})
 
         if selected_index=="Superfície i preus":
             left_col, right_col = st.columns((1, 1))
@@ -2788,14 +2788,14 @@ if selected == "Catalunya":
 
             with right_col:
                 st.write("""<p><b>Preu mitjà per tipologia d'habitatge (€)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod_2025), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_preu_mitjanes(bbdd_estudi_hab_mod_2025), use_container_width=True, config={"responsive": True})
             left, right = st.columns((1,1))
             with left:
                 st.write("""<p><b>Preu per m\u00b2 útil per tipologia d'habitatge (€/m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod_2025), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_preum2_mitjanes(bbdd_estudi_hab_mod_2025), use_container_width=True, config={"responsive": True})
             with right:
                 st.write("""<p><b>Superfície útil per tipologia d'habitatge (m\u00b2 útil)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod_2025), use_container_width=True, responsive=True)
+                st.plotly_chart(indicadors_super_mitjanes(bbdd_estudi_hab_mod_2025), use_container_width=True, config={"responsive": True})
 
         if selected_index=="Comparativa any anterior":
             left_col, right_col = st.columns((1, 1))
@@ -2822,7 +2822,7 @@ if selected == "Catalunya":
             with right_col:
                 st.markdown("")
                 st.write("""<p><b>Variació anual dels principals indicadors per tipologia d'habitatge (%)</b></p>""", unsafe_allow_html=True)
-                st.plotly_chart(plot_var_CAT(table117_25, table121_25, table125_25), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_var_CAT(table117_25, table121_25, table125_25), use_container_width=True, config={"responsive": True})
             st.markdown(table_geo_cat(2019, int(selected_edition)).to_html(), unsafe_allow_html=True)
             st.markdown(filedownload(table_geo_cat(2019, int(selected_edition)), f"Estudi_oferta_Catalunya_2025.xlsx"), unsafe_allow_html=True)
 
@@ -2956,17 +2956,17 @@ if selected == "Províncies i àmbits":
             st.markdown(filedownload(table_geo(selected_geo, 2019, int(selected_edition), selected_option), f"Estudi_oferta_{selected_geo}.xlsx"), unsafe_allow_html=True)
             left_col, right_col = st.columns((1,1))
             with left_col:
-                st.plotly_chart(tipog_donut(bbdd_estudi_hab, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(tipog_donut(bbdd_estudi_hab, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
-                st.plotly_chart(num_dorms_prov(bbdd_estudi_hab_mod, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(num_dorms_prov(bbdd_estudi_hab_mod, selected_geo), use_container_width=True, config={"responsive": True})
             left_col, right_col = st.columns((1,1))
             with left_col:
-                st.plotly_chart(qualitats_prov(bbdd_estudi_hab, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(qualitats_prov(bbdd_estudi_hab, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
-                st.plotly_chart(equipaments_prov(bbdd_estudi_hab, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(equipaments_prov(bbdd_estudi_hab, selected_geo), use_container_width=True, config={"responsive": True})
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                st.plotly_chart(cons_acabats(bbdd_estudi_prom, bbdd_estudi_hab, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(cons_acabats(bbdd_estudi_prom, bbdd_estudi_hab, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
                 st.markdown("")
                 st.markdown("")
@@ -2975,7 +2975,7 @@ if selected == "Províncies i àmbits":
                 st.metric("**Habitatges acabats**", format(int(metric_estat(bbdd_estudi_prom, bbdd_estudi_hab, selected_geo)[1]), ",d"))
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
                 st.markdown("")
                 st.markdown("")
@@ -3089,17 +3089,17 @@ if selected == "Províncies i àmbits":
             st.markdown(filedownload(table_geo(selected_geo, 2019, int(selected_edition), selected_option), f"Estudi_oferta_{selected_geo}.xlsx"), unsafe_allow_html=True)
             left_col, right_col = st.columns((1,1))
             with left_col:
-                st.plotly_chart(tipog_donut(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(tipog_donut(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
-                st.plotly_chart(num_dorms_prov(bbdd_estudi_hab_mod_2023, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(num_dorms_prov(bbdd_estudi_hab_mod_2023, selected_geo), use_container_width=True, config={"responsive": True})
             left_col, right_col = st.columns((1,1))
             with left_col:
-                st.plotly_chart(qualitats_prov(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(qualitats_prov(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
-                st.plotly_chart(equipaments_prov(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(equipaments_prov(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, config={"responsive": True})
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                st.plotly_chart(cons_acabats(bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(cons_acabats(bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
                 st.markdown("")
                 st.markdown("")
@@ -3108,7 +3108,7 @@ if selected == "Províncies i àmbits":
                 st.metric("**Habitatges acabats**", format(int(metric_estat(bbdd_estudi_prom_2023, bbdd_estudi_hab_2023, selected_geo)[1]), ",d"))
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab_2023, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
                 st.markdown("")
                 st.markdown("")
@@ -3222,17 +3222,17 @@ if selected == "Províncies i àmbits":
             st.markdown(filedownload(table_geo(selected_geo, 2019, int(selected_edition), selected_option), f"Estudi_oferta_{selected_geo}.xlsx"), unsafe_allow_html=True)
             left_col, right_col = st.columns((1,1))
             with left_col:
-                st.plotly_chart(tipog_donut(bbdd_estudi_hab_2024, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(tipog_donut(bbdd_estudi_hab_2024, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
-                st.plotly_chart(num_dorms_prov(bbdd_estudi_hab_mod_2024, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(num_dorms_prov(bbdd_estudi_hab_mod_2024, selected_geo), use_container_width=True, config={"responsive": True})
             left_col, right_col = st.columns((1,1))
             with left_col:
-                st.plotly_chart(qualitats_prov(bbdd_estudi_hab_2024, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(qualitats_prov(bbdd_estudi_hab_2024, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
-                st.plotly_chart(equipaments_prov(bbdd_estudi_hab_2024, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(equipaments_prov(bbdd_estudi_hab_2024, selected_geo), use_container_width=True, config={"responsive": True})
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                st.plotly_chart(cons_acabats(bbdd_estudi_prom_2024, bbdd_estudi_hab_2024, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(cons_acabats(bbdd_estudi_prom_2024, bbdd_estudi_hab_2024, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
                 st.markdown("")
                 st.markdown("")
@@ -3241,7 +3241,7 @@ if selected == "Províncies i àmbits":
                 st.metric("**Habitatges acabats**", format(int(metric_estat(bbdd_estudi_prom_2024, bbdd_estudi_hab_2024, selected_geo)[1]), ",d"))
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab_2024, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab_2024, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
                 st.markdown("")
                 st.markdown("")
@@ -3301,17 +3301,17 @@ if selected == "Províncies i àmbits":
             st.markdown(filedownload(table_geo(selected_geo, 2019, int(selected_edition), selected_option), f"Estudi_oferta_{selected_geo}.xlsx"), unsafe_allow_html=True)
             left_col, right_col = st.columns((1,1))
             with left_col:
-                st.plotly_chart(tipog_donut(bbdd_estudi_hab_2025, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(tipog_donut(bbdd_estudi_hab_2025, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
-                st.plotly_chart(num_dorms_prov(bbdd_estudi_hab_mod_2025, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(num_dorms_prov(bbdd_estudi_hab_mod_2025, selected_geo), use_container_width=True, config={"responsive": True})
             left_col, right_col = st.columns((1,1))
             with left_col:
-                st.plotly_chart(qualitats_prov(bbdd_estudi_hab_2025, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(qualitats_prov(bbdd_estudi_hab_2025, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
-                st.plotly_chart(equipaments_prov(bbdd_estudi_hab_2025, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(equipaments_prov(bbdd_estudi_hab_2025, selected_geo), use_container_width=True, config={"responsive": True})
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                st.plotly_chart(cons_acabats(bbdd_estudi_prom_2025, bbdd_estudi_hab_2025, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(cons_acabats(bbdd_estudi_prom_2025, bbdd_estudi_hab_2025, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
                 st.markdown("")
                 st.markdown("")
@@ -3320,7 +3320,7 @@ if selected == "Províncies i àmbits":
                 st.metric("**Habitatges acabats**", format(int(metric_estat(bbdd_estudi_prom_2025, bbdd_estudi_hab_2025, selected_geo)[1]), ",d"))
             left_col, right_col = st.columns((2, 1))
             with left_col:
-                st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab_2025, selected_geo), use_container_width=True, responsive=True)
+                st.plotly_chart(tipo_obra_prov(bbdd_estudi_hab_2025, selected_geo), use_container_width=True, config={"responsive": True})
             with right_col:
                 st.markdown("")
                 st.markdown("")
@@ -3345,40 +3345,40 @@ if selected == "Municipis":
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown(f"""**Distribució de Preus per m\u00b2 útil**""")
-            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod, selected_mun,"Preu m2 útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod, selected_mun,"Preu m2 útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Preus per m\u00b2 útil segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav(bbdd_estudi_hab, selected_mun, "Preu m2 útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Característiques principals dels habitatges en oferta**""")
-            st.plotly_chart(caracteristiques_mun(bbdd_estudi_hab, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(caracteristiques_mun(bbdd_estudi_hab, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Qualitats dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(qualitats_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(qualitats_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
-            st.plotly_chart(dormscount_plot_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(dormscount_plot_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Qualificació energètica dels habitatges en oferta (% d'habitatges)**""")
-            st.plotly_chart(plot_table_energ_mun(bbdd_estudi_hab, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_table_energ_mun(bbdd_estudi_hab, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Proporció d'habitatges segons el tipus d'instal·lació de calefacció (%)**""")
-            st.plotly_chart(cale_tipus_mun(bbdd_estudi_prom, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(cale_tipus_mun(bbdd_estudi_prom, selected_mun), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown(f"""**Distribució de Superfície útil**""")
-            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod, selected_mun, "Superfície útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod, selected_mun, "Superfície útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Superfície en m\u00b2 útils segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav(bbdd_estudi_hab, selected_mun,"Superfície útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Proporció d'habitatges en oferta a les promocions segons tipologia (%)**""")
-            st.plotly_chart(count_plot_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(count_plot_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Equipaments dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(equipaments_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(equipaments_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número de lavabos**""")
-            st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
-            st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_prom, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_prom, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
-            st.plotly_chart(aparcament_mun(bbdd_estudi_hab, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(aparcament_mun(bbdd_estudi_hab, selected_mun), use_container_width=True, config={"responsive": True})
 
         st.subheader("Comparativa amb anys anteriors: Municipi de " + selected_mun.split(',')[0].strip())
         st.markdown(table_mun(selected_mun, 2019, int(selected_edition)).to_html(), unsafe_allow_html=True)
@@ -3387,17 +3387,17 @@ if selected == "Municipis":
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució dels habitatges de nova construcció per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist_units(selected_mun, "Unitats", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist_units(selected_mun, "Unitats", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("""**Evolució de la superfície útil mitjana per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist(selected_mun, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist(selected_mun, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució del preu de venda per m\u00b2 útil  per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist(selected_mun, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist(selected_mun, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist(selected_mun, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist(selected_mun, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
 
 ############################################################  MUNICIPIS: 2023 ################################################
     if selected_edition=="2023":
@@ -3409,41 +3409,41 @@ if selected == "Municipis":
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown(f"""**Distribució de Preus per m\u00b2 útil**""")
-            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2023, selected_mun,"Preu m2 útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2023, selected_mun,"Preu m2 útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Preus per m\u00b2 útil segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav(bbdd_estudi_hab_2023, selected_mun, "Preu m2 útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Característiques principals dels habitatges en oferta**""")
-            st.plotly_chart(caracteristiques_mun(bbdd_estudi_hab_2023, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(caracteristiques_mun(bbdd_estudi_hab_2023, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Qualitats dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(qualitats_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(qualitats_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
-            st.plotly_chart(dormscount_plot_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(dormscount_plot_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Qualificació energètica dels habitatges en oferta (% d'habitatges)**""")
-            st.plotly_chart(plot_table_energ_mun(bbdd_estudi_hab_2023, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_table_energ_mun(bbdd_estudi_hab_2023, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Proporció d'habitatges segons el tipus d'instal·lació de calefacció (%)**""")
-            st.plotly_chart(cale_tipus_mun(bbdd_estudi_prom_2023, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(cale_tipus_mun(bbdd_estudi_prom_2023, selected_mun), use_container_width=True, config={"responsive": True})
 
         with right_col:
             st.markdown(f"""**Distribució de Superfície útil**""")
-            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2023, selected_mun, "Superfície útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2023, selected_mun, "Superfície útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Superfície en m\u00b2 útils segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav(bbdd_estudi_hab_2023, selected_mun,"Superfície útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Proporció d'habitatges en oferta a les promocions segons tipologia (%)**""")
-            st.plotly_chart(count_plot_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(count_plot_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Equipaments dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(equipaments_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(equipaments_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número de lavabos**""")
-            st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod_2023, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
-            st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_prom_2023, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_prom_2023, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
-            st.plotly_chart(aparcament_mun(bbdd_estudi_hab_2023, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(aparcament_mun(bbdd_estudi_hab_2023, selected_mun), use_container_width=True, config={"responsive": True})
 
         st.subheader("Comparativa amb anys anteriors: Municipi de " + selected_mun.split(',')[0].strip())
         st.markdown(table_mun(selected_mun, 2019, int(selected_edition)).to_html(), unsafe_allow_html=True)
@@ -3452,17 +3452,17 @@ if selected == "Municipis":
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució dels habitatges de nova construcció per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist_units(selected_mun, "Unitats", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist_units(selected_mun, "Unitats", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("""**Evolució de la superfície útil mitjana per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist(selected_mun, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist(selected_mun, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució del preu de venda per m\u00b2 útil  per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist(selected_mun, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist(selected_mun, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist(selected_mun, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist(selected_mun, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
 
 ############################################################  MUNICIPIS: 2024 ################################################
     if selected_edition=="2024":
@@ -3474,41 +3474,41 @@ if selected == "Municipis":
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown(f"""**Distribució de Preus per m\u00b2 útil**""")
-            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2024, selected_mun,"Preu m2 útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2024, selected_mun,"Preu m2 útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Preus per m\u00b2 útil segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav(bbdd_estudi_hab_2024, selected_mun, "Preu m2 útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Característiques principals dels habitatges en oferta**""")
-            st.plotly_chart(caracteristiques_mun(bbdd_estudi_hab_2024, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(caracteristiques_mun(bbdd_estudi_hab_2024, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Qualitats dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(qualitats_mun(bbdd_estudi_hab_mod_2024, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(qualitats_mun(bbdd_estudi_hab_mod_2024, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
-            st.plotly_chart(dormscount_plot_mun(bbdd_estudi_hab_mod_2024, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(dormscount_plot_mun(bbdd_estudi_hab_mod_2024, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Qualificació energètica dels habitatges en oferta (% d'habitatges)**""")
-            st.plotly_chart(plot_table_energ_mun(bbdd_estudi_hab_2024, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_table_energ_mun(bbdd_estudi_hab_2024, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Proporció d'habitatges segons el tipus d'instal·lació de calefacció (%)**""")
-            st.plotly_chart(cale_tipus_mun(bbdd_estudi_prom_2024, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(cale_tipus_mun(bbdd_estudi_prom_2024, selected_mun), use_container_width=True, config={"responsive": True})
 
         with right_col:
             st.markdown(f"""**Distribució de Superfície útil**""")
-            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2024, selected_mun, "Superfície útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2024, selected_mun, "Superfície útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Superfície en m\u00b2 útils segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav(bbdd_estudi_hab_2024, selected_mun,"Superfície útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Proporció d'habitatges en oferta a les promocions segons tipologia (%)**""")
-            st.plotly_chart(count_plot_mun(bbdd_estudi_hab_mod_2024, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(count_plot_mun(bbdd_estudi_hab_mod_2024, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Equipaments dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(equipaments_mun(bbdd_estudi_hab_mod_2024, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(equipaments_mun(bbdd_estudi_hab_mod_2024, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número de lavabos**""")
-            st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod_2024, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod_2024, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
-            st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_prom_2024, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_prom_2024, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
-            st.plotly_chart(aparcament_mun(bbdd_estudi_hab_2024, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(aparcament_mun(bbdd_estudi_hab_2024, selected_mun), use_container_width=True, config={"responsive": True})
 
         st.subheader("Comparativa amb anys anteriors: Municipi de " + selected_mun.split(',')[0].strip())
         st.markdown(table_mun(selected_mun, 2019, int(selected_edition)).to_html(), unsafe_allow_html=True)
@@ -3517,17 +3517,17 @@ if selected == "Municipis":
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució dels habitatges de nova construcció per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist_units(selected_mun, "Unitats", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist_units(selected_mun, "Unitats", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("""**Evolució de la superfície útil mitjana per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist(selected_mun, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist(selected_mun, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució del preu de venda per m\u00b2 útil  per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist(selected_mun, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist(selected_mun, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist(selected_mun, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist(selected_mun, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
 
 ############################################################  MUNICIPIS: 2025 ################################################
     if selected_edition=="2025":
@@ -3539,42 +3539,42 @@ if selected == "Municipis":
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown(f"""**Distribució de Preus per m\u00b2 útil**""")
-            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2025, selected_mun,"Preu m2 útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2025, selected_mun,"Preu m2 útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Preus per m\u00b2 útil segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav(bbdd_estudi_hab_2025, selected_mun, "Preu m2 útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Característiques principals dels habitatges en oferta**""")
-            st.plotly_chart(caracteristiques_mun(bbdd_estudi_hab_2025, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(caracteristiques_mun(bbdd_estudi_hab_2025, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Qualitats dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(qualitats_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(qualitats_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
-            st.plotly_chart(dormscount_plot_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(dormscount_plot_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Qualificació energètica dels habitatges en oferta (% d'habitatges)**""")
-            st.plotly_chart(plot_table_energ_mun(bbdd_estudi_hab_2025, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_table_energ_mun(bbdd_estudi_hab_2025, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Proporció d'habitatges segons el tipus d'instal·lació de calefacció (%)**""")
-            st.plotly_chart(cale_tipus_mun(bbdd_estudi_prom_2025, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(cale_tipus_mun(bbdd_estudi_prom_2025, selected_mun), use_container_width=True, config={"responsive": True})
 
         with right_col:
             st.markdown(f"""**Distribució de Superfície útil**""")
-            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2025, selected_mun, "Superfície útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotmun_streamlit(bbdd_estudi_hab_mod_2025, selected_mun, "Superfície útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Superfície en m\u00b2 útils segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav(bbdd_estudi_hab_2025, selected_mun,"Superfície útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Proporció d'habitatges en oferta a les promocions segons tipologia (%)**""")
-            st.plotly_chart(count_plot_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(count_plot_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Equipaments dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(equipaments_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(equipaments_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número de lavabos**""")
-            st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(lavcount_plot_mun(bbdd_estudi_hab_mod_2025, selected_mun), use_container_width=True, config={"responsive": True})
             st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
-            st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_prom_2025, selected_mun), use_container_width=True, responsive=True)
+            st.plotly_chart(n_promocions_habs_mun(bbdd_estudi_prom_2025, selected_mun), use_container_width=True, config={"responsive": True})
             if selected_mun!= "Canyelles":
                 st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
-                st.plotly_chart(aparcament_mun(bbdd_estudi_hab_2025, selected_mun), use_container_width=True, responsive=True)
+                st.plotly_chart(aparcament_mun(bbdd_estudi_hab_2025, selected_mun), use_container_width=True, config={"responsive": True})
 
         st.subheader("Comparativa amb anys anteriors: Municipi de " + selected_mun.split(',')[0].strip())
         st.markdown(table_mun(selected_mun, 2019, int(selected_edition)).to_html(), unsafe_allow_html=True)
@@ -3583,17 +3583,17 @@ if selected == "Municipis":
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució dels habitatges de nova construcció per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist_units(selected_mun, "Unitats", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist_units(selected_mun, "Unitats", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("""**Evolució de la superfície útil mitjana per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist(selected_mun, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist(selected_mun, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució del preu de venda per m\u00b2 útil  per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist(selected_mun, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist(selected_mun, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
-            st.plotly_chart(plot_mun_hist(selected_mun, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_mun_hist(selected_mun, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
 
 
 ############################################################  DISTRICTES DE BARCELONA ################################################
@@ -3670,40 +3670,40 @@ if selected=="Districtes de Barcelona":
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown(f"""**Distribució de Preus per m\u00b2 útil**""")
-            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod, selected_dis,"Preu m2 útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod, selected_dis,"Preu m2 útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Preus per m\u00b2 útil segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav_dis(bbdd_estudi_hab, selected_dis, "Preu m2 útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Característiques principals dels habitatges en oferta**""")
-            st.plotly_chart(caracteristiques_dis(bbdd_estudi_hab, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(caracteristiques_dis(bbdd_estudi_hab, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Qualitats dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(qualitats_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(qualitats_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
-            st.plotly_chart(dormscount_plot_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(dormscount_plot_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Qualificació energètica dels habitatges en oferta (% d'habitatges)**""")
-            st.plotly_chart(plot_table_energ_dis(bbdd_estudi_hab, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_table_energ_dis(bbdd_estudi_hab, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Proporció d'habitatges segons el tipus d'instal·lació de calefacció (%)**""")
-            st.plotly_chart(cale_tipus_dis(bbdd_estudi_prom, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(cale_tipus_dis(bbdd_estudi_prom, selected_dis), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown(f"""**Distribució de Superfície útil**""")
-            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod, selected_dis, "Superfície útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod, selected_dis, "Superfície útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Superfície en m\u00b2 útils segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav_dis(bbdd_estudi_hab, selected_dis,"Superfície útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Proporció d'habitatges en oferta a les promocions segons tipologia (%)**""")
-            st.plotly_chart(count_plot_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(count_plot_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Equipaments dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(equipaments_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(equipaments_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número de lavabos**""")
-            st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
-            st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_prom, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_prom, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
-            st.plotly_chart(aparcament_dis(bbdd_estudi_hab, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(aparcament_dis(bbdd_estudi_hab, selected_dis), use_container_width=True, config={"responsive": True})
 
 
         st.subheader(f"Comparativa amb anys anteriors: Districte de {selected_dis}")
@@ -3715,19 +3715,19 @@ if selected=="Districtes de Barcelona":
             st.markdown("")
             st.markdown("")
             st.markdown("""**Evolució dels habitatges de nova construcció per tipologia d'habitatge**""")
-            st.plotly_chart(plot_dis_hist_units(selected_dis, "Unitats", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_dis_hist_units(selected_dis, "Unitats", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("")
             st.markdown("")
             st.markdown("""**Evolució de la superfície útil mitjana per tipologia d'habitatge**""")
-            st.plotly_chart(plot_dis_hist(selected_dis, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_dis_hist(selected_dis, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució del preu de venda per m\u00b2 útil  per tipologia d'habitatge**""")
-            st.plotly_chart(plot_dis_hist(selected_dis, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_dis_hist(selected_dis, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
-            st.plotly_chart(plot_dis_hist(selected_dis, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)),use_container_width=True, responsive=True)
+            st.plotly_chart(plot_dis_hist(selected_dis, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)),use_container_width=True, config={"responsive": True})
 
 ############################################################  DISTRICTES DE BARCELONA: 2023 ################################################
     if selected_edition=="2023":
@@ -3759,40 +3759,40 @@ if selected=="Districtes de Barcelona":
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown(f"""**Distribució de Preus per m\u00b2 útil**""")
-            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2023, selected_dis,"Preu m2 útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2023, selected_dis,"Preu m2 útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Preus per m\u00b2 útil segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav_dis(bbdd_estudi_hab_2023, selected_dis, "Preu m2 útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Característiques principals dels habitatges en oferta**""")
-            st.plotly_chart(caracteristiques_dis(bbdd_estudi_hab_2023, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(caracteristiques_dis(bbdd_estudi_hab_2023, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Qualitats dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(qualitats_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(qualitats_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
-            st.plotly_chart(dormscount_plot_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(dormscount_plot_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Qualificació energètica dels habitatges en oferta (% d'habitatges)**""")
-            st.plotly_chart(plot_table_energ_dis(bbdd_estudi_hab_2023, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_table_energ_dis(bbdd_estudi_hab_2023, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Proporció d'habitatges segons el tipus d'instal·lació de calefacció (%)**""")
-            st.plotly_chart(cale_tipus_dis(bbdd_estudi_prom_2023, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(cale_tipus_dis(bbdd_estudi_prom_2023, selected_dis), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown(f"""**Distribució de Superfície útil**""")
-            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2023, selected_dis, "Superfície útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2023, selected_dis, "Superfície útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Superfície en m\u00b2 útils segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav_dis(bbdd_estudi_hab_2023, selected_dis,"Superfície útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Proporció d'habitatges en oferta a les promocions segons tipologia (%)**""")
-            st.plotly_chart(count_plot_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(count_plot_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Equipaments dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(equipaments_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(equipaments_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número de lavabos**""")
-            st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod_2023, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
-            st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_prom_2023, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_prom_2023, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
-            st.plotly_chart(aparcament_dis(bbdd_estudi_hab_2023, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(aparcament_dis(bbdd_estudi_hab_2023, selected_dis), use_container_width=True, config={"responsive": True})
         st.subheader(f"Comparativa amb anys anteriors: Districte de {selected_dis}")
         st.markdown(geo_dis(selected_dis, 2019, int(selected_edition)).to_html(), unsafe_allow_html=True)
         st.markdown(filedownload(geo_dis(selected_dis, 2019, int(selected_edition)), f"Estudi_oferta_{selected_dis}.xlsx"), unsafe_allow_html=True)
@@ -3801,19 +3801,19 @@ if selected=="Districtes de Barcelona":
             st.markdown("")
             st.markdown("")
             st.markdown("""**Evolució dels habitatges de nova construcció per tipologia d'habitatge**""")
-            st.plotly_chart(plot_dis_hist_units(selected_dis, "Unitats", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_dis_hist_units(selected_dis, "Unitats", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("")
             st.markdown("")
             st.markdown("""**Evolució de la superfície útil mitjana per tipologia d'habitatge**""")
-            st.plotly_chart(plot_dis_hist(selected_dis, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_dis_hist(selected_dis, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució del preu de venda per m\u00b2 útil  per tipologia d'habitatge**""")
-            st.plotly_chart(plot_dis_hist(selected_dis, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_dis_hist(selected_dis, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
-            st.plotly_chart(plot_dis_hist(selected_dis, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)),use_container_width=True, responsive=True)
+            st.plotly_chart(plot_dis_hist(selected_dis, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)),use_container_width=True, config={"responsive": True})
 
 ############################################################  DISTRICTES DE BARCELONA: 2024 ################################################
     if selected_edition=="2024":
@@ -3837,40 +3837,40 @@ if selected=="Districtes de Barcelona":
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown(f"""**Distribució de Preus per m\u00b2 útil**""")
-            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2024, selected_dis,"Preu m2 útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2024, selected_dis,"Preu m2 útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Preus per m\u00b2 útil segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav_dis(bbdd_estudi_hab_2024, selected_dis, "Preu m2 útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Característiques principals dels habitatges en oferta**""")
-            st.plotly_chart(caracteristiques_dis(bbdd_estudi_hab_2024, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(caracteristiques_dis(bbdd_estudi_hab_2024, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Qualitats dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(qualitats_dis(bbdd_estudi_hab_mod_2024, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(qualitats_dis(bbdd_estudi_hab_mod_2024, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
-            st.plotly_chart(dormscount_plot_dis(bbdd_estudi_hab_mod_2024, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(dormscount_plot_dis(bbdd_estudi_hab_mod_2024, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Qualificació energètica dels habitatges en oferta (% d'habitatges)**""")
-            st.plotly_chart(plot_table_energ_dis(bbdd_estudi_hab_2024, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_table_energ_dis(bbdd_estudi_hab_2024, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Proporció d'habitatges segons el tipus d'instal·lació de calefacció (%)**""")
-            st.plotly_chart(cale_tipus_dis(bbdd_estudi_prom_2024, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(cale_tipus_dis(bbdd_estudi_prom_2024, selected_dis), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown(f"""**Distribució de Superfície útil**""")
-            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2024, selected_dis, "Superfície útil"), use_container_width=True, responsive=True)
+            st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2024, selected_dis, "Superfície útil"), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Superfície en m\u00b2 útils segons nombre d'habitacions i lavabos**""")
             st.markdown(matrix_hab_lav_dis(bbdd_estudi_hab_2024, selected_dis,"Superfície útil").to_html(), unsafe_allow_html=True)
             st.write("")
             st.write("")
             st.write("")
             st.markdown(f"""**Proporció d'habitatges en oferta a les promocions segons tipologia (%)**""")
-            st.plotly_chart(count_plot_dis(bbdd_estudi_hab_mod_2024, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(count_plot_dis(bbdd_estudi_hab_mod_2024, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown(f"""**Equipaments dels habitatges en oferta (% d'habitatges en oferta)**""")
-            st.plotly_chart(equipaments_dis(bbdd_estudi_hab_mod_2024, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(equipaments_dis(bbdd_estudi_hab_mod_2024, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Habitatges a la venda segons número de lavabos**""")
-            st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod_2024, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod_2024, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
-            st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_prom_2024, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_prom_2024, selected_dis), use_container_width=True, config={"responsive": True})
             st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
-            st.plotly_chart(aparcament_dis(bbdd_estudi_hab_2024, selected_dis), use_container_width=True, responsive=True)
+            st.plotly_chart(aparcament_dis(bbdd_estudi_hab_2024, selected_dis), use_container_width=True, config={"responsive": True})
         st.subheader(f"Comparativa amb anys anteriors: Districte de {selected_dis}")
         st.markdown(geo_dis(selected_dis, 2019, int(selected_edition)).to_html(), unsafe_allow_html=True)
         st.markdown(filedownload(geo_dis(selected_dis, 2019, int(selected_edition)), f"Estudi_oferta_{selected_dis}.xlsx"), unsafe_allow_html=True)
@@ -3879,19 +3879,19 @@ if selected=="Districtes de Barcelona":
             st.markdown("")
             st.markdown("")
             st.markdown("""**Evolució dels habitatges de nova construcció per tipologia d'habitatge**""")
-            st.plotly_chart(plot_dis_hist_units(selected_dis, "Unitats", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_dis_hist_units(selected_dis, "Unitats", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("")
             st.markdown("")
             st.markdown("""**Evolució de la superfície útil mitjana per tipologia d'habitatge**""")
-            st.plotly_chart(plot_dis_hist(selected_dis, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_dis_hist(selected_dis, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         left_col, right_col = st.columns((1, 1))
         with left_col:
             st.markdown("""**Evolució del preu de venda per m\u00b2 útil  per tipologia d'habitatge**""")
-            st.plotly_chart(plot_dis_hist(selected_dis, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+            st.plotly_chart(plot_dis_hist(selected_dis, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
         with right_col:
             st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
-            st.plotly_chart(plot_dis_hist(selected_dis, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)),use_container_width=True, responsive=True)
+            st.plotly_chart(plot_dis_hist(selected_dis, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)),use_container_width=True, config={"responsive": True})
 
 ############################################################  DISTRICTES DE BARCELONA: 2025 ################################################
     if selected_edition=="2025":
@@ -3918,40 +3918,40 @@ if selected=="Districtes de Barcelona":
             left_col, right_col = st.columns((1, 1))
             with left_col:
                 st.markdown(f"""**Distribució de Preus per m\u00b2 útil**""")
-                st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2025, selected_dis,"Preu m2 útil"), use_container_width=True, responsive=True)
+                st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2025, selected_dis,"Preu m2 útil"), use_container_width=True, config={"responsive": True})
                 st.markdown(f"""**Preus per m\u00b2 útil segons nombre d'habitacions i lavabos**""")
                 st.markdown(matrix_hab_lav_dis(bbdd_estudi_hab_2025, selected_dis, "Preu m2 útil").to_html(), unsafe_allow_html=True)
                 st.write("")
                 st.write("")
                 st.write("")
                 st.markdown(f"""**Característiques principals dels habitatges en oferta**""")
-                st.plotly_chart(caracteristiques_dis(bbdd_estudi_hab_2025, selected_dis), use_container_width=True, responsive=True)
+                st.plotly_chart(caracteristiques_dis(bbdd_estudi_hab_2025, selected_dis), use_container_width=True, config={"responsive": True})
                 st.markdown(f"""**Qualitats dels habitatges en oferta (% d'habitatges en oferta)**""")
-                st.plotly_chart(qualitats_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, responsive=True)
+                st.plotly_chart(qualitats_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, config={"responsive": True})
                 st.markdown("""**Habitatges a la venda segons número d'habitacions**""")
-                st.plotly_chart(dormscount_plot_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, responsive=True)
+                st.plotly_chart(dormscount_plot_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, config={"responsive": True})
                 st.markdown("""**Qualificació energètica dels habitatges en oferta (% d'habitatges)**""")
-                st.plotly_chart(plot_table_energ_dis(bbdd_estudi_hab_2025, selected_dis), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_table_energ_dis(bbdd_estudi_hab_2025, selected_dis), use_container_width=True, config={"responsive": True})
                 st.markdown("""**Proporció d'habitatges segons el tipus d'instal·lació de calefacció (%)**""")
-                st.plotly_chart(cale_tipus_dis(bbdd_estudi_prom_2025, selected_dis), use_container_width=True, responsive=True)
+                st.plotly_chart(cale_tipus_dis(bbdd_estudi_prom_2025, selected_dis), use_container_width=True, config={"responsive": True})
             with right_col:
                 st.markdown(f"""**Distribució de Superfície útil**""")
-                st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2025, selected_dis, "Superfície útil"), use_container_width=True, responsive=True)
+                st.plotly_chart(plotdis_streamlit(bbdd_estudi_hab_mod_2025, selected_dis, "Superfície útil"), use_container_width=True, config={"responsive": True})
                 st.markdown(f"""**Superfície en m\u00b2 útils segons nombre d'habitacions i lavabos**""")
                 st.markdown(matrix_hab_lav_dis(bbdd_estudi_hab_2025, selected_dis,"Superfície útil").to_html(), unsafe_allow_html=True)
                 st.write("")
                 st.write("")
                 st.write("")
                 st.markdown(f"""**Proporció d'habitatges en oferta a les promocions segons tipologia (%)**""")
-                st.plotly_chart(count_plot_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, responsive=True)
+                st.plotly_chart(count_plot_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, config={"responsive": True})
                 st.markdown(f"""**Equipaments dels habitatges en oferta (% d'habitatges en oferta)**""")
-                st.plotly_chart(equipaments_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, responsive=True)
+                st.plotly_chart(equipaments_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, config={"responsive": True})
                 st.markdown("""**Habitatges a la venda segons número de lavabos**""")
-                st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, responsive=True)
+                st.plotly_chart(lavcount_plot_dis(bbdd_estudi_hab_mod_2025, selected_dis), use_container_width=True, config={"responsive": True})
                 st.markdown("""**Grandària de les promocions en nombre d'habitatges**""")
-                st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_prom_2025, selected_dis), use_container_width=True, responsive=True)
+                st.plotly_chart(n_promocions_habs_dis(bbdd_estudi_prom_2025, selected_dis), use_container_width=True, config={"responsive": True})
                 st.markdown("""**Plaça d'aparacament inclosa o no en els habitatges en oferta (%)**""")
-                st.plotly_chart(aparcament_dis(bbdd_estudi_hab_2025, selected_dis), use_container_width=True, responsive=True)
+                st.plotly_chart(aparcament_dis(bbdd_estudi_hab_2025, selected_dis), use_container_width=True, config={"responsive": True})
             st.subheader(f"Comparativa amb anys anteriors: Districte de {selected_dis}")
             st.markdown(geo_dis(selected_dis, 2019, int(selected_edition)).to_html(), unsafe_allow_html=True)
             st.markdown(filedownload(geo_dis(selected_dis, 2019, int(selected_edition)), f"Estudi_oferta_{selected_dis}.xlsx"), unsafe_allow_html=True)
@@ -3960,19 +3960,19 @@ if selected=="Districtes de Barcelona":
                 st.markdown("")
                 st.markdown("")
                 st.markdown("""**Evolució dels habitatges de nova construcció per tipologia d'habitatge**""")
-                st.plotly_chart(plot_dis_hist_units(selected_dis, "Unitats", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_dis_hist_units(selected_dis, "Unitats", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
             with right_col:
                 st.markdown("")
                 st.markdown("")
                 st.markdown("""**Evolució de la superfície útil mitjana per tipologia d'habitatge**""")
-                st.plotly_chart(plot_dis_hist(selected_dis, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_dis_hist(selected_dis, 'Superfície mitjana (m² útils)', 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
             left_col, right_col = st.columns((1, 1))
             with left_col:
                 st.markdown("""**Evolució del preu de venda per m\u00b2 útil  per tipologia d'habitatge**""")
-                st.plotly_chart(plot_dis_hist(selected_dis, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, responsive=True)
+                st.plotly_chart(plot_dis_hist(selected_dis, "Preu de venda per m² útil (€)", 2019, int(selected_edition)), use_container_width=True, config={"responsive": True})
             with right_col:
                 st.markdown("""**Evolució del preu venda mitjà per tipologia d'habitatge**""")
-                st.plotly_chart(plot_dis_hist(selected_dis, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)),use_container_width=True, responsive=True)
+                st.plotly_chart(plot_dis_hist(selected_dis, "Preu mitjà de venda de l'habitatge (€)", 2019, int(selected_edition)),use_container_width=True, config={"responsive": True})
 
 
 if selected=="Mapa interactiu":
