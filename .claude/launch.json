@@ -1,0 +1,44 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "atlas",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "streamlit", "run", "Estudi_oferta_atlas.py", "--server.headless", "true", "--server.port", "8503", "--browser.gatherUsageStats", "false"],
+      "port": 8503
+    },
+    {
+      "name": "app-dades",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd /d Z:\\ESTUDIS\\APP\\Conjuntura-sector && python -m streamlit run APP_Dades.py --server.headless true --server.port %PORT% --browser.gatherUsageStats false"],
+      "port": 8512,
+      "autoPort": true
+    },
+    {
+      "name": "observatori-sectorial",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd /d Z:\\ESTUDIS\\APP\\Observatori sectorial && python -m streamlit run APP_Dades.py --server.headless true --server.port %PORT% --browser.gatherUsageStats false"],
+      "port": 8514,
+      "autoPort": true
+    },
+    {
+      "name": "fin-portfolio",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd /d C:\\Users\\estudis\\Documents\\FIN && python -m streamlit run APP_porfolio.py --server.headless true --server.port %PORT% --browser.gatherUsageStats false"],
+      "port": 8513,
+      "autoPort": true
+    },
+    {
+      "name": "informe-preview",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd /d Z:\\ESTUDIS\\Estudi d'oferta\\2026 && python -m http.server 8642"],
+      "port": 8642
+    },
+    {
+      "name": "lleida-deck-preview",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd /d Z:\\ESTUDIS\\Dades\\HTML && python -m http.server 8643"],
+      "port": 8643
+    }
+  ]
+}

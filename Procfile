@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run Estudi_oferta.py
+web: sh setup.sh && streamlit run APP_Dades.py
