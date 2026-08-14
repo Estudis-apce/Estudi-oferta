@@ -763,11 +763,18 @@ def _styled_table_from_df(df, max_rows: Optional[int] = None, max_cols: int = 12
 
     tbl = Table(data, repeatRows=1)
 
-    try:
-        total_width = 1.15  # 15% más ancha
-        tbl._argW = [w * total_width if w else None for w in tbl._argW]
-    except Exception:
-        pass
+    # L'ample extra només s'aplica a taules amb poques columnes (fins a 6, incloent
+    # la d'etiquetes): en una taula petita queda més "plena" i estètica, però en
+    # taules amples (p.ex. comparativa amb diversos municipis en paral·lel) sumar-hi
+    # un 15% feia que es sortissin dels marges de la pàgina (detectat 2026-08-14,
+    # pàg. 6 i 35 de l'informe de mercat). Sense aquest ample extra, les taules
+    # amples es queden amb el seu ample natural, que sí que cap.
+    if len(data[0]) <= 6:
+        try:
+            total_width = 1.15  # 15% más ancha
+            tbl._argW = [w * total_width if w else None for w in tbl._argW]
+        except Exception:
+            pass
 
     tbl.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), _hex_to_rl(CSS_COLORS["primary"])),
@@ -6292,7 +6299,13 @@ if selected == "Informe de Mercat i Sectorial":
                         return None
 
                 try:
-                    municipis_propers = _municipis_mes_propers(selected_mun, n=10)
+                    # n=5 (abans 10): amb selected_mun + 10 propers, les taules amples
+                    # de comparativa (_build_comp_df_wide) es sortien dels marges del PDF
+                    # (pàg. 6 i 35, detectat 2026-08-14). Amb n=6 encara quedava un marge
+                    # massa just (<0,5 cm; un nom de municipi llarg com "Castell d'Aro,
+                    # Platja d'Aro i s'Agaró" ja el tornava a fer sortir). Amb 5 propers +
+                    # selected_mun (6 columnes) el marge és còmode (~2 cm) en qualsevol cas.
+                    municipis_propers = _municipis_mes_propers(selected_mun, n=5)
                 except Exception:
                     municipis_propers = [selected_mun]
                 tables_municipis_propers = {selected_mun: (table_mun_prod_y, table_mun_tr_y, table_mun_pr_y, table_mun_llog_y)}
