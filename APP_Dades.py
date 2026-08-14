@@ -2161,18 +2161,17 @@ def generar_pdf_municipi_tot(
         except Exception:
             pass
 
-    # "Fitxa de demanda potencial": mòdul independent i autocontingut
-    # (fitxes_demanda_potencial.py), afegit el 2026-08-13. Si el mòdul o les
-    # seves dades no hi són, aquest bloc no trenca la resta del PDF.
-    try:
-        import fitxes_demanda_potencial as fitxa_dp
-        if fitxa_dp.disponible(selected_mun):
-            items_fitxa = [("table", (titol, df)) for titol, df in fitxa_dp.blocs_dataframes(selected_mun)]
-            if items_fitxa:
-                items_fitxa.append(("text", fitxa_dp.text_metodologia()))
-                sections.append(("Fitxa de demanda potencial d'habitatge", items_fitxa))
-    except Exception:
-        pass
+    # "Fitxa de demanda potencial" oculta en aquesta còpia de desplegament
+    # (sin_ficha, 2026-08-13) -- comentat, no esborrat.
+    # try:
+    #     import fitxes_demanda_potencial as fitxa_dp
+    #     if fitxa_dp.disponible(selected_mun):
+    #         items_fitxa = [("table", (titol, df)) for titol, df in fitxa_dp.blocs_dataframes(selected_mun)]
+    #         if items_fitxa:
+    #             items_fitxa.append(("text", fitxa_dp.text_metodologia()))
+    #             sections.append(("Fitxa de demanda potencial d'habitatge", items_fitxa))
+    # except Exception:
+    #     pass
 
 
     # ==========================
@@ -5244,7 +5243,12 @@ if selected=="Comarques":
 if selected=="Municipis":
     left, center, right= st.columns((1,1,1))
     with left:
-        selected_type = st.radio("**Selecciona un tipus d'indicador**", ("Venda", "Lloguer", "Altres indicadors", "Fitxa de demanda potencial"), key="municipis_tipus_indicador", horizontal=False)
+        # "Fitxa de demanda potencial" oculta en aquesta còpia de desplegament
+        # (sin_ficha, 2026-08-13): el bloc "if selected_type=='Fitxa de demanda
+        # potencial':" (línia ~5721) queda intacte però comentat i inabastable.
+        # APP_Dades.py (l'original) sí que la té activa. Per reactivar-la aquí,
+        # descomentar aquest bloc i tornar el string a la llista.
+        selected_type = st.radio("**Selecciona un tipus d'indicador**", ("Venda", "Lloguer", "Altres indicadors"), key="municipis_tipus_indicador", horizontal=False)
     with center:
         selected_mun = st.selectbox("**Selecciona un municipi:**", maestro_mun[maestro_mun["ADD"]=="SI"]["Municipi"].unique(), index= maestro_mun[maestro_mun["ADD"]=="SI"]["Municipi"].tolist().index("Barcelona"), key="municipis_selector_municipi")
         if selected_type=="Venda":
@@ -5715,18 +5719,18 @@ if selected=="Municipis":
             _st_metric_pick(sel, "Població ocupada")
             _st_metric_pick(sel, "Població desocupada")
 
-    # "Fitxa de demanda potencial": mòdul independent i autocontingut
-    # (fitxes_demanda_potencial.py), afegit el 2026-08-13. Si el mòdul o les
-    # seves dades no hi són, aquest bloc no trenca la resta de l'app.
-    if selected_type=="Fitxa de demanda potencial":
-        try:
-            import fitxes_demanda_potencial as fitxa_dp
-            if fitxa_dp.disponible(selected_mun):
-                st.markdown(fitxa_dp.render_html(selected_mun), unsafe_allow_html=True)
-            else:
-                st.info(f"No hi ha ficha de demanda potencial per a {selected_mun} (sense dada real de compravendes d'obra nova).")
-        except Exception:
-            st.info("La ficha de demanda potencial no està disponible ara mateix.")
+    # "Fitxa de demanda potencial" oculta en aquesta còpia de desplegament
+    # (sin_ficha, 2026-08-13) -- comentat, no esborrat. Per reactivar-la,
+    # descomentar aquest bloc i tornar el string a la llista de selected_type.
+    # if selected_type=="Fitxa de demanda potencial":
+    #     try:
+    #         import fitxes_demanda_potencial as fitxa_dp
+    #         if fitxa_dp.disponible(selected_mun):
+    #             st.markdown(fitxa_dp.render_html(selected_mun), unsafe_allow_html=True)
+    #         else:
+    #             st.info(f"No hi ha ficha de demanda potencial per a {selected_mun} (sense dada real de compravendes d'obra nova).")
+    #     except Exception:
+    #         st.info("La ficha de demanda potencial no està disponible ara mateix.")
 if selected=="Districtes de Barcelona":
     left, center, right= st.columns((1,1,1))
     with left:
